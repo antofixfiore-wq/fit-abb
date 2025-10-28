@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +36,7 @@ const subscriptionDetails = {
   premium: {
     name: "Premium",
     price: 99.99,
-    color: "from-blue-500 to-orange-500", // Changed from purple-pink to blue-orange
+    color: "from-blue-500 to-orange-500",
     benefits: [
       "Accesso illimitato 24/7",
       "Tutte le palestre premium",
@@ -111,7 +110,7 @@ export default function Subscription() {
   if (!selectedPlan || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div> {/* Changed border color to blue-600 */}
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -231,7 +230,7 @@ export default function Subscription() {
               </div>
 
               <Button
-                className={`w-full ${documentsComplete ? 'bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700' : ''}`} {/* Changed button gradient to blue-orange */}
+                className={`w-full ${documentsComplete ? 'bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700' : ''}`}
                 size="lg"
                 onClick={handleConfirmSubscription}
                 disabled={!documentsComplete || processing}
