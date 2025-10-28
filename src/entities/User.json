@@ -1,0 +1,49 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "silver",
+        "gold",
+        "premium"
+      ],
+      "default": "none",
+      "description": "Tipo di abbonamento attivo"
+    },
+    "subscription_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data inizio abbonamento"
+    },
+    "subscription_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data scadenza abbonamento"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Numero di telefono"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data di nascita"
+    },
+    "id_document_url": {
+      "type": "string",
+      "description": "URL documento d'identit\u00e0"
+    },
+    "medical_certificate_url": {
+      "type": "string",
+      "description": "URL certificato medico"
+    },
+    "documents_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Documenti verificati"
+    }
+  }
+}
