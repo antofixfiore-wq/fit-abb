@@ -1,0 +1,89 @@
+{
+  "name": "Gym",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "address": {
+      "type": "string",
+      "description": "Indirizzo completo"
+    },
+    "city": {
+      "type": "string",
+      "description": "Citt\u00e0"
+    },
+    "region": {
+      "type": "string",
+      "description": "Regione"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Numero di telefono"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email di contatto"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione della palestra"
+    },
+    "amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Servizi disponibili (es. sauna, piscina, corsi)"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs delle foto della palestra"
+    },
+    "opening_hours": {
+      "type": "object",
+      "description": "Orari di apertura per giorno della settimana"
+    },
+    "google_rating": {
+      "type": "number",
+      "description": "Valutazione Google (1-5)"
+    },
+    "available_for_silver": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disponibile per abbonamento Silver"
+    },
+    "available_for_gold": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disponibile per abbonamento Gold"
+    },
+    "available_for_premium": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disponibile per abbonamento Premium"
+    },
+    "manager_email": {
+      "type": "string",
+      "description": "Email del gestore della palestra"
+    },
+    "is_partner": {
+      "type": "boolean",
+      "default": false,
+      "description": "Palestra partner con dashboard dedicata"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL logo palestra"
+    }
+  },
+  "required": [
+    "name",
+    "address",
+    "city"
+  ]
+}

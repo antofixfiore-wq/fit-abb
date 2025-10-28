@@ -1,0 +1,575 @@
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Building2,
+  Upload,
+  Plus,
+  Trash2,
+  Edit,
+  CheckCircle,
+  AlertCircle,
+  Users,
+  Euro,
+  Calendar,
+  Image as ImageIcon
+} from "lucide-react";
+import { motion } from "framer-motion";
+
+export default function GymDashboard() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [gym, setGym] = useState(null);
+  const [memberships, setMemberships] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+
+  const [newMembership, setNewMembership] = useState({
+    name: "",
+    duration_days: 30,
+    price: 0,
+    description: "",
+    benefits: []
+  });
+  const [newBenefit, setNewBenefit] = useState("");
+  const [editingMembership, setEditingMembership] = useState(null);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const userData = await base44.auth.me();
+      setUser(userData);
+
+      const gymsData = await base44.entities.Gym.list();
+      const userGym = gymsData.find(g => g.manager_email === userData.email);
+
+      if (!userGym) {
+        setError("Non hai una palestra associata al tuo account");
+        setLoading(false);
+        return;
+      }
+
+      setGym(userGym);
+
+      const membershipsData = await base44.entities.GymMembership.filter({ gym_id: userGym.id });
+      setMemberships(membershipsData);
+
+      const subscriptionsData = await base44.entities.GymSubscription.filter({ gym_id: userGym.id }, "-created_date");
+      setSubscriptions(subscriptionsData);
+    } catch (error) {
+      console.error("Error loading data:", error);
+      setError("Errore nel caricamento dei dati");
+    }
+    setLoading(false);
+  };
+
+  const handlePhotoUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    
+    setUploading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const uploadPromises = Array.from(files).map(file =>
+        base44.integrations.Core.UploadFile({ file })
+      );
+      
+      const results = await Promise.all(uploadPromises);
+      const newPhotoUrls = results.map(r => r.file_url);
+      
+      const updatedPhotos = [...(gym.photos || []), ...newPhotoUrls];
+      await base44.entities.Gym.update(gym.id, { photos: updatedPhotos });
+      
+      await loadData();
+      setSuccess(`${newPhotoUrls.length} foto caricate con successo!`);
+    } catch (error) {
+      setError("Errore nel caricamento delle foto");
+    }
+    setUploading(false);
+  };
+
+  const handleDeletePhoto = async (photoUrl) => {
+    try {
+      const updatedPhotos = gym.photos.filter(p => p !== photoUrl);
+      await base44.entities.Gym.update(gym.id, { photos: updatedPhotos });
+      await loadData();
+      setSuccess("Foto eliminata con successo!");
+    } catch (error) {
+      setError("Errore nell'eliminazione della foto");
+    }
+  };
+
+  const handleCreateMembership = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const membershipData = {
+        ...newMembership,
+        gym_id: gym.id
+      };
+
+      if (editingMembership) {
+        await base44.entities.GymMembership.update(editingMembership.id, membershipData);
+        setSuccess("Abbonamento aggiornato con successo!");
+      } else {
+        await base44.entities.GymMembership.create(membershipData);
+        setSuccess("Abbonamento creato con successo!");
+      }
+
+      setNewMembership({ name: "", duration_days: 30, price: 0, description: "", benefits: [] });
+      setEditingMembership(null);
+      await loadData();
+    } catch (error) {
+      setError("Errore nella creazione dell'abbonamento");
+    }
+  };
+
+  const handleEditMembership = (membership) => {
+    setEditingMembership(membership);
+    setNewMembership({
+      name: membership.name,
+      duration_days: membership.duration_days,
+      price: membership.price,
+      description: membership.description || "",
+      benefits: membership.benefits || []
+    });
+  };
+
+  const handleDeleteMembership = async (id) => {
+    if (!confirm("Sei sicuro di voler eliminare questo abbonamento?")) return;
+    
+    try {
+      await base44.entities.GymMembership.delete(id);
+      await loadData();
+      setSuccess("Abbonamento eliminato con successo!");
+    } catch (error) {
+      setError("Errore nell'eliminazione dell'abbonamento");
+    }
+  };
+
+  const addBenefit = () => {
+    if (!newBenefit.trim()) return;
+    setNewMembership({
+      ...newMembership,
+      benefits: [...newMembership.benefits, newBenefit]
+    });
+    setNewBenefit("");
+  };
+
+  const removeBenefit = (index) => {
+    setNewMembership({
+      ...newMembership,
+      benefits: newMembership.benefits.filter((_, i) => i !== index)
+    });
+  };
+
+  const getActiveSubscriptionsCount = () => {
+    return subscriptions.filter(s => s.status === "active").length;
+  };
+
+  const getTotalRevenue = () => {
+    return subscriptions.reduce((sum, s) => sum + (s.price_paid || 0), 0);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!gym) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error || "Nessuna palestra trovata per questo account"}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-600 to-orange-600 flex items-center justify-center">
+                <Building2 className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{gym.name}</h1>
+                <p className="text-gray-600">{gym.city} - Dashboard Partner</p>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Abbonamenti Attivi</p>
+                      <p className="text-3xl font-bold text-blue-600">{getActiveSubscriptionsCount()}</p>
+                    </div>
+                    <Users className="w-10 h-10 text-blue-600 opacity-20" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Incasso Totale</p>
+                      <p className="text-3xl font-bold text-green-600">€{getTotalRevenue().toFixed(2)}</p>
+                    </div>
+                    <Euro className="w-10 h-10 text-green-600 opacity-20" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Foto Caricate</p>
+                      <p className="text-3xl font-bold text-orange-600">{gym.photos?.length || 0}</p>
+                    </div>
+                    <ImageIcon className="w-10 h-10 text-orange-600 opacity-20" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {success && (
+            <Alert className="mb-6 bg-green-50 border-green-200">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">{success}</AlertDescription>
+            </Alert>
+          )}
+
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <Tabs defaultValue="photos" className="space-y-6">
+            <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3 gap-4">
+              <TabsTrigger value="photos">Gestione Foto</TabsTrigger>
+              <TabsTrigger value="memberships">Abbonamenti</TabsTrigger>
+              <TabsTrigger value="subscriptions">Clienti</TabsTrigger>
+            </TabsList>
+
+            {/* Photos Tab */}
+            <TabsContent value="photos" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="w-5 h-5" />
+                    Carica Nuove Foto
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handlePhotoUpload(e.target.files)}
+                    disabled={uploading}
+                    className="cursor-pointer"
+                  />
+                  {uploading && (
+                    <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      Caricamento in corso...
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Galleria Foto ({gym.photos?.length || 0})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {gym.photos && gym.photos.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {gym.photos.map((photo, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={photo}
+                            alt={`Foto ${index + 1}`}
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleDeletePhoto(photo)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">Nessuna foto caricata</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Memberships Tab */}
+            <TabsContent value="memberships" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Plus className="w-5 h-5" />
+                    {editingMembership ? "Modifica Abbonamento" : "Crea Nuovo Abbonamento"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleCreateMembership} className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="name">Nome Abbonamento</Label>
+                        <Input
+                          id="name"
+                          value={newMembership.name}
+                          onChange={(e) => setNewMembership({...newMembership, name: e.target.value})}
+                          placeholder="es. Mensile, Trimestrale"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="duration">Durata (giorni)</Label>
+                        <Input
+                          id="duration"
+                          type="number"
+                          value={newMembership.duration_days}
+                          onChange={(e) => setNewMembership({...newMembership, duration_days: parseInt(e.target.value)})}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="price">Prezzo (€)</Label>
+                      <Input
+                        id="price"
+                        type="number"
+                        step="0.01"
+                        value={newMembership.price}
+                        onChange={(e) => setNewMembership({...newMembership, price: parseFloat(e.target.value)})}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="description">Descrizione</Label>
+                      <Textarea
+                        id="description"
+                        value={newMembership.description}
+                        onChange={(e) => setNewMembership({...newMembership, description: e.target.value})}
+                        placeholder="Descrivi l'abbonamento..."
+                        rows={3}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Benefici</Label>
+                      <div className="flex gap-2 mb-3">
+                        <Input
+                          value={newBenefit}
+                          onChange={(e) => setNewBenefit(e.target.value)}
+                          placeholder="Aggiungi beneficio..."
+                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addBenefit())}
+                        />
+                        <Button type="button" onClick={addBenefit}>
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {newMembership.benefits.map((benefit, i) => (
+                          <Badge key={i} variant="secondary" className="gap-2">
+                            {benefit}
+                            <button onClick={() => removeBenefit(i)} className="hover:text-red-600">
+                              ×
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <Button type="submit" className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700">
+                        {editingMembership ? "Aggiorna" : "Crea"} Abbonamento
+                      </Button>
+                      {editingMembership && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingMembership(null);
+                            setNewMembership({ name: "", duration_days: 30, price: 0, description: "", benefits: [] });
+                          }}
+                        >
+                          Annulla
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>I Tuoi Abbonamenti ({memberships.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {memberships.length > 0 ? (
+                    <div className="space-y-4">
+                      {memberships.map((membership) => (
+                        <div key={membership.id} className="border rounded-lg p-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="font-bold text-lg">{membership.name}</h3>
+                                <Badge className={membership.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                                  {membership.is_active ? "Attivo" : "Non attivo"}
+                                </Badge>
+                              </div>
+                              <div className="grid md:grid-cols-2 gap-4 mb-3">
+                                <div className="text-sm text-gray-600">
+                                  <span className="font-semibold">Durata:</span> {membership.duration_days} giorni
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  <span className="font-semibold">Prezzo:</span> €{membership.price}
+                                </div>
+                              </div>
+                              {membership.description && (
+                                <p className="text-sm text-gray-700 mb-2">{membership.description}</p>
+                              )}
+                              {membership.benefits && membership.benefits.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                  {membership.benefits.map((benefit, i) => (
+                                    <Badge key={i} variant="outline" className="text-xs">
+                                      {benefit}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleEditMembership(membership)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => handleDeleteMembership(membership.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">Nessun abbonamento creato</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Subscriptions Tab */}
+            <TabsContent value="subscriptions" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Clienti Abbonati ({subscriptions.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {subscriptions.length > 0 ? (
+                    <div className="space-y-3">
+                      {subscriptions.map((subscription) => {
+                        const membership = memberships.find(m => m.id === subscription.membership_id);
+                        return (
+                          <div key={subscription.id} className="border rounded-lg p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <span className="font-semibold">{subscription.created_by}</span>
+                                  <Badge className={
+                                    subscription.status === "active" 
+                                      ? "bg-green-100 text-green-800" 
+                                      : subscription.status === "expired"
+                                      ? "bg-gray-100 text-gray-800"
+                                      : "bg-red-100 text-red-800"
+                                  }>
+                                    {subscription.status === "active" ? "Attivo" : subscription.status === "expired" ? "Scaduto" : "Cancellato"}
+                                  </Badge>
+                                </div>
+                                <div className="grid md:grid-cols-3 gap-3 text-sm text-gray-600">
+                                  <div>
+                                    <span className="font-semibold">Piano:</span> {membership?.name || "N/A"}
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold">Dal:</span> {new Date(subscription.start_date).toLocaleDateString('it-IT')}
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold">Al:</span> {new Date(subscription.end_date).toLocaleDateString('it-IT')}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-lg font-bold text-gray-900">€{subscription.price_paid}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">Nessun cliente abbonato ancora</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
+      </div>
+    </div>
+  );
+}

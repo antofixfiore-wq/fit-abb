@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -39,14 +40,19 @@ const navigationItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [user, setUser] = React.useState(null);
+  const [userGym, setUserGym] = React.useState(null);
 
   React.useEffect(() => {
     const loadUser = async () => {
       try {
         const userData = await base44.auth.me();
         setUser(userData);
+
+        const gymsData = await base44.entities.Gym.list();
+        const gym = gymsData.find(g => g.manager_email === userData.email);
+        setUserGym(gym);
       } catch (error) {
-        console.error("User not logged in");
+        console.error("User not logged in or error loading gym data:", error);
       }
     };
     loadUser();
@@ -121,6 +127,22 @@ export default function Layout({ children, currentPageName }) {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
+
+                  {userGym && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        asChild 
+                        className={`hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 rounded-lg mb-1 ${
+                          location.pathname === createPageUrl("GymDashboard") ? 'bg-gradient-to-r from-blue-50 to-orange-50 text-blue-700' : ''
+                        }`}
+                      >
+                        <Link to={createPageUrl("GymDashboard")} className="flex items-center gap-3 px-3 py-2">
+                          <Building2 className="w-5 h-5" />
+                          <span className="font-medium">Dashboard Palestra</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
