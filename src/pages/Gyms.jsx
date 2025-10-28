@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -62,7 +63,7 @@ export default function Gyms() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -70,7 +71,7 @@ export default function Gyms() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-16 px-6">
+      <div className="bg-gradient-to-r from-blue-600 to-orange-600 text-white py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -78,7 +79,7 @@ export default function Gyms() {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Le Nostre Palestre</h1>
-            <p className="text-xl text-purple-100">
+            <p className="text-xl text-blue-100">
               Oltre {gyms.length} palestre partner in tutta Italia
             </p>
           </motion.div>
@@ -148,8 +149,8 @@ export default function Gyms() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100">
-                        <Building2 className="w-20 h-20 text-purple-300" />
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
+                        <Building2 className="w-20 h-20 text-blue-300" />
                       </div>
                     )}
                     {gym.google_rating && (

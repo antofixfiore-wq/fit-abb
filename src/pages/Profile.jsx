@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -83,7 +84,7 @@ export default function Profile() {
     const colors = {
       silver: { bg: "bg-gray-100", text: "text-gray-800", gradient: "from-gray-400 to-gray-600" },
       gold: { bg: "bg-yellow-50", text: "text-yellow-800", gradient: "from-yellow-400 to-yellow-600" },
-      premium: { bg: "bg-purple-50", text: "text-purple-800", gradient: "from-purple-500 to-pink-600" }
+      premium: { bg: "bg-blue-50", text: "text-blue-800", gradient: "from-blue-500 to-orange-500" }
     };
 
     const prices = { silver: 29.99, gold: 39.99, premium: 99.99 };
@@ -132,7 +133,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -201,7 +202,7 @@ export default function Profile() {
                       onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
                     />
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700">
                     Aggiorna Profilo
                   </Button>
                 </form>

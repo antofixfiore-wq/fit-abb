@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Dumbbell, Home, Building2, User, LogOut } from "lucide-react";
+import { Home, Building2, User, LogOut } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import {
   Sidebar,
@@ -64,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
     const colors = {
       silver: "bg-gray-200 text-gray-800",
       gold: "bg-yellow-100 text-yellow-800",
-      premium: "bg-purple-200 text-purple-800"
+      premium: "bg-gradient-to-r from-blue-500 to-orange-500 text-white"
     };
 
     return (
@@ -78,22 +78,26 @@ export default function Layout({ children, currentPageName }) {
     <SidebarProvider>
       <style>{`
         :root {
-          --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #f97316 100%);
+          --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #fb923c 100%);
           --success-color: #10b981;
           --background: #fafaf9;
+          --primary-blue: #3b82f6;
+          --primary-orange: #f97316;
         }
       `}</style>
       <div className="min-h-screen flex w-full bg-[#fafaf9]">
         <Sidebar className="border-r border-gray-200">
           <SidebarHeader className="border-b border-gray-200 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--primary-gradient)' }}>
-                <Dumbbell className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
+                alt="Fit ABB Logo"
+                className="w-12 h-12 object-contain"
+              />
               <div>
-                <h2 className="font-bold text-gray-900 text-lg">GymPass</h2>
-                <p className="text-xs text-gray-500">Italia</p>
+                <h2 className="font-bold text-gray-900 text-lg">Fit ABB</h2>
+                <p className="text-xs text-gray-500">Allena Italia</p>
               </div>
             </div>
           </SidebarHeader>
@@ -106,8 +110,8 @@ export default function Layout({ children, currentPageName }) {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton 
                         asChild 
-                        className={`hover:bg-purple-50 hover:text-purple-700 transition-colors duration-200 rounded-lg mb-1 ${
-                          location.pathname === item.url ? 'bg-purple-50 text-purple-700' : ''
+                        className={`hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 rounded-lg mb-1 ${
+                          location.pathname === item.url ? 'bg-gradient-to-r from-blue-50 to-orange-50 text-blue-700' : ''
                         }`}
                       >
                         <Link to={item.url} className="flex items-center gap-3 px-3 py-2">
@@ -126,7 +130,7 @@ export default function Layout({ children, currentPageName }) {
             {user && (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'var(--accent-gradient)' }}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-orange-500">
                     <span className="text-white font-semibold text-sm">
                       {user.full_name?.charAt(0).toUpperCase() || 'U'}
                     </span>
@@ -156,8 +160,12 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200" />
               <div className="flex items-center gap-2">
-                <Dumbbell className="w-5 h-5 text-purple-600" />
-                <h1 className="text-lg font-bold">GymPass Italia</h1>
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
+                  alt="Fit ABB"
+                  className="w-8 h-8 object-contain"
+                />
+                <h1 className="text-lg font-bold">Fit ABB</h1>
               </div>
             </div>
           </header>

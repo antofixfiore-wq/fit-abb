@@ -39,7 +39,7 @@ const subscriptionPlans = [
     type: "premium",
     name: "Premium",
     price: 99.99,
-    color: "from-purple-500 to-pink-600",
+    color: "from-blue-500 to-orange-500",
     benefits: [
       "Accesso illimitato 24/7",
       "Tutte le palestre premium",
@@ -91,7 +91,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-orange-600 text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="absolute inset-0" style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600)',
@@ -107,6 +107,13 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
+            <div className="mb-8 flex justify-center">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
+                alt="Fit ABB"
+                className="w-32 h-32 object-contain drop-shadow-2xl"
+              />
+            </div>
             <Badge className="mb-6 bg-white/20 text-white border-white/30 px-4 py-2">
               <Award className="w-4 h-4 mr-2" />
               Un abbonamento, infinite palestre
@@ -114,13 +121,13 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               Allenati Ovunque in Italia
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+            <p className="text-xl md:text-2xl mb-8 text-blue-100">
               Accesso illimitato a centinaia di palestre con un solo abbonamento
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-6"
+                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6"
                 onClick={() => {
                   if (!user) {
                     base44.auth.redirectToLogin(createPageUrl("Home"));
@@ -152,15 +159,15 @@ export default function Home() {
           >
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-purple-200">Palestre Partner</div>
+              <div className="text-blue-200">Palestre Partner</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">20</div>
-              <div className="text-purple-200">Regioni Coperte</div>
+              <div className="text-blue-200">Regioni Coperte</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-purple-200">Membri Attivi</div>
+              <div className="text-blue-200">Membri Attivi</div>
             </div>
           </motion.div>
         </div>
@@ -187,10 +194,10 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl ${
-                  plan.popular ? 'ring-2 ring-purple-500 scale-105' : ''
+                  plan.popular ? 'ring-2 ring-blue-500 scale-105' : ''
                 }`}>
                   {plan.popular && (
-                    <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-1 text-sm font-semibold">
+                    <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-1 text-sm font-semibold">
                       PIÙ POPOLARE
                     </div>
                   )}
@@ -219,7 +226,7 @@ export default function Home() {
                     </ul>
 
                     <Button
-                      className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700' : ''}`}
+                      className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700' : ''}`}
                       variant={plan.popular ? 'default' : 'outline'}
                       size="lg"
                       onClick={() => handleSubscriptionSelect(plan)}
@@ -272,8 +279,8 @@ export default function Home() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100">
-                        <Building2 className="w-16 h-16 text-purple-300" />
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
+                        <Building2 className="w-16 h-16 text-blue-300" />
                       </div>
                     )}
                     {gym.google_rating && (
@@ -318,18 +325,18 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+      <section className="py-20 px-6 bg-gradient-to-r from-blue-600 to-orange-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <Clock className="w-16 h-16 mx-auto mb-6 opacity-90" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Inizia la Tua Trasformazione Oggi
           </h2>
-          <p className="text-xl mb-8 text-purple-100">
-            Unisciti a migliaia di persone che si allenano già con GymPass Italia
+          <p className="text-xl mb-8 text-blue-100">
+            Unisciti a migliaia di persone che si allenano già con Fit ABB
           </p>
           <Button
             size="lg"
-            className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-6"
+            className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6"
             onClick={() => {
               if (!user) {
                 base44.auth.redirectToLogin(createPageUrl("Home"));
