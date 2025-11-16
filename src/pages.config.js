@@ -6,6 +6,7 @@ import Subscription from './pages/Subscription';
 import GymDashboard from './pages/GymDashboard';
 import ClientDashboard from './pages/ClientDashboard';
 import WorkoutPlanner from './pages/WorkoutPlanner';
+import Community from './pages/Community';
 import Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "GymDashboard": GymDashboard,
     "ClientDashboard": ClientDashboard,
     "WorkoutPlanner": WorkoutPlanner,
+    "Community": Community,
 }
 
 export const pagesConfig = {
