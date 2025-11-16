@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import ProgressStats from "../components/gamification/ProgressStats";
+import BadgeCard from "../components/gamification/BadgeCard";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState({ id: false, medical: false });
   const [success, setSuccess] = useState(null);
@@ -33,6 +36,12 @@ export default function Profile() {
         phone: userData.phone || "",
         birth_date: userData.birth_date || ""
       });
+
+      const userAchievements = await base44.entities.UserAchievement.filter(
+        { user_email: userData.email },
+        "-unlocked_date"
+      );
+      setAchievements(userAchievements);
     } catch (error) {
       setError("Errore nel caricamento del profilo");
     }
@@ -162,6 +171,37 @@ export default function Profile() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+
+          {/* Progress Stats */}
+          <div className="mb-6">
+            <ProgressStats user={user} />
+          </div>
+
+          {/* Badges Section */}
+          <Card className="mb-6">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Trophy className="w-6 h-6 text-yellow-600" />
+                <CardTitle>I Miei Risultati</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {achievements.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {achievements.map((achievement) => (
+                    <BadgeCard 
+                      key={achievement.id}
+                      achievement={achievement}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 py-8">
+                  Inizia ad allenarti per sbloccare i tuoi primi badge!
+                </p>
+              )}
+            </CardContent>
+          </Card>
 
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {getSubscriptionInfo()}

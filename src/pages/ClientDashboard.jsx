@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -19,9 +20,12 @@ import {
   X,
   Upload,
   Edit,
-  Send
+  Send,
+  Award
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ProgressStats from "../components/gamification/ProgressStats";
+import BadgeCard from "../components/gamification/BadgeCard";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
@@ -29,6 +33,7 @@ export default function ClientDashboard() {
   const [comments, setComments] = useState({});
   const [showComments, setShowComments] = useState({});
   const [newComment, setNewComment] = useState({});
+  const [achievements, setAchievements] = useState([]); // New state for achievements
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     activeSubscription: null,
@@ -68,17 +73,101 @@ export default function ClientDashboard() {
         commentsByPost[comment.post_id].push(comment);
       });
       setComments(commentsByPost);
+
+      const userAchievements = await base44.entities.UserAchievement.filter(
+        { user_email: userData.email },
+        "-unlocked_date"
+      );
+      setAchievements(userAchievements);
       
       setStats({
-        totalWorkouts: 45,
+        totalWorkouts: userData.completed_workouts || 0, // Use userData.completed_workouts
         activeSubscription: userData.subscription_type,
         monthlyVisits: 12,
-        streak: 5
+        streak: userData.current_streak || 0 // Use userData.current_streak
       });
     } catch (error) {
       console.error("Error loading data:", error);
     }
     setLoading(false);
+  };
+
+  const checkAndAwardBadges = async () => {
+    if (!user) return; // Ensure user data is loaded
+
+    const existingBadges = achievements.map(a => a.badge_type);
+    const newBadges = [];
+
+    // Assuming user stats like completed_workouts, current_streak, total_points are updated before this check
+    // If not, fetch the latest user data here or ensure `user` state is always up-to-date.
+    // For this implementation, we will use the `user` state passed to this function.
+
+    if (!existingBadges.includes("first_workout") && user.completed_workouts >= 1) {
+      newBadges.push({
+        badge_type: "first_workout",
+        badge_name: "Primo Allenamento",
+        badge_description: "Hai completato il tuo primo allenamento!",
+        points_earned: 50
+      });
+    }
+
+    if (!existingBadges.includes("workout_master") && user.completed_workouts >= 10) {
+      newBadges.push({
+        badge_type: "workout_master",
+        badge_name: "Maestro degli Allenamenti",
+        badge_description: "10 allenamenti completati",
+        points_earned: 200
+      });
+    }
+
+    if (!existingBadges.includes("streak_3") && user.current_streak >= 3) {
+      newBadges.push({
+        badge_type: "streak_3",
+        badge_name: "In Fiamme",
+        badge_description: "3 giorni di streak consecutivi",
+        points_earned: 100
+      });
+    }
+
+    if (!existingBadges.includes("streak_7") && user.current_streak >= 7) {
+      newBadges.push({
+        badge_type: "streak_7",
+        badge_name: "Settimana Perfetta",
+        badge_description: "7 giorni di streak consecutivi",
+        points_earned: 250
+      });
+    }
+
+    // This check relies on `feedPosts` which is already fetched.
+    if (!existingBadges.includes("social_butterfly") && feedPosts.filter(p => p.user_email === user.email).length >= 5) {
+      newBadges.push({
+        badge_type: "social_butterfly",
+        badge_name: "Farfalla Sociale",
+        badge_description: "5 post condivisi",
+        points_earned: 150
+      });
+    }
+
+    for (const badge of newBadges) {
+      try {
+        await base44.entities.UserAchievement.create({
+          ...badge,
+          user_email: user.email,
+          unlocked_date: new Date().toISOString().split('T')[0] // Format date as YYYY-MM-DD
+        });
+
+        // Update user's total points in the backend
+        await base44.auth.updateMe({
+          total_points: (user.total_points || 0) + badge.points_earned
+        });
+      } catch (error) {
+        console.error(`Error awarding badge ${badge.badge_type}:`, error);
+      }
+    }
+
+    if (newBadges.length > 0) {
+      await loadData(); // Re-load data to update achievements and user points
+    }
   };
 
   const handleProfileImageUpload = async (file) => {
@@ -136,6 +225,7 @@ export default function ClientDashboard() {
       setNewPost({ title: "", description: "", photo_url: "", type: "photo" });
       setShowCreatePost(false);
       await loadData();
+      await checkAndAwardBadges(); // Call badge check after creating a post and reloading data
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -202,6 +292,60 @@ export default function ClientDashboard() {
       default: return "from-gray-500 to-gray-600";
     }
   };
+
+  const allPossibleBadges = [
+    {
+      badge_type: "first_workout",
+      badge_name: "Primo Allenamento",
+      badge_description: "Completa il tuo primo allenamento",
+      points_earned: 50
+    },
+    {
+      badge_type: "workout_master",
+      badge_name: "Maestro degli Allenamenti",
+      badge_description: "Completa 10 allenamenti",
+      points_earned: 200
+    },
+    {
+      badge_type: "streak_3",
+      badge_name: "In Fiamme",
+      badge_description: "3 giorni consecutivi",
+      points_earned: 100
+    },
+    {
+      badge_type: "streak_7",
+      badge_name: "Settimana Perfetta",
+      badge_description: "7 giorni consecutivi",
+      points_earned: 250
+    },
+    {
+      badge_type: "streak_30",
+      badge_name: "Leggenda",
+      badge_description: "30 giorni consecutivi",
+      points_earned: 1000
+    },
+    {
+      badge_type: "event_participant",
+      badge_name: "Partecipante",
+      badge_description: "Partecipa a un evento",
+      points_earned: 100
+    },
+    {
+      badge_type: "social_butterfly",
+      badge_name: "Farfalla Sociale",
+      badge_description: "Condividi 5 post",
+      points_earned: 150
+    },
+    {
+      badge_type: "ai_explorer",
+      badge_name: "Esploratore AI",
+      badge_description: "Genera un piano AI",
+      points_earned: 100
+    }
+  ];
+
+  // This variable is not used in the provided outline but is a common pattern for badge management.
+  // const unlockedBadgeTypes = achievements.map(a => a.badge_type);
 
   if (loading) {
     return (
@@ -305,6 +449,52 @@ export default function ClientDashboard() {
                   <div className="text-2xl font-bold text-blue-600">{feedPosts.filter(p => p.user_email === user.email).length}</div>
                   <div className="text-sm text-gray-600">Post</div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Progress Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+          className="mb-6"
+        >
+          <ProgressStats user={user} />
+        </motion.div>
+
+        {/* Badges Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mb-6"
+        >
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-yellow-600" />
+                  <h3 className="font-semibold text-lg">I Tuoi Badge</h3>
+                </div>
+                <Badge className="bg-gradient-to-r from-blue-600 to-orange-600 text-white">
+                  {achievements.length} / {allPossibleBadges.length}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {allPossibleBadges.map((badge) => {
+                  const unlocked = achievements.find(a => a.badge_type === badge.badge_type);
+                  return (
+                    <BadgeCard 
+                      key={badge.badge_type}
+                      achievement={unlocked || badge}
+                      locked={!unlocked}
+                    />
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

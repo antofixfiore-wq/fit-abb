@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -157,6 +158,26 @@ Genera un programma completo con esercizi specifici, serie, ripetizioni e tempi 
         title: `Nuovo piano: ${generatedPlan.name}`,
         description: generatedPlan.description || `Piano personalizzato per ${formData.goal}`
       });
+
+      const existingAchievements = await base44.entities.UserAchievement.filter({
+        user_email: user.email,
+        badge_type: "ai_explorer"
+      });
+
+      if (existingAchievements.length === 0) {
+        await base44.entities.UserAchievement.create({
+          user_email: user.email,
+          badge_type: "ai_explorer",
+          badge_name: "Esploratore AI",
+          badge_description: "Hai generato il tuo primo piano AI",
+          points_earned: 100,
+          unlocked_date: new Date().toISOString().split('T')[0]
+        });
+
+        await base44.auth.updateMe({
+          total_points: (user.total_points || 0) + 100
+        });
+      }
 
       await loadData();
       setGeneratedPlan(null);

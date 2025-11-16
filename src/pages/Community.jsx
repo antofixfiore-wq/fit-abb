@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +83,9 @@ export default function Community() {
     if (isRegistered) {
       const updatedUsers = event.registered_users.filter(email => email !== user.email);
       await base44.entities.GymEvent.update(event.id, { registered_users: updatedUsers });
+      await base44.auth.updateMe({
+        events_attended: Math.max((user.events_attended || 0) - 1, 0)
+      });
     } else {
       if (event.max_participants && event.registered_users?.length >= event.max_participants) {
         alert("Evento al completo!");
@@ -89,6 +93,31 @@ export default function Community() {
       }
       const updatedUsers = [...(event.registered_users || []), user.email];
       await base44.entities.GymEvent.update(event.id, { registered_users: updatedUsers });
+      
+      const newEventsCount = (user.events_attended || 0) + 1;
+      await base44.auth.updateMe({
+        events_attended: newEventsCount
+      });
+
+      const existingAchievements = await base44.entities.UserAchievement.filter({
+        user_email: user.email,
+        badge_type: "event_participant"
+      });
+
+      if (existingAchievements.length === 0) {
+        await base44.entities.UserAchievement.create({
+          user_email: user.email,
+          badge_type: "event_participant",
+          badge_name: "Partecipante Attivo",
+          badge_description: "Hai partecipato al tuo primo evento",
+          points_earned: 100,
+          unlocked_date: new Date().toISOString().split('T')[0]
+        });
+
+        await base44.auth.updateMe({
+          total_points: (user.total_points || 0) + 100
+        });
+      }
     }
     await loadData();
   };
