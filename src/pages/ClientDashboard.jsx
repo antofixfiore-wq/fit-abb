@@ -17,7 +17,8 @@ import {
   Flame,
   Camera,
   X,
-  Upload
+  Upload,
+  Edit
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -33,6 +34,8 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingProfile, setUploadingProfile] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [newPost, setNewPost] = useState({
     title: "",
     description: "",
@@ -49,11 +52,9 @@ export default function ClientDashboard() {
       const userData = await base44.auth.me();
       setUser(userData);
       
-      // Carica i post dal database
       const posts = await base44.entities.FeedPost.list("-created_date", 50);
       setFeedPosts(posts);
       
-      // Mock stats - in produzione, questi verrebbero da un'entità CheckIn o simile
       setStats({
         totalWorkouts: 45,
         activeSubscription: userData.subscription_type,
@@ -64,6 +65,34 @@ export default function ClientDashboard() {
       console.error("Error loading data:", error);
     }
     setLoading(false);
+  };
+
+  const handleProfileImageUpload = async (file) => {
+    if (!file) return;
+    
+    setUploadingProfile(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.auth.updateMe({ profile_image_url: file_url });
+      await loadData();
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
+    }
+    setUploadingProfile(false);
+  };
+
+  const handleBannerImageUpload = async (file) => {
+    if (!file) return;
+    
+    setUploadingBanner(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.auth.updateMe({ banner_image_url: file_url });
+      await loadData();
+    } catch (error) {
+      console.error("Error uploading banner image:", error);
+    }
+    setUploadingBanner(false);
   };
 
   const handlePhotoUpload = async (file) => {
@@ -155,14 +184,62 @@ export default function ClientDashboard() {
           transition={{ duration: 0.5 }}
         >
           <Card className="mb-6 overflow-hidden">
-            <div className="h-32 bg-gradient-to-r from-blue-600 to-orange-600"></div>
+            {/* Banner */}
+            <div className="relative h-32 group">
+              {user?.banner_image_url ? (
+                <img src={user.banner_image_url} alt="Banner" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-r from-blue-600 to-orange-600"></div>
+              )}
+              <label className="absolute top-4 right-4 cursor-pointer">
+                <div className="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100">
+                  {uploadingBanner ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  ) : (
+                    <Edit className="w-5 h-5 text-gray-700" />
+                  )}
+                </div>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files[0] && handleBannerImageUpload(e.target.files[0])}
+                  disabled={uploadingBanner}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
             <CardContent className="pt-0 -mt-16 relative">
               <div className="flex flex-col md:flex-row md:items-end gap-4">
-                <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                  <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-orange-500 text-white">
-                    {user?.full_name?.charAt(0).toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
+                {/* Profile Image */}
+                <div className="relative group">
+                  <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                    {user?.profile_image_url ? (
+                      <img src={user.profile_image_url} alt={user.full_name} className="object-cover" />
+                    ) : (
+                      <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-orange-500 text-white">
+                        {user?.full_name?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <label className="absolute bottom-0 right-0 cursor-pointer">
+                    <div className="bg-white hover:bg-gray-100 p-2 rounded-full shadow-lg border-2 border-white transition-all">
+                      {uploadingProfile ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      ) : (
+                        <Camera className="w-4 h-4 text-gray-700" />
+                      )}
+                    </div>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files[0] && handleProfileImageUpload(e.target.files[0])}
+                      disabled={uploadingProfile}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
                 <div className="flex-1 pb-4">
                   <h1 className="text-2xl font-bold text-gray-900">{user?.full_name}</h1>
                   {stats.activeSubscription && stats.activeSubscription !== "none" && (
