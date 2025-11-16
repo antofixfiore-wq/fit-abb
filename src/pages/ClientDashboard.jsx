@@ -18,13 +18,17 @@ import {
   Camera,
   X,
   Upload,
-  Edit
+  Edit,
+  Send
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
   const [feedPosts, setFeedPosts] = useState([]);
+  const [comments, setComments] = useState({});
+  const [showComments, setShowComments] = useState({});
+  const [newComment, setNewComment] = useState({});
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     activeSubscription: null,
@@ -54,6 +58,16 @@ export default function ClientDashboard() {
       
       const posts = await base44.entities.FeedPost.list("-created_date", 50);
       setFeedPosts(posts);
+      
+      const allComments = await base44.entities.Comment.list("-created_date");
+      const commentsByPost = {};
+      allComments.forEach(comment => {
+        if (!commentsByPost[comment.post_id]) {
+          commentsByPost[comment.post_id] = [];
+        }
+        commentsByPost[comment.post_id].push(comment);
+      });
+      setComments(commentsByPost);
       
       setStats({
         totalWorkouts: 45,
@@ -144,6 +158,29 @@ export default function ClientDashboard() {
     } catch (error) {
       console.error("Error liking post:", error);
     }
+  };
+
+  const handleAddComment = async (postId) => {
+    const commentText = newComment[postId];
+    if (!commentText?.trim()) return;
+
+    try {
+      await base44.entities.Comment.create({
+        post_id: postId,
+        user_email: user.email,
+        user_name: user.full_name,
+        text: commentText
+      });
+      
+      setNewComment({ ...newComment, [postId]: "" });
+      await loadData();
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const toggleComments = (postId) => {
+    setShowComments({ ...showComments, [postId]: !showComments[postId] });
   };
 
   const getPostIcon = (type) => {
@@ -386,6 +423,8 @@ export default function ClientDashboard() {
           {feedPosts.map((post, index) => {
             const PostIcon = getPostIcon(post.type);
             const hasLiked = post.liked_by?.includes(user.email);
+            const postComments = comments[post.id] || [];
+            const isCommentsOpen = showComments[post.id];
             
             return (
               <motion.div
@@ -449,15 +488,79 @@ export default function ClientDashboard() {
                           <Heart className={`w-5 h-5 ${hasLiked ? 'fill-red-600' : ''}`} />
                           <span className="text-sm font-medium">{post.likes || 0}</span>
                         </button>
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                        <button 
+                          onClick={() => toggleComments(post.id)}
+                          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                        >
                           <MessageCircle className="w-5 h-5" />
-                          <span className="text-sm font-medium">0</span>
+                          <span className="text-sm font-medium">{postComments.length}</span>
                         </button>
                         <button className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
                           <Share2 className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
+
+                    {/* Comments Section */}
+                    <AnimatePresence>
+                      {isCommentsOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="border-t pt-4 space-y-3"
+                        >
+                          {/* Comments List */}
+                          {postComments.length > 0 && (
+                            <div className="space-y-3 mb-3">
+                              {postComments.map((comment) => (
+                                <div key={comment.id} className="flex gap-3">
+                                  <Avatar className="h-8 w-8 flex-shrink-0">
+                                    <AvatarFallback className="text-xs bg-gradient-to-br from-blue-400 to-orange-400 text-white">
+                                      {comment.user_name?.charAt(0).toUpperCase() || 'U'}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1 bg-gray-50 rounded-lg p-3">
+                                    <p className="font-semibold text-sm text-gray-900">{comment.user_name}</p>
+                                    <p className="text-sm text-gray-700 mt-1">{comment.text}</p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      {new Date(comment.created_date).toLocaleDateString('it-IT', { 
+                                        day: 'numeric', 
+                                        month: 'short',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                      })}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Add Comment */}
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Scrivi un commento..."
+                              value={newComment[post.id] || ""}
+                              onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleAddComment(post.id);
+                                }
+                              }}
+                            />
+                            <Button
+                              size="icon"
+                              onClick={() => handleAddComment(post.id)}
+                              disabled={!newComment[post.id]?.trim()}
+                              className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                            >
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </CardContent>
                 </Card>
               </motion.div>
