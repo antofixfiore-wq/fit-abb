@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Building2, User, LogOut } from "lucide-react";
+import { Home, Building2, User, LogOut, LayoutDashboard } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import {
   Sidebar,
@@ -24,6 +23,11 @@ const navigationItems = [
     title: "Home",
     url: createPageUrl("Home"),
     icon: Home,
+  },
+  {
+    title: "Dashboard",
+    url: createPageUrl("ClientDashboard"),
+    icon: LayoutDashboard,
   },
   {
     title: "Palestre",

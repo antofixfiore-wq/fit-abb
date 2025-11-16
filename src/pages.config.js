@@ -4,6 +4,7 @@ import Gyms from './pages/Gyms';
 import GymDetail from './pages/GymDetail';
 import Subscription from './pages/Subscription';
 import GymDashboard from './pages/GymDashboard';
+import ClientDashboard from './pages/ClientDashboard';
 import Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "GymDetail": GymDetail,
     "Subscription": Subscription,
     "GymDashboard": GymDashboard,
+    "ClientDashboard": ClientDashboard,
 }
 
 export const pagesConfig = {
