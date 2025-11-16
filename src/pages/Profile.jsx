@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy, Building2, CreditCard, X, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import ProgressStats from "../components/gamification/ProgressStats";
 import BadgeCard from "../components/gamification/BadgeCard";
@@ -15,6 +14,9 @@ import BadgeCard from "../components/gamification/BadgeCard";
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [achievements, setAchievements] = useState([]);
+  const [gymSubscriptions, setGymSubscriptions] = useState([]);
+  const [gyms, setGyms] = useState([]);
+  const [memberships, setMemberships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState({ id: false, medical: false });
   const [success, setSuccess] = useState(null);
@@ -37,15 +39,96 @@ export default function Profile() {
         birth_date: userData.birth_date || ""
       });
 
-      const userAchievements = await base44.entities.UserAchievement.filter(
-        { user_email: userData.email },
-        "-unlocked_date"
-      );
+      const [userAchievements, userGymSubs, gymsData, membershipsData] = await Promise.all([
+        base44.entities.UserAchievement.filter({ user_email: userData.email }, "-unlocked_date"),
+        base44.entities.GymSubscription.filter({ user_id: userData.id }, "-created_date"),
+        base44.entities.Gym.list(),
+        base44.entities.GymMembership.list()
+      ]);
+      
       setAchievements(userAchievements);
+      setGymSubscriptions(userGymSubs);
+      setGyms(gymsData);
+      setMemberships(membershipsData);
     } catch (error) {
       setError("Errore nel caricamento del profilo");
     }
     setLoading(false);
+  };
+
+  const handleCancelSubscription = async (subscription) => {
+    if (!confirm("Sei sicuro di voler cancellare questo abbonamento?")) return;
+    
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      await base44.entities.GymSubscription.update(subscription.id, { status: "cancelled" });
+      await loadUser();
+      setSuccess("Abbonamento cancellato con successo!");
+    } catch (error) {
+      setError("Errore nella cancellazione dell'abbonamento");
+    }
+  };
+
+  const handleRenewSubscription = async (subscription) => {
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      const membership = memberships.find(m => m.id === subscription.membership_id);
+      if (!membership) {
+        setError("Piano abbonamento non trovato");
+        return;
+      }
+
+      const newStartDate = new Date();
+      const newEndDate = new Date();
+      newEndDate.setDate(newEndDate.getDate() + membership.duration_days);
+
+      await base44.entities.GymSubscription.create({
+        user_id: user.id,
+        gym_id: subscription.gym_id,
+        membership_id: subscription.membership_id,
+        start_date: newStartDate.toISOString().split('T')[0],
+        end_date: newEndDate.toISOString().split('T')[0],
+        status: "active",
+        price_paid: membership.price
+      });
+
+      await loadUser();
+      setSuccess("Abbonamento rinnovato con successo!");
+    } catch (error) {
+      setError("Errore nel rinnovo dell'abbonamento");
+    }
+  };
+
+  const getGymName = (gymId) => {
+    const gym = gyms.find(g => g.id === gymId);
+    return gym?.name || "Palestra";
+  };
+
+  const getMembershipName = (membershipId) => {
+    const membership = memberships.find(m => m.id === membershipId);
+    return membership?.name || "Piano";
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      active: { bg: "bg-green-100", text: "text-green-800" },
+      expired: { bg: "bg-gray-100", text: "text-gray-800" },
+      cancelled: { bg: "bg-red-100", text: "text-red-800" }
+    };
+    return colors[status] || colors.expired;
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      active: "Attivo",
+      expired: "Scaduto",
+      cancelled: "Cancellato"
+    };
+    return labels[status] || status;
   };
 
   const handleFileUpload = async (file, type) => {
@@ -172,12 +255,10 @@ export default function Profile() {
             </Alert>
           )}
 
-          {/* Progress Stats */}
           <div className="mb-6">
             <ProgressStats user={user} />
           </div>
 
-          {/* Badges Section */}
           <Card className="mb-6">
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -202,6 +283,88 @@ export default function Profile() {
               )}
             </CardContent>
           </Card>
+
+          {/* Gym Subscriptions Section */}
+          {gymSubscriptions.length > 0 && (
+            <Card className="mb-6">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-6 h-6 text-blue-600" />
+                  <CardTitle>I Miei Abbonamenti Palestre</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {gymSubscriptions.map((subscription) => {
+                    const statusStyle = getStatusColor(subscription.status);
+                    const isActive = subscription.status === "active";
+                    const isExpired = subscription.status === "expired";
+                    
+                    return (
+                      <div key={subscription.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-bold text-lg">{getGymName(subscription.gym_id)}</h3>
+                              <Badge className={`${statusStyle.bg} ${statusStyle.text}`}>
+                                {getStatusLabel(subscription.status)}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">
+                              <strong>Piano:</strong> {getMembershipName(subscription.membership_id)}
+                            </p>
+                            <p className="text-sm text-gray-600 mb-1">
+                              <strong>Prezzo:</strong> €{subscription.price_paid}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Calendar className="w-4 h-4" />
+                            <div>
+                              <div className="text-xs text-gray-500">Inizio</div>
+                              <div className="font-medium">{new Date(subscription.start_date).toLocaleDateString('it-IT')}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Calendar className="w-4 h-4" />
+                            <div>
+                              <div className="text-xs text-gray-500">Scadenza</div>
+                              <div className="font-medium">{new Date(subscription.end_date).toLocaleDateString('it-IT')}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2 pt-3 border-t">
+                          {(isActive || isExpired) && (
+                            <Button
+                              onClick={() => handleRenewSubscription(subscription)}
+                              size="sm"
+                              className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                            >
+                              <RefreshCw className="w-4 h-4 mr-2" />
+                              Rinnova
+                            </Button>
+                          )}
+                          {isActive && (
+                            <Button
+                              onClick={() => handleCancelSubscription(subscription)}
+                              size="sm"
+                              variant="destructive"
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              Cancella
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {getSubscriptionInfo()}
@@ -261,7 +424,6 @@ export default function Profile() {
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* ID Document */}
               <div className="border-2 border-dashed rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
@@ -314,7 +476,6 @@ export default function Profile() {
                 )}
               </div>
 
-              {/* Medical Certificate */}
               <div className="border-2 border-dashed rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
