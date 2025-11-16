@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -7,37 +6,86 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Search, MapPin, Star, Filter } from "lucide-react";
-import { motion } from "framer-motion";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Building2, Search, MapPin, Star, Filter, X, Navigation, TrendingDown, TrendingUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Gyms() {
   const navigate = useNavigate();
   const [gyms, setGyms] = useState([]);
+  const [memberships, setMemberships] = useState([]);
   const [filteredGyms, setFilteredGyms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [regionFilter, setRegionFilter] = useState("all");
+  const [cityFilter, setCityFilter] = useState("all");
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [sortBy, setSortBy] = useState("rating");
+  const [userLocation, setUserLocation] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    loadGyms();
+    loadData();
+    getUserLocation();
   }, []);
 
   useEffect(() => {
-    filterGyms();
-  }, [searchTerm, regionFilter, gyms]);
+    filterAndSortGyms();
+  }, [searchTerm, regionFilter, cityFilter, selectedAmenities, priceRange, sortBy, gyms, memberships, userLocation]);
 
-  const loadGyms = async () => {
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.log("Location access denied or unavailable");
+        }
+      );
+    }
+  };
+
+  const loadData = async () => {
     try {
-      const gymsData = await base44.entities.Gym.list("-google_rating");
+      const [gymsData, membershipsData] = await Promise.all([
+        base44.entities.Gym.list(),
+        base44.entities.GymMembership.list()
+      ]);
       setGyms(gymsData);
+      setMemberships(membershipsData);
       setFilteredGyms(gymsData);
     } catch (error) {
-      console.error("Error loading gyms:", error);
+      console.error("Error loading data:", error);
     }
     setLoading(false);
   };
 
-  const filterGyms = () => {
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  const getGymMinPrice = (gymId) => {
+    const gymMemberships = memberships.filter(m => m.gym_id === gymId);
+    if (gymMemberships.length === 0) return null;
+    return Math.min(...gymMemberships.map(m => m.price));
+  };
+
+  const filterAndSortGyms = () => {
     let filtered = gyms;
 
     if (searchTerm) {
@@ -52,12 +100,99 @@ export default function Gyms() {
       filtered = filtered.filter(gym => gym.region === regionFilter);
     }
 
+    if (cityFilter !== "all") {
+      filtered = filtered.filter(gym => gym.city === cityFilter);
+    }
+
+    if (selectedAmenities.length > 0) {
+      filtered = filtered.filter(gym => 
+        gym.amenities && selectedAmenities.every(amenity => 
+          gym.amenities.some(a => a.toLowerCase().includes(amenity.toLowerCase()))
+        )
+      );
+    }
+
+    filtered = filtered.filter(gym => {
+      const minPrice = getGymMinPrice(gym.id);
+      if (minPrice === null) return true;
+      return minPrice >= priceRange[0] && minPrice <= priceRange[1];
+    });
+
+    filtered = filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return (b.google_rating || 0) - (a.google_rating || 0);
+        case "price-asc":
+          const priceA = getGymMinPrice(a.id) || 999;
+          const priceB = getGymMinPrice(b.id) || 999;
+          return priceA - priceB;
+        case "price-desc":
+          const priceA2 = getGymMinPrice(a.id) || 0;
+          const priceB2 = getGymMinPrice(b.id) || 0;
+          return priceB2 - priceA2;
+        case "distance":
+          if (!userLocation) return 0;
+          const distA = a.latitude && a.longitude ? calculateDistance(userLocation.lat, userLocation.lng, a.latitude, a.longitude) : 999999;
+          const distB = b.latitude && b.longitude ? calculateDistance(userLocation.lat, userLocation.lng, b.latitude, b.longitude) : 999999;
+          return distA - distB;
+        case "name":
+          return (a.name || "").localeCompare(b.name || "");
+        default:
+          return 0;
+      }
+    });
+
     setFilteredGyms(filtered);
   };
 
   const getUniqueRegions = () => {
     const regions = [...new Set(gyms.map(gym => gym.region).filter(Boolean))];
     return regions.sort();
+  };
+
+  const getUniqueCities = () => {
+    let cities = gyms.map(gym => gym.city).filter(Boolean);
+    if (regionFilter !== "all") {
+      cities = gyms.filter(g => g.region === regionFilter).map(g => g.city).filter(Boolean);
+    }
+    return [...new Set(cities)].sort();
+  };
+
+  const commonAmenities = [
+    { value: "piscina", label: "Piscina" },
+    { value: "sauna", label: "Sauna" },
+    { value: "24/7", label: "Aperto 24/7" },
+    { value: "spinning", label: "Spinning" },
+    { value: "yoga", label: "Yoga" },
+    { value: "pilates", label: "Pilates" },
+    { value: "crossfit", label: "CrossFit" },
+    { value: "functional", label: "Functional Training" }
+  ];
+
+  const toggleAmenity = (amenity) => {
+    setSelectedAmenities(prev =>
+      prev.includes(amenity)
+        ? prev.filter(a => a !== amenity)
+        : [...prev, amenity]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setRegionFilter("all");
+    setCityFilter("all");
+    setSelectedAmenities([]);
+    setPriceRange([0, 200]);
+    setSortBy("rating");
+  };
+
+  const activeFiltersCount = () => {
+    let count = 0;
+    if (regionFilter !== "all") count++;
+    if (cityFilter !== "all") count++;
+    if (selectedAmenities.length > 0) count += selectedAmenities.length;
+    if (priceRange[0] !== 0 || priceRange[1] !== 200) count++;
+    return count;
   };
 
   if (loading) {
@@ -80,17 +215,17 @@ export default function Gyms() {
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Le Nostre Palestre</h1>
             <p className="text-xl text-blue-100">
-              Oltre {gyms.length} palestre partner in tutta Italia
+              {filteredGyms.length} di {gyms.length} palestre partner in tutta Italia
             </p>
           </motion.div>
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Search and Sort Bar */}
       <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="relative">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 placeholder="Cerca per nome, città..."
@@ -99,23 +234,151 @@ export default function Gyms() {
                 className="pl-10"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <Filter className="text-gray-400 w-5 h-5" />
-              <Select value={regionFilter} onValueChange={setRegionFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Tutte le regioni" />
+            <div className="flex gap-2">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Ordina per" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tutte le regioni</SelectItem>
-                  {getUniqueRegions().map(region => (
-                    <SelectItem key={region} value={region}>{region}</SelectItem>
-                  ))}
+                  <SelectItem value="rating">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                      Rating
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="price-asc">
+                    <div className="flex items-center gap-2">
+                      <TrendingDown className="w-4 h-4" />
+                      Prezzo crescente
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="price-desc">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Prezzo decrescente
+                    </div>
+                  </SelectItem>
+                  {userLocation && (
+                    <SelectItem value="distance">
+                      <div className="flex items-center gap-2">
+                        <Navigation className="w-4 h-4" />
+                        Distanza
+                      </div>
+                    </SelectItem>
+                  )}
+                  <SelectItem value="name">Nome A-Z</SelectItem>
                 </SelectContent>
               </Select>
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="relative"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filtri
+                {activeFiltersCount() > 0 && (
+                  <Badge className="ml-2 bg-blue-600">{activeFiltersCount()}</Badge>
+                )}
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Advanced Filters Panel */}
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-white border-b overflow-hidden"
+          >
+            <div className="max-w-7xl mx-auto px-6 py-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Region Filter */}
+                <div>
+                  <Label className="mb-2 block font-semibold">Regione</Label>
+                  <Select value={regionFilter} onValueChange={setRegionFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tutte le regioni" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tutte le regioni</SelectItem>
+                      {getUniqueRegions().map(region => (
+                        <SelectItem key={region} value={region}>{region}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* City Filter */}
+                <div>
+                  <Label className="mb-2 block font-semibold">Città</Label>
+                  <Select value={cityFilter} onValueChange={setCityFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tutte le città" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tutte le città</SelectItem>
+                      {getUniqueCities().map(city => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Price Range */}
+                <div className="md:col-span-2">
+                  <Label className="mb-2 block font-semibold">
+                    Fascia di prezzo: €{priceRange[0]} - €{priceRange[1]}
+                  </Label>
+                  <Slider
+                    value={priceRange}
+                    onValueChange={setPriceRange}
+                    min={0}
+                    max={200}
+                    step={5}
+                    className="mt-4"
+                  />
+                </div>
+
+                {/* Amenities */}
+                <div className="md:col-span-2 lg:col-span-4">
+                  <Label className="mb-3 block font-semibold">Servizi</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {commonAmenities.map((amenity) => (
+                      <div key={amenity.value} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={amenity.value}
+                          checked={selectedAmenities.includes(amenity.value)}
+                          onCheckedChange={() => toggleAmenity(amenity.value)}
+                        />
+                        <Label
+                          htmlFor={amenity.value}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {amenity.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Clear Filters Button */}
+              {activeFiltersCount() > 0 && (
+                <div className="mt-4 flex justify-end">
+                  <Button variant="ghost" onClick={clearFilters}>
+                    <X className="w-4 h-4 mr-2" />
+                    Cancella tutti i filtri
+                  </Button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Gyms Grid */}
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -125,70 +388,81 @@ export default function Gyms() {
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
               Nessuna palestra trovata
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 mb-4">
               Prova a modificare i filtri di ricerca
             </p>
+            <Button variant="outline" onClick={clearFilters}>
+              Cancella filtri
+            </Button>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGyms.map((gym, index) => (
-              <motion.div
-                key={gym.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ y: -5 }}
-              >
-                <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300"
-                  onClick={() => navigate(`${createPageUrl("GymDetail")}?id=${gym.id}`)}>
-                  <div className="relative h-56 bg-gray-200">
-                    {gym.photos?.[0] ? (
-                      <img
-                        src={gym.photos[0]}
-                        alt={gym.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
-                        <Building2 className="w-20 h-20 text-blue-300" />
-                      </div>
-                    )}
-                    {gym.google_rating && (
-                      <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold text-sm">{gym.google_rating}</span>
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="font-bold text-xl mb-3">{gym.name}</h3>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-start gap-2 text-gray-600">
-                        <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
-                        <div className="text-sm">
-                          <div>{gym.city}</div>
-                          {gym.address && <div className="text-gray-500">{gym.address}</div>}
+            {filteredGyms.map((gym, index) => {
+              const minPrice = getGymMinPrice(gym.id);
+              return (
+                <motion.div
+                  key={gym.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  whileHover={{ y: -5 }}
+                >
+                  <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 h-full"
+                    onClick={() => navigate(`${createPageUrl("GymDetail")}?id=${gym.id}`)}>
+                    <div className="relative h-56 bg-gray-200">
+                      {gym.photos?.[0] ? (
+                        <img
+                          src={gym.photos[0]}
+                          alt={gym.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
+                          <Building2 className="w-20 h-20 text-blue-300" />
+                        </div>
+                      )}
+                      {gym.google_rating && (
+                        <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold text-sm">{gym.google_rating}</span>
+                        </div>
+                      )}
+                      {minPrice && (
+                        <div className="absolute bottom-4 left-4 bg-blue-600 text-white rounded-lg px-3 py-1.5 shadow-lg">
+                          <span className="text-sm font-semibold">Da €{minPrice}/mese</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="font-bold text-xl mb-3">{gym.name}</h3>
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-start gap-2 text-gray-600">
+                          <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
+                          <div className="text-sm">
+                            <div>{gym.city}</div>
+                            {gym.address && <div className="text-gray-500">{gym.address}</div>}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {gym.amenities && gym.amenities.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {gym.amenities.slice(0, 4).map((amenity, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
-                            {amenity}
-                          </Badge>
-                        ))}
-                        {gym.amenities.length > 4 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{gym.amenities.length - 4}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      {gym.amenities && gym.amenities.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {gym.amenities.slice(0, 4).map((amenity, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">
+                              {amenity}
+                            </Badge>
+                          ))}
+                          {gym.amenities.length > 4 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{gym.amenities.length - 4}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
