@@ -284,13 +284,13 @@ export default function Profile() {
             </CardContent>
           </Card>
 
-          {/* Gym Subscriptions Section - Transparent Style */}
+          {/* Gym Subscriptions Section - Turquoise Transparent Style */}
           {gymSubscriptions.length > 0 && (
             <div className="mb-6 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-orange-600/5 rounded-xl"></div>
-              <div className="relative backdrop-blur-sm bg-white/60 border border-blue-200/50 rounded-xl p-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-xl"></div>
+              <div className="relative backdrop-blur-sm bg-white/60 border border-cyan-300/50 rounded-xl p-6">
                 <div className="flex items-center gap-2 mb-6">
-                  <Building2 className="w-6 h-6 text-blue-600" />
+                  <Building2 className="w-6 h-6 text-cyan-600" />
                   <h2 className="text-xl font-bold text-gray-900">Abbonamenti Palestre Attivi</h2>
                 </div>
                 <div className="space-y-4">
@@ -300,7 +300,7 @@ export default function Profile() {
                     const isExpired = subscription.status === "expired";
                     
                     return (
-                      <div key={subscription.id} className="bg-white/80 backdrop-blur border border-gray-200/50 rounded-lg p-4 hover:bg-white/90 transition-all shadow-sm">
+                      <div key={subscription.id} className="bg-white/80 backdrop-blur border border-cyan-200/50 rounded-lg p-4 hover:bg-white/90 transition-all shadow-sm">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
@@ -335,12 +335,12 @@ export default function Profile() {
                           </div>
                         </div>
 
-                        <div className="flex gap-2 pt-3 border-t border-gray-200/50">
+                        <div className="flex gap-2 pt-3 border-t border-cyan-200/50">
                           {(isActive || isExpired) && (
                             <Button
                               onClick={() => handleRenewSubscription(subscription)}
                               size="sm"
-                              className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                              className="bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700"
                             >
                               <RefreshCw className="w-4 h-4 mr-2" />
                               Rinnova
