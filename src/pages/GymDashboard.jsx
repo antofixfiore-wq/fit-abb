@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,9 @@ import {
   Users,
   Euro,
   Calendar,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Bell,
+  X
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -45,6 +48,23 @@ export default function GymDashboard() {
   });
   const [newBenefit, setNewBenefit] = useState("");
   const [editingMembership, setEditingMembership] = useState(null);
+
+  const [newPost, setNewPost] = useState({
+    type: "update",
+    title: "",
+    content: "",
+    image_url: "",
+    valid_until: ""
+  });
+
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    description: "",
+    event_date: "",
+    location: "",
+    max_participants: 0,
+    image_url: ""
+  });
 
   useEffect(() => {
     loadData();
@@ -80,7 +100,7 @@ export default function GymDashboard() {
 
   const handlePhotoUpload = async (files) => {
     if (!files || files.length === 0) return;
-    
+
     setUploading(true);
     setError(null);
     setSuccess(null);
@@ -89,13 +109,13 @@ export default function GymDashboard() {
       const uploadPromises = Array.from(files).map(file =>
         base44.integrations.Core.UploadFile({ file })
       );
-      
+
       const results = await Promise.all(uploadPromises);
       const newPhotoUrls = results.map(r => r.file_url);
-      
+
       const updatedPhotos = [...(gym.photos || []), ...newPhotoUrls];
       await base44.entities.Gym.update(gym.id, { photos: updatedPhotos });
-      
+
       await loadData();
       setSuccess(`${newPhotoUrls.length} foto caricate con successo!`);
     } catch (error) {
@@ -155,7 +175,7 @@ export default function GymDashboard() {
 
   const handleDeleteMembership = async (id) => {
     if (!confirm("Sei sicuro di voler eliminare questo abbonamento?")) return;
-    
+
     try {
       await base44.entities.GymMembership.delete(id);
       await loadData();
@@ -187,6 +207,78 @@ export default function GymDashboard() {
 
   const getTotalRevenue = () => {
     return subscriptions.reduce((sum, s) => sum + (s.price_paid || 0), 0);
+  };
+
+  const handleCreatePost = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await base44.entities.GymPost.create({
+        ...newPost,
+        gym_id: gym.id,
+        gym_name: gym.name,
+        valid_until: newPost.type === "promotion" && newPost.valid_until ? newPost.valid_until : undefined
+      });
+
+      setNewPost({ type: "update", title: "", content: "", image_url: "", valid_until: "" });
+      setSuccess("Post pubblicato con successo!");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      setError("Errore nella pubblicazione del post");
+    }
+  };
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await base44.entities.GymEvent.create({
+        ...newEvent,
+        gym_id: gym.id,
+        gym_name: gym.name,
+        max_participants: newEvent.max_participants === 0 ? undefined : newEvent.max_participants
+      });
+
+      setNewEvent({ title: "", description: "", event_date: "", location: "", max_participants: 0, image_url: "" });
+      setSuccess("Evento creato con successo!");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      setError("Errore nella creazione dell'evento");
+    }
+  };
+
+  const handlePostImageUpload = async (file) => {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setNewPost({ ...newPost, image_url: file_url });
+      setSuccess("Immagine caricata con successo!");
+    } catch (error) {
+      console.error("Error uploading post image:", error);
+      setError("Errore nel caricamento dell'immagine");
+    }
+    setUploading(false);
+  };
+
+  const handleEventImageUpload = async (file) => {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setNewEvent({ ...newEvent, image_url: file_url });
+      setSuccess("Immagine caricata con successo!");
+    } catch (error) {
+      console.error("Error uploading event image:", error);
+      setError("Errore nel caricamento dell'immagine");
+    }
+    setUploading(false);
   };
 
   if (loading) {
@@ -281,10 +373,12 @@ export default function GymDashboard() {
           )}
 
           <Tabs defaultValue="photos" className="space-y-6">
-            <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3 gap-4">
+            <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-5 gap-4">
               <TabsTrigger value="photos">Gestione Foto</TabsTrigger>
               <TabsTrigger value="memberships">Abbonamenti</TabsTrigger>
               <TabsTrigger value="subscriptions">Clienti</TabsTrigger>
+              <TabsTrigger value="posts">Post</TabsTrigger>
+              <TabsTrigger value="events">Eventi</TabsTrigger>
             </TabsList>
 
             {/* Photos Tab */}
@@ -532,8 +626,8 @@ export default function GymDashboard() {
                                 <div className="flex items-center gap-3 mb-2">
                                   <span className="font-semibold">{subscription.created_by}</span>
                                   <Badge className={
-                                    subscription.status === "active" 
-                                      ? "bg-green-100 text-green-800" 
+                                    subscription.status === "active"
+                                      ? "bg-green-100 text-green-800"
                                       : subscription.status === "expired"
                                       ? "bg-gray-100 text-gray-800"
                                       : "bg-red-100 text-red-800"
@@ -564,6 +658,221 @@ export default function GymDashboard() {
                   ) : (
                     <p className="text-center text-gray-500 py-8">Nessun cliente abbonato ancora</p>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Posts Tab */}
+            <TabsContent value="posts" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="w-5 h-5" />
+                    Crea Nuovo Post
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleCreatePost} className="space-y-4">
+                    <div>
+                      <Label htmlFor="post-type">Tipo di Post</Label>
+                      <select
+                        id="post-type"
+                        className="w-full border rounded-lg p-2"
+                        value={newPost.type}
+                        onChange={(e) => setNewPost({ ...newPost, type: e.target.value, valid_until: "" })}
+                      >
+                        <option value="update">Aggiornamento</option>
+                        <option value="promotion">Promozione</option>
+                        <option value="schedule">Orario Speciale</option>
+                        <option value="announcement">Comunicazione</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="post-title">Titolo</Label>
+                      <Input
+                        id="post-title"
+                        value={newPost.title}
+                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="post-content">Contenuto</Label>
+                      <Textarea
+                        id="post-content"
+                        value={newPost.content}
+                        onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+                        rows={4}
+                        required
+                      />
+                    </div>
+
+                    {newPost.type === "promotion" && (
+                      <div>
+                        <Label htmlFor="valid-until">Valido fino a</Label>
+                        <Input
+                          id="valid-until"
+                          type="date"
+                          value={newPost.valid_until}
+                          onChange={(e) => setNewPost({ ...newPost, valid_until: e.target.value })}
+                        />
+                      </div>
+                    )}
+
+                    <div className="border-2 border-dashed rounded-lg p-4">
+                      {newPost.image_url ? (
+                        <div className="relative">
+                          <img
+                            src={newPost.image_url}
+                            alt="Preview"
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => setNewPost({ ...newPost, image_url: "" })}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center gap-2 cursor-pointer">
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm text-gray-600">
+                            {uploading ? "Caricamento..." : "Aggiungi immagine (opzionale)"}
+                          </span>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => e.target.files[0] && handlePostImageUpload(e.target.files[0])}
+                            disabled={uploading}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                    >
+                      Pubblica Post
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Events Tab */}
+            <TabsContent value="events" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Crea Nuovo Evento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleCreateEvent} className="space-y-4">
+                    <div>
+                      <Label htmlFor="event-title">Titolo Evento</Label>
+                      <Input
+                        id="event-title"
+                        value={newEvent.title}
+                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="event-description">Descrizione</Label>
+                      <Textarea
+                        id="event-description"
+                        value={newEvent.description}
+                        onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="event-date">Data e Ora</Label>
+                        <Input
+                          id="event-date"
+                          type="datetime-local"
+                          value={newEvent.event_date}
+                          onChange={(e) => setNewEvent({ ...newEvent, event_date: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="max-participants">Max Partecipanti</Label>
+                        <Input
+                          id="max-participants"
+                          type="number"
+                          value={newEvent.max_participants}
+                          onChange={(e) => setNewEvent({ ...newEvent, max_participants: parseInt(e.target.value) || 0 })}
+                          placeholder="0 = illimitato"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="event-location">Luogo</Label>
+                      <Input
+                        id="event-location"
+                        value={newEvent.location}
+                        onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+                        placeholder="Indirizzo o nome del luogo"
+                      />
+                    </div>
+
+                    <div className="border-2 border-dashed rounded-lg p-4">
+                      {newEvent.image_url ? (
+                        <div className="relative">
+                          <img
+                            src={newEvent.image_url}
+                            alt="Preview"
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => setNewEvent({ ...newEvent, image_url: "" })}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center gap-2 cursor-pointer">
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm text-gray-600">
+                            {uploading ? "Caricamento..." : "Aggiungi immagine evento (opzionale)"}
+                          </span>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => e.target.files[0] && handleEventImageUpload(e.target.files[0])}
+                            disabled={uploading}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                    >
+                      Crea Evento
+                    </Button>
+                  </form>
                 </CardContent>
               </Card>
             </TabsContent>
