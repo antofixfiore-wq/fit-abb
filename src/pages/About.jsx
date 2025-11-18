@@ -68,7 +68,7 @@ export default function About() {
               La Nostra Missione
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Rendere il fitness accessibile, flessibile e motivante per tutti gli italiani
+              Rendere il fitness accessibile, flessibile e motivante per tutto il mondo
             </p>
           </motion.div>
         </div>
