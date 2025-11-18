@@ -32,24 +32,9 @@ export default function About() {
 
   const team = [
     {
-      name: "Marco Rossi",
-      role: "CEO & Founder",
+      name: "Antonio Fiore",
+      role: "Founder & CEO",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
-    },
-    {
-      name: "Laura Bianchi",
-      role: "Head of Partnerships",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
-    },
-    {
-      name: "Andrea Verdi",
-      role: "CTO",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop"
-    },
-    {
-      name: "Sofia Romano",
-      role: "Head of Community",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
     }
   ];
 
@@ -158,7 +143,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-1 gap-8 max-w-sm mx-auto">
             {team.map((member, index) => (
               <motion.div
                 key={index}
