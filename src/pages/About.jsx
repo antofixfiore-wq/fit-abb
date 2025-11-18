@@ -88,7 +88,7 @@ export default function About() {
             <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
               <p>
                 Fit ABB nasce nel 2025 dall'idea di Antonio Fiore, appassionato di fitness e titolare della catena Culture Club Palestre, che ha notato un problema comune: 
-                chi viaggia o si sposta frequentemente per lavoro non riusciva a mantenere una routine di allenamento costante.
+                chi viaggia o si sposta frequentemente per lavoro non riusciva a mantenere una routine di allenamento costante. Inoltre tutti vogliono avere la libertà in un mondo moderno e avanzato di poter andare dove vuole e quando vuole.
               </p>
               <p>
                 Gli abbonamenti tradizionali vincolano a una singola palestra, limitando la libertà e la flessibilità. 
@@ -97,7 +97,7 @@ export default function About() {
               </p>
               <p>
                 Oggi Fit ABB è cresciuta fino a diventare la più grande rete di palestre in Italia, con oltre 500 
-                partner e 50.000 utenti attivi. Ma non ci fermiamo qui: continuiamo a innovare con tecnologie AI 
+                partner e 50.000 utenti nella sola fase di lancio. Ma non ci fermiamo qui: continuiamo a innovare con tecnologie AI 
                 per offrire un'esperienza sempre più personalizzata.
               </p>
             </div>
