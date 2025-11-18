@@ -87,7 +87,7 @@ export default function About() {
             </h2>
             <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
               <p>
-                Fit ABB nasce nel 2024 dall'idea di tre appassionati di fitness che hanno notato un problema comune: 
+                Fit ABB nasce nel 2025 dall'idea di Antonio Fiore, appassionato di fitness e titolare della catena Culture Club Palestre, che ha notato un problema comune: 
                 chi viaggia o si sposta frequentemente per lavoro non riusciva a mantenere una routine di allenamento costante.
               </p>
               <p>
