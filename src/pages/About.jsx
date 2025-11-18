@@ -34,7 +34,7 @@ export default function About() {
     {
       name: "Antonio Fiore",
       role: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/a202b0ac7_IMG_1534.jpg"
     }
   ];
 
