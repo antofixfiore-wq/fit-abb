@@ -43,9 +43,7 @@ const subscriptionPlans = [
       "Accesso illimitato 24/7",
       "Tutte le palestre premium",
       "Tutti i corsi e classi esclusive",
-      "4 sessioni PT al mese",
-      "Spa e piscina incluse",
-      "Programma nutrizionale personalizzato"
+      "Spa e piscina incluse"
     ]
   }
 ];
