@@ -13,6 +13,52 @@ export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
+    // Set PWA icons
+    const logoUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png";
+    
+    // Remove existing icons
+    document.querySelectorAll('link[rel="apple-touch-icon"]').forEach(el => el.remove());
+    document.querySelectorAll('link[rel="icon"]').forEach(el => el.remove());
+    
+    // Add apple touch icon
+    const appleTouchIcon = document.createElement('link');
+    appleTouchIcon.rel = 'apple-touch-icon';
+    appleTouchIcon.href = logoUrl;
+    document.head.appendChild(appleTouchIcon);
+    
+    // Add favicon
+    const favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.href = logoUrl;
+    document.head.appendChild(favicon);
+    
+    // Add meta tags for PWA
+    let metaAppleMobile = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+    if (!metaAppleMobile) {
+      metaAppleMobile = document.createElement('meta');
+      metaAppleMobile.name = 'apple-mobile-web-app-capable';
+      document.head.appendChild(metaAppleMobile);
+    }
+    metaAppleMobile.content = 'yes';
+    
+    let metaAppleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    if (!metaAppleTitle) {
+      metaAppleTitle = document.createElement('meta');
+      metaAppleTitle.name = 'apple-mobile-web-app-title';
+      document.head.appendChild(metaAppleTitle);
+    }
+    metaAppleTitle.content = 'Fit ABB';
+    
+    let metaAppleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (!metaAppleStatus) {
+      metaAppleStatus = document.createElement('meta');
+      metaAppleStatus.name = 'apple-mobile-web-app-status-bar-style';
+      document.head.appendChild(metaAppleStatus);
+    }
+    metaAppleStatus.content = 'black-translucent';
+  }, []);
+
+  React.useEffect(() => {
     const loadUser = async () => {
       try {
         const userData = await base44.auth.me();
