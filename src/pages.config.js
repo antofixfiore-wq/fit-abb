@@ -12,6 +12,7 @@ import About from './pages/About';
 import PartnersPage from './pages/PartnersPage';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
+import QRScanner from './pages/QRScanner';
 import __Layout from './Layout.jsx';
 
 
@@ -30,6 +31,7 @@ export const PAGES = {
     "PartnersPage": PartnersPage,
     "Pricing": Pricing,
     "Contact": Contact,
+    "QRScanner": QRScanner,
 }
 
 export const pagesConfig = {
