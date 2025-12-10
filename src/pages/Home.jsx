@@ -29,10 +29,9 @@ const subscriptionPlans = [
     popular: true,
     benefits: [
       "Accesso a tutte le palestre partner",
-      "Orari estesi (6:00-22:00)",
+      "Orario FULL",
       "Tutti i corsi di gruppo",
-      "Sala pesi, cardio e funzionale",
-      "1 sessione PT al mese"
+      "Sala pesi, cardio e funzionale"
     ]
   },
   {
