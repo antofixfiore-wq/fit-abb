@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -356,7 +355,7 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0a0a0a]">
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header Profile Card */}
         <motion.div
@@ -364,7 +363,7 @@ export default function ClientDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="mb-6 overflow-hidden">
+          <Card className="mb-6 overflow-hidden bg-[#1a1a1a] border-white/10">
             {/* Banner */}
             <div className="relative h-32 group">
               {user?.banner_image_url ? (
@@ -422,7 +421,7 @@ export default function ClientDashboard() {
                 </div>
 
                 <div className="flex-1 pb-4">
-                  <h1 className="text-2xl font-bold text-gray-900">{user?.full_name}</h1>
+                  <h1 className="text-2xl font-bold text-white">{user?.full_name}</h1>
                   {stats.activeSubscription && stats.activeSubscription !== "none" && (
                     <Badge className="mt-2 bg-gradient-to-r from-blue-600 to-orange-600 text-white">
                       {stats.activeSubscription.toUpperCase()}
@@ -434,20 +433,20 @@ export default function ClientDashboard() {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{stats.totalWorkouts}</div>
-                  <div className="text-sm text-gray-600">Allenamenti</div>
+                  <div className="text-2xl font-bold text-white">{stats.totalWorkouts}</div>
+                  <div className="text-sm text-gray-400">Allenamenti</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{stats.monthlyVisits}</div>
-                  <div className="text-sm text-gray-600">Questo mese</div>
+                  <div className="text-2xl font-bold text-white">{stats.monthlyVisits}</div>
+                  <div className="text-sm text-gray-400">Questo mese</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-600">{stats.streak}</div>
-                  <div className="text-sm text-gray-600">Giorni di fila</div>
+                  <div className="text-2xl font-bold text-orange-500">{stats.streak}</div>
+                  <div className="text-sm text-gray-400">Giorni di fila</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{feedPosts.filter(p => p.user_email === user.email).length}</div>
-                  <div className="text-sm text-gray-600">Post</div>
+                  <div className="text-2xl font-bold text-blue-500">{feedPosts.filter(p => p.user_email === user.email).length}</div>
+                  <div className="text-sm text-gray-400">Post</div>
                 </div>
               </div>
             </CardContent>
@@ -471,12 +470,12 @@ export default function ClientDashboard() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="mb-6"
         >
-          <Card>
+          <Card className="bg-[#1a1a1a] border-white/10">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-600" />
-                  <h3 className="font-semibold text-lg">I Tuoi Badge</h3>
+                  <Award className="w-5 h-5 text-yellow-500" />
+                  <h3 className="font-semibold text-lg text-white">I Tuoi Badge</h3>
                 </div>
                 <Badge className="bg-gradient-to-r from-blue-600 to-orange-600 text-white">
                   {achievements.length} / {allPossibleBadges.length}
@@ -630,8 +629,8 @@ export default function ClientDashboard() {
                         <PostIcon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{post.user_name}</h3>
-                        <p className="text-sm text-gray-500 flex items-center gap-2">
+                        <h3 className="font-semibold text-white">{post.user_name}</h3>
+                        <p className="text-sm text-gray-400 flex items-center gap-2">
                           <Calendar className="w-3 h-3" />
                           {new Date(post.created_date).toLocaleDateString('it-IT', { 
                             day: 'numeric', 
@@ -645,9 +644,9 @@ export default function ClientDashboard() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
+                      <h4 className="font-semibold text-lg mb-2 text-white">{post.title}</h4>
                       {post.description && (
-                        <p className="text-gray-700">{post.description}</p>
+                        <p className="text-gray-300">{post.description}</p>
                       )}
                     </div>
                     
@@ -660,7 +659,7 @@ export default function ClientDashboard() {
                     )}
                     
                     {post.gym_name && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center gap-2 text-sm text-gray-400 bg-white/5 rounded-lg p-3">
                         <MapPin className="w-4 h-4 text-blue-600" />
                         <span>{post.gym_name}</span>
                       </div>
@@ -759,10 +758,10 @@ export default function ClientDashboard() {
         </div>
 
         {feedPosts.length === 0 && (
-          <Card className="py-12">
+          <Card className="py-12 bg-[#1a1a1a] border-white/10">
             <CardContent className="text-center">
-              <Camera className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              <Camera className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Nessun post ancora
               </h3>
               <p className="text-gray-500 mb-4">

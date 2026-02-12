@@ -231,15 +231,15 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-[#0a0a0a] p-6">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Il Mio Profilo</h1>
-          <p className="text-gray-600 mb-8">Gestisci le tue informazioni e documenti</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Il Mio Profilo</h1>
+          <p className="text-gray-400 mb-8">Gestisci le tue informazioni e documenti</p>
 
           {success && (
             <Alert className="mb-6 bg-green-50 border-green-200">
@@ -259,11 +259,11 @@ export default function Profile() {
             <ProgressStats user={user} />
           </div>
 
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-600" />
-                <CardTitle>I Miei Risultati</CardTitle>
+          <Card className="mb-6 bg-[#1a1a1a] border-white/10">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-yellow-500" />
+              <CardTitle className="text-white">I Miei Risultati</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
@@ -368,9 +368,9 @@ export default function Profile() {
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {getSubscriptionInfo()}
 
-            <Card>
+            <Card className="bg-[#1a1a1a] border-white/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-white">
                   <Mail className="w-6 h-6" />
                   Informazioni Personali
                 </CardTitle>
@@ -412,13 +412,13 @@ export default function Profile() {
             </Card>
           </div>
 
-          <Card>
+          <Card className="bg-[#1a1a1a] border-white/10">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-white">
                 <FileText className="w-6 h-6" />
                 Documenti Richiesti
               </CardTitle>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-400 mt-2">
                 Carica i documenti necessari per attivare il tuo abbonamento
               </p>
             </CardHeader>

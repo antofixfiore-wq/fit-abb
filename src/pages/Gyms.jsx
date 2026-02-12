@@ -204,17 +204,17 @@ export default function Gyms() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-600 text-white py-16 px-6">
+      <div className="bg-black text-white py-16 px-6 border-b border-white/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Le Nostre Palestre</h1>
-            <p className="text-xl text-blue-100">
+            <h1 className="text-4xl md:text-5xl font-black mb-4">Le Nostre Palestre</h1>
+            <p className="text-xl text-gray-400">
               {filteredGyms.length} di {gyms.length} palestre partner in tutta Italia
             </p>
           </motion.div>
@@ -222,7 +222,7 @@ export default function Gyms() {
       </div>
 
       {/* Search and Sort Bar */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+      <div className="bg-[#1a1a1a] border-b border-white/10 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -384,8 +384,8 @@ export default function Gyms() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         {filteredGyms.length === 0 ? (
           <div className="text-center py-20">
-            <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            <Building2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">
               Nessuna palestra trovata
             </h3>
             <p className="text-gray-500 mb-4">
@@ -407,14 +407,14 @@ export default function Gyms() {
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   whileHover={{ y: -5 }}
                 >
-                  <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 h-full"
+                  <Card className="overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 h-full bg-[#1a1a1a] border-white/10 group"
                     onClick={() => navigate(`${createPageUrl("GymDetail")}?id=${gym.id}`)}>
-                    <div className="relative h-56 bg-gray-200">
+                    <div className="relative h-56 bg-black overflow-hidden">
                       {gym.photos?.[0] ? (
                         <img
                           src={gym.photos[0]}
                           alt={gym.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
@@ -434,9 +434,9 @@ export default function Gyms() {
                       )}
                     </div>
                     <CardContent className="p-6">
-                      <h3 className="font-bold text-xl mb-3">{gym.name}</h3>
+                      <h3 className="font-bold text-xl mb-3 text-white">{gym.name}</h3>
                       <div className="space-y-2 mb-4">
-                        <div className="flex items-start gap-2 text-gray-600">
+                        <div className="flex items-start gap-2 text-gray-400">
                           <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
                           <div className="text-sm">
                             <div>{gym.city}</div>
