@@ -115,6 +115,11 @@ export default function Layout({ children, currentPageName }) {
       icon: Building2,
     },
     {
+      title: "Personal Trainer",
+      url: createPageUrl("PersonalTrainers"),
+      icon: Users,
+    },
+    {
       title: "Profilo",
       url: createPageUrl("Profile"),
       icon: User,

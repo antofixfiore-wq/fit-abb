@@ -63,6 +63,8 @@ import QRScanner from './pages/QRScanner';
 import Subscription from './pages/Subscription';
 import WorkoutPlanner from './pages/WorkoutPlanner';
 import FitnessTracking from './pages/FitnessTracking';
+import PersonalTrainers from './pages/PersonalTrainers';
+import PTProfile from './pages/PTProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +85,8 @@ export const PAGES = {
     "Subscription": Subscription,
     "WorkoutPlanner": WorkoutPlanner,
     "FitnessTracking": FitnessTracking,
+    "PersonalTrainers": PersonalTrainers,
+    "PTProfile": PTProfile,
 }
 
 export const pagesConfig = {
