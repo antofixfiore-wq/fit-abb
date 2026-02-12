@@ -79,6 +79,24 @@ export default function FitnessTracking() {
     setLoading(false);
   };
 
+  const calculateLevel = (totalPoints) => {
+    const getPointsForLevel = (level) => {
+      const basePoints = 500;
+      return Math.floor(basePoints * Math.pow(1.5, level - 1));
+    };
+    
+    let level = 1;
+    let pointsRequired = 0;
+    
+    while (level < 10) {
+      pointsRequired += getPointsForLevel(level);
+      if (totalPoints < pointsRequired) break;
+      level++;
+    }
+    
+    return Math.min(level, 10);
+  };
+
   const handleAddMetric = async (e) => {
     e.preventDefault();
     
@@ -96,6 +114,15 @@ export default function FitnessTracking() {
     };
 
     await base44.entities.FitnessMetric.create(metricData);
+    
+    // Award points for tracking data - 20 punti per ogni inserimento dati
+    const newTotalPoints = (user.total_points || 0) + 20;
+    const newLevel = calculateLevel(newTotalPoints);
+    
+    await base44.auth.updateMe({
+      total_points: newTotalPoints,
+      level: newLevel
+    });
     
     setNewMetric({
       date: new Date().toISOString().split('T')[0],
@@ -118,6 +145,15 @@ export default function FitnessTracking() {
     await base44.entities.WorkoutNote.create({
       ...newNote,
       user_email: user.email
+    });
+    
+    // Award points for taking notes - 10 punti per nota
+    const newTotalPoints = (user.total_points || 0) + 10;
+    const newLevel = calculateLevel(newTotalPoints);
+    
+    await base44.auth.updateMe({
+      total_points: newTotalPoints,
+      level: newLevel
     });
     
     setNewNote({
@@ -223,7 +259,7 @@ export default function FitnessTracking() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl font-black text-white mb-2">I Miei Dati</h1>
-              <p className="text-gray-400">Monitora i tuoi progressi fitness</p>
+              <p className="text-gray-400">Monitora i tuoi progressi fitness • +20 punti per ogni dato inserito</p>
             </div>
             <Badge className="bg-white/10 text-white border-white/20 flex items-center gap-2 px-4 py-2">
               <Watch className="w-4 h-4" />

@@ -91,6 +91,24 @@ export default function ClientDashboard() {
     setLoading(false);
   };
 
+  const calculateLevel = (totalPoints) => {
+    const getPointsForLevel = (level) => {
+      const basePoints = 500;
+      return Math.floor(basePoints * Math.pow(1.5, level - 1));
+    };
+    
+    let level = 1;
+    let pointsRequired = 0;
+    
+    while (level < 10) {
+      pointsRequired += getPointsForLevel(level);
+      if (totalPoints < pointsRequired) break;
+      level++;
+    }
+    
+    return Math.min(level, 10);
+  };
+
   const checkAndAwardBadges = async () => {
     if (!user) return; // Ensure user data is loaded
 
@@ -138,12 +156,77 @@ export default function ClientDashboard() {
     }
 
     // This check relies on `feedPosts` which is already fetched.
-    if (!existingBadges.includes("social_butterfly") && feedPosts.filter(p => p.user_email === user.email).length >= 5) {
+    const userPosts = feedPosts.filter(p => p.user_email === user.email).length;
+    
+    if (!existingBadges.includes("social_butterfly") && userPosts >= 5) {
       newBadges.push({
         badge_type: "social_butterfly",
         badge_name: "Farfalla Sociale",
         badge_description: "5 post condivisi",
         points_earned: 150
+      });
+    }
+
+    if (!existingBadges.includes("social_influencer") && userPosts >= 20) {
+      newBadges.push({
+        badge_type: "social_influencer",
+        badge_name: "Influencer",
+        badge_description: "20 post condivisi",
+        points_earned: 400
+      });
+    }
+
+    if (!existingBadges.includes("workout_legend") && user.completed_workouts >= 50) {
+      newBadges.push({
+        badge_type: "workout_legend",
+        badge_name: "Leggenda Fitness",
+        badge_description: "50 allenamenti completati",
+        points_earned: 500
+      });
+    }
+
+    if (!existingBadges.includes("workout_titan") && user.completed_workouts >= 100) {
+      newBadges.push({
+        badge_type: "workout_titan",
+        badge_name: "Titano dell'Allenamento",
+        badge_description: "100 allenamenti completati",
+        points_earned: 1000
+      });
+    }
+
+    if (!existingBadges.includes("streak_14") && user.current_streak >= 14) {
+      newBadges.push({
+        badge_type: "streak_14",
+        badge_name: "Due Settimane Strong",
+        badge_description: "14 giorni consecutivi",
+        points_earned: 400
+      });
+    }
+
+    if (!existingBadges.includes("streak_100") && user.current_streak >= 100) {
+      newBadges.push({
+        badge_type: "streak_100",
+        badge_name: "Immortale",
+        badge_description: "100 giorni consecutivi",
+        points_earned: 3000
+      });
+    }
+
+    if (!existingBadges.includes("level_5") && user.level >= 5) {
+      newBadges.push({
+        badge_type: "level_5",
+        badge_name: "Veterano",
+        badge_description: "Livello 5 raggiunto",
+        points_earned: 250
+      });
+    }
+
+    if (!existingBadges.includes("level_10") && user.level >= 10) {
+      newBadges.push({
+        badge_type: "level_10",
+        badge_name: "Leggenda Vivente",
+        badge_description: "Livello 10 raggiunto",
+        points_earned: 1000
       });
     }
 
@@ -155,9 +238,13 @@ export default function ClientDashboard() {
           unlocked_date: new Date().toISOString().split('T')[0] // Format date as YYYY-MM-DD
         });
 
-        // Update user's total points in the backend
+        // Update user's total points and level in the backend
+        const newTotalPoints = (user.total_points || 0) + badge.points_earned;
+        const newLevel = calculateLevel(newTotalPoints);
+        
         await base44.auth.updateMe({
-          total_points: (user.total_points || 0) + badge.points_earned
+          total_points: newTotalPoints,
+          level: newLevel
         });
       } catch (error) {
         console.error(`Error awarding badge ${badge.badge_type}:`, error);
@@ -306,6 +393,18 @@ export default function ClientDashboard() {
       points_earned: 200
     },
     {
+      badge_type: "workout_legend",
+      badge_name: "Leggenda Fitness",
+      badge_description: "Completa 50 allenamenti",
+      points_earned: 500
+    },
+    {
+      badge_type: "workout_titan",
+      badge_name: "Titano dell'Allenamento",
+      badge_description: "Completa 100 allenamenti",
+      points_earned: 1000
+    },
+    {
       badge_type: "streak_3",
       badge_name: "In Fiamme",
       badge_description: "3 giorni consecutivi",
@@ -318,10 +417,46 @@ export default function ClientDashboard() {
       points_earned: 250
     },
     {
+      badge_type: "streak_14",
+      badge_name: "Due Settimane Strong",
+      badge_description: "14 giorni consecutivi",
+      points_earned: 400
+    },
+    {
       badge_type: "streak_30",
-      badge_name: "Leggenda",
+      badge_name: "Mese Inarrestabile",
       badge_description: "30 giorni consecutivi",
       points_earned: 1000
+    },
+    {
+      badge_type: "streak_100",
+      badge_name: "Immortale",
+      badge_description: "100 giorni consecutivi",
+      points_earned: 3000
+    },
+    {
+      badge_type: "data_tracker",
+      badge_name: "Analista",
+      badge_description: "Inserisci dati per 7 giorni",
+      points_earned: 150
+    },
+    {
+      badge_type: "data_master",
+      badge_name: "Maestro dei Dati",
+      badge_description: "Inserisci dati per 30 giorni",
+      points_earned: 500
+    },
+    {
+      badge_type: "weight_loss_5",
+      badge_name: "Trasformazione",
+      badge_description: "Perdi 5kg",
+      points_earned: 300
+    },
+    {
+      badge_type: "weight_loss_10",
+      badge_name: "Grande Trasformazione",
+      badge_description: "Perdi 10kg",
+      points_earned: 600
     },
     {
       badge_type: "event_participant",
@@ -336,10 +471,28 @@ export default function ClientDashboard() {
       points_earned: 150
     },
     {
+      badge_type: "social_influencer",
+      badge_name: "Influencer",
+      badge_description: "Condividi 20 post",
+      points_earned: 400
+    },
+    {
       badge_type: "ai_explorer",
       badge_name: "Esploratore AI",
       badge_description: "Genera un piano AI",
       points_earned: 100
+    },
+    {
+      badge_type: "level_5",
+      badge_name: "Veterano",
+      badge_description: "Raggiungi il livello 5",
+      points_earned: 250
+    },
+    {
+      badge_type: "level_10",
+      badge_name: "Leggenda Vivente",
+      badge_description: "Raggiungi il livello 10",
+      points_earned: 1000
     }
   ];
 
