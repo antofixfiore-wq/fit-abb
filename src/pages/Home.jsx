@@ -86,15 +86,15 @@ export default function Home() {
   const hasActiveSubscription = user?.subscription_type && user.subscription_type !== "none";
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-orange-600 text-white">
-        <div className="absolute inset-0 bg-black opacity-10"></div>
+      <section className="relative overflow-hidden bg-black text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-orange-600/20"></div>
         <div className="absolute inset-0" style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.15
+          opacity: 0.3
         }}></div>
         
         <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
@@ -111,20 +111,20 @@ export default function Home() {
                 className="w-32 h-32 object-contain drop-shadow-2xl"
               />
             </div>
-            <Badge className="mb-6 bg-white/20 text-white border-white/30 px-4 py-2">
+            <Badge className="mb-6 bg-white/10 backdrop-blur-sm text-white border-white/20 px-4 py-2">
               <Award className="w-4 h-4 mr-2" />
               Un abbonamento, infinite palestre
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Allenati Ovunque in Italia
+            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight">
+              Allenati Ovunque<br/>in Italia
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100">
+            <p className="text-xl md:text-2xl mb-8 text-gray-300 font-light">
               Accesso illimitato a centinaia di palestre con un solo abbonamento
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6"
+                className="bg-white text-black hover:bg-gray-200 text-lg px-10 py-7 rounded-full font-semibold shadow-2xl"
                 onClick={() => {
                   if (!user) {
                     base44.auth.redirectToLogin(createPageUrl("Home"));
@@ -139,7 +139,7 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+                className="border-white/30 text-white hover:bg-white/10 text-lg px-10 py-7 rounded-full backdrop-blur-sm"
                 onClick={() => navigate(createPageUrl("Gyms"))}
               >
                 Esplora le Palestre
@@ -155,29 +155,29 @@ export default function Home() {
             className="grid grid-cols-3 gap-8 mt-20 max-w-3xl mx-auto"
           >
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-blue-200">Palestre Partner</div>
+              <div className="text-5xl font-black mb-2">500+</div>
+              <div className="text-gray-400 text-sm">Palestre Partner</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">20</div>
-              <div className="text-blue-200">Regioni Coperte</div>
+              <div className="text-5xl font-black mb-2">20</div>
+              <div className="text-gray-400 text-sm">Regioni Coperte</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-blue-200">Membri Attivi</div>
+              <div className="text-5xl font-black mb-2">10K+</div>
+              <div className="text-gray-400 text-sm">Membri Attivi</div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Subscription Plans */}
-      <section id="plans" className="py-20 px-6 bg-gray-50">
+      <section id="plans" className="py-20 px-6 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
               Scegli il Tuo Piano
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-400 font-light">
               Trova l'abbonamento perfetto per i tuoi obiettivi di fitness
             </p>
           </div>
@@ -190,11 +190,11 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl ${
-                  plan.popular ? 'ring-2 ring-blue-500 scale-105' : ''
+                <Card className={`relative overflow-hidden transition-all duration-300 hover:scale-105 bg-[#1a1a1a] border-white/10 ${
+                  plan.popular ? 'ring-2 ring-white/30 scale-105' : ''
                 }`}>
                   {plan.popular && (
-                    <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-1 text-sm font-semibold">
+                    <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-1 text-xs font-bold tracking-wider">
                       PIÙ POPOLARE
                     </div>
                   )}
@@ -203,10 +203,10 @@ export default function Home() {
                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${plan.color} flex items-center justify-center mb-4`}>
                       <Dumbbell className="w-8 h-8 text-white" />
                     </div>
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                    <CardTitle className="text-2xl text-white">{plan.name}</CardTitle>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold">€{plan.price}</span>
-                      <span className="text-gray-500">/mese</span>
+                      <span className="text-5xl font-black text-white">€{plan.price}</span>
+                      <span className="text-gray-500 text-lg">/mese</span>
                     </div>
                   </CardHeader>
 
@@ -217,14 +217,13 @@ export default function Home() {
                           <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${plan.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                             <Check className="w-3 h-3 text-white" />
                           </div>
-                          <span className="text-gray-700">{benefit}</span>
+                          <span className="text-gray-300 text-sm">{benefit}</span>
                         </li>
                       ))}
                     </ul>
 
                     <Button
-                      className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700' : ''}`}
-                      variant={plan.popular ? 'default' : 'outline'}
+                      className={`w-full rounded-full py-6 font-semibold ${plan.popular ? 'bg-white text-black hover:bg-gray-200' : 'bg-white/10 text-white hover:bg-white/20'}`}
                       size="lg"
                       onClick={() => handleSubscriptionSelect(plan)}
                       disabled={hasActiveSubscription && user.subscription_type === plan.type}
@@ -240,14 +239,14 @@ export default function Home() {
       </section>
 
       {/* Featured Gyms */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-2">
                 Palestre in Evidenza
               </h2>
-              <p className="text-gray-600">Scopri alcune delle nostre palestre partner</p>
+              <p className="text-gray-400 font-light">Scopri alcune delle nostre palestre partner</p>
             </div>
             <Button
               variant="outline"
@@ -266,18 +265,18 @@ export default function Home() {
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                <Card className="overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 bg-[#1a1a1a] border-white/10 group"
                   onClick={() => navigate(`${createPageUrl("GymDetail")}?id=${gym.id}`)}>
-                  <div className="relative h-48 bg-gray-200">
+                  <div className="relative h-64 bg-black overflow-hidden">
                     {gym.photos?.[0] ? (
                       <img
                         src={gym.photos[0]}
                         alt={gym.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
-                        <Building2 className="w-16 h-16 text-blue-300" />
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-900/20 to-orange-900/20">
+                        <Building2 className="w-16 h-16 text-white/20" />
                       </div>
                     )}
                     {gym.google_rating && (
@@ -288,15 +287,15 @@ export default function Home() {
                     )}
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-xl mb-2">{gym.name}</h3>
-                    <div className="flex items-center gap-2 text-gray-600 mb-3">
+                    <h3 className="font-bold text-xl mb-2 text-white">{gym.name}</h3>
+                    <div className="flex items-center gap-2 text-gray-400 mb-3">
                       <MapPin className="w-4 h-4" />
                       <span className="text-sm">{gym.city}</span>
                     </div>
                     {gym.amenities && gym.amenities.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {gym.amenities.slice(0, 3).map((amenity, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
+                          <Badge key={i} className="bg-white/10 text-white border-white/20 text-xs">
                             {amenity}
                           </Badge>
                         ))}
@@ -322,18 +321,19 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-600 to-orange-600 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <Clock className="w-16 h-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Inizia la Tua Trasformazione Oggi
+      <section className="py-32 px-6 bg-gradient-to-r from-blue-600 to-orange-600 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <Clock className="w-20 h-20 mx-auto mb-8 opacity-90" />
+          <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
+            Inizia la Tua<br/>Trasformazione Oggi
           </h2>
-          <p className="text-xl mb-8 text-blue-100">
+          <p className="text-xl md:text-2xl mb-10 text-white/80 font-light">
             Unisciti a migliaia di persone che si allenano già con Fit ABB
           </p>
           <Button
             size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6"
+            className="bg-white text-black hover:bg-gray-200 text-lg px-12 py-8 rounded-full font-bold shadow-2xl"
             onClick={() => {
               if (!user) {
                 base44.auth.redirectToLogin(createPageUrl("Home"));
@@ -343,7 +343,7 @@ export default function Home() {
             }}
           >
             Scegli il Tuo Piano
-            <ArrowRight className="w-5 h-5 ml-2" />
+            <ArrowRight className="w-6 h-6 ml-3" />
           </Button>
         </div>
       </section>

@@ -135,22 +135,22 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#fafaf9]">
+    <div className="min-h-screen flex bg-[#0a0a0a]">
       <style>{`
         :root {
           --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #f97316 100%);
           --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #fb923c 100%);
           --success-color: #10b981;
-          --background: #fafaf9;
+          --background: #0a0a0a;
           --primary-blue: #3b82f6;
           --primary-orange: #f97316;
         }
       `}</style>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex md:w-64 bg-white border-r border-gray-200 flex-col">
+      <aside className="hidden md:flex md:w-64 bg-black/90 backdrop-blur-xl border-r border-white/10 flex-col">
         {/* Header */}
-        <div className="border-b border-gray-200 p-6">
+        <div className="border-b border-white/10 p-6">
           <div className="flex items-center gap-3">
             <img 
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
@@ -158,8 +158,8 @@ export default function Layout({ children, currentPageName }) {
               className="w-12 h-12 object-contain"
             />
             <div>
-              <h2 className="font-bold text-gray-900 text-lg">Fit ABB</h2>
-              <p className="text-xs text-gray-500">Allena Italia</p>
+              <h2 className="font-bold text-white text-lg">Fit ABB</h2>
+              <p className="text-xs text-gray-400">Allena Italia</p>
             </div>
           </div>
         </div>
@@ -174,10 +174,10 @@ export default function Layout({ children, currentPageName }) {
                 <li key={item.title}>
                   <Link
                     to={item.url}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                       isActive 
-                        ? 'bg-gradient-to-r from-blue-50 to-orange-50 text-blue-700' 
-                        : 'hover:bg-blue-50 hover:text-blue-700'
+                        ? 'bg-white/10 text-white shadow-lg' 
+                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -207,7 +207,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Footer */}
         {user && (
-          <div className="border-t border-gray-200 p-4 space-y-3">
+          <div className="border-t border-white/10 p-4 space-y-3 bg-white/5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-orange-500">
                 <span className="text-white font-semibold text-sm">
@@ -215,8 +215,8 @@ export default function Layout({ children, currentPageName }) {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 text-sm truncate">{user.full_name}</p>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                <p className="font-medium text-white text-sm truncate">{user.full_name}</p>
+                <p className="text-xs text-gray-400 truncate">{user.email}</p>
               </div>
             </div>
             {getSubscriptionBadge()}
@@ -224,7 +224,7 @@ export default function Layout({ children, currentPageName }) {
               variant="outline"
               size="sm"
               onClick={handleLogout}
-              className="w-full flex items-center gap-2"
+              className="w-full flex items-center gap-2 bg-white/5 border-white/10 text-white hover:bg-white/10"
             >
               <LogOut className="w-4 h-4" />
               Esci
@@ -236,7 +236,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
-        <header className="md:hidden bg-white border-b border-gray-200 px-4 py-4">
+        <header className="md:hidden bg-black/90 backdrop-blur-xl border-b border-white/10 px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img 
@@ -244,11 +244,11 @@ export default function Layout({ children, currentPageName }) {
                 alt="Fit ABB"
                 className="w-8 h-8 object-contain"
               />
-              <h1 className="text-lg font-bold">Fit ABB</h1>
+              <h1 className="text-lg font-bold text-white">Fit ABB</h1>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              className="p-2 hover:bg-white/10 rounded-lg text-white"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -268,8 +268,8 @@ export default function Layout({ children, currentPageName }) {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
                           isActive 
-                            ? 'bg-gradient-to-r from-blue-50 to-orange-50 text-blue-700' 
-                            : 'hover:bg-blue-50'
+                            ? 'bg-white/10 text-white' 
+                            : 'text-gray-400 hover:bg-white/5 hover:text-white'
                         }`}
                       >
                         <Icon className="w-5 h-5" />
