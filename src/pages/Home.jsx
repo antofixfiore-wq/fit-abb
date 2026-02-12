@@ -321,7 +321,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-6 bg-gradient-to-r from-blue-600 to-orange-600 text-white relative overflow-hidden">
+      <section className="py-32 px-6 bg-gradient-to-r from-red-600 to-rose-600 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <Clock className="w-20 h-20 mx-auto mb-8 opacity-90" />
