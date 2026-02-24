@@ -320,6 +320,64 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Personal Trainers Section */}
+      <section className="py-20 px-6 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-12">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-2">
+                Personal Trainer
+              </h2>
+              <p className="text-gray-400 font-light">Schede, programmi e coaching dai migliori professionisti</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => navigate(createPageUrl("PersonalTrainers"))}
+              className="hidden md:flex items-center gap-2 border-white/20 text-white hover:bg-white/10"
+            >
+              Trova il tuo PT
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: "💪", title: "Schede Personalizzate", desc: "Piani di allenamento creati su misura per i tuoi obiettivi" },
+              { icon: "📊", title: "Programmi Mensili", desc: "Progressione strutturata settimana per settimana" },
+              { icon: "🥗", title: "Piani Nutrizionali", desc: "Alimentazione ottimizzata per massimizzare i risultati" }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="cursor-pointer"
+                onClick={() => navigate(createPageUrl("PersonalTrainers"))}
+              >
+                <Card className="bg-[#1a1a1a] border-white/10 hover:border-white/30 transition-all h-full">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-5xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                    <p className="text-gray-400">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8 md:hidden">
+            <Button
+              onClick={() => navigate(createPageUrl("PersonalTrainers"))}
+              className="bg-gradient-to-r from-blue-600 to-orange-600"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Trova il tuo PT
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-32 px-6 bg-gradient-to-r from-red-600 to-rose-600 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
