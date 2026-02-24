@@ -51,20 +51,20 @@ import About from './pages/About';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Contact from './pages/Contact';
+import FitnessTracking from './pages/FitnessTracking';
 import GymDashboard from './pages/GymDashboard';
 import GymDetail from './pages/GymDetail';
 import Gyms from './pages/Gyms';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
+import PTProfile from './pages/PTProfile';
 import PartnersPage from './pages/PartnersPage';
+import PersonalTrainers from './pages/PersonalTrainers';
 import Pricing from './pages/Pricing';
 import Profile from './pages/Profile';
 import QRScanner from './pages/QRScanner';
 import Subscription from './pages/Subscription';
 import WorkoutPlanner from './pages/WorkoutPlanner';
-import FitnessTracking from './pages/FitnessTracking';
-import PersonalTrainers from './pages/PersonalTrainers';
-import PTProfile from './pages/PTProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -73,20 +73,20 @@ export const PAGES = {
     "ClientDashboard": ClientDashboard,
     "Community": Community,
     "Contact": Contact,
+    "FitnessTracking": FitnessTracking,
     "GymDashboard": GymDashboard,
     "GymDetail": GymDetail,
     "Gyms": Gyms,
     "Home": Home,
     "Landing": Landing,
+    "PTProfile": PTProfile,
     "PartnersPage": PartnersPage,
+    "PersonalTrainers": PersonalTrainers,
     "Pricing": Pricing,
     "Profile": Profile,
     "QRScanner": QRScanner,
     "Subscription": Subscription,
     "WorkoutPlanner": WorkoutPlanner,
-    "FitnessTracking": FitnessTracking,
-    "PersonalTrainers": PersonalTrainers,
-    "PTProfile": PTProfile,
 }
 
 export const pagesConfig = {

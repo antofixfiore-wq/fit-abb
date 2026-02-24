@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dumbbell, Check, Star, Building2, ArrowRight, Award, Clock, MapPin } from "lucide-react";
+import { Dumbbell, Check, Star, Building2, ArrowRight, Award, Clock, MapPin, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
 const subscriptionPlans = [
