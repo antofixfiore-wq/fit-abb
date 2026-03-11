@@ -14,7 +14,7 @@ export default function Layout({ children, currentPageName }) {
 
   React.useEffect(() => {
     // Set PWA icons
-    const logoUrl = "https://media.base44.com/images/public/6900e246d71384c10b97f155/b8f71edad_generated_image.png";
+    const logoUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png";
     
     // Remove existing icons
     document.querySelectorAll('link[rel="apple-touch-icon"]').forEach(el => el.remove());
@@ -162,7 +162,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="border-b border-white/10 p-6">
           <div className="flex items-center gap-3">
             <img 
-              src="https://media.base44.com/images/public/6900e246d71384c10b97f155/b8f71edad_generated_image.png"
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
               alt="Fit ABB Logo"
               className="w-12 h-12 object-contain"
             />
@@ -249,7 +249,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img 
-                src="https://media.base44.com/images/public/6900e246d71384c10b97f155/b8f71edad_generated_image.png"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
                 alt="Fit ABB"
                 className="w-8 h-8 object-contain"
               />
