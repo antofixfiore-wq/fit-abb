@@ -38,7 +38,7 @@ const subscriptionPlans = [
     type: "premium",
     name: "Premium",
     price: 99.99,
-    color: "from-blue-500 to-orange-500",
+    color: "from-yellow-300 to-yellow-500",
     benefits: [
       "Accesso illimitato 24/7",
       "Tutte le palestre premium",
@@ -89,7 +89,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-black text-white">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-orange-600/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-yellow-400/5"></div>
         <div className="absolute inset-0" style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600)',
           backgroundSize: 'cover',
@@ -194,7 +194,7 @@ export default function Home() {
                   plan.popular ? 'ring-2 ring-white/30 scale-105' : ''
                 }`}>
                   {plan.popular && (
-                    <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-1 text-xs font-bold tracking-wider">
+                    <div className="absolute top-0 right-0 bg-[#E8FF00] text-black px-4 py-1 text-xs font-bold tracking-wider">
                       PIÙ POPOLARE
                     </div>
                   )}
@@ -369,7 +369,7 @@ export default function Home() {
           <div className="text-center mt-8 md:hidden">
             <Button
               onClick={() => navigate(createPageUrl("PersonalTrainers"))}
-              className="bg-gradient-to-r from-blue-600 to-orange-600"
+              className="bg-[#E8FF00] text-black hover:bg-yellow-300"
             >
               <Users className="w-4 h-4 mr-2" />
               Trova il tuo PT
@@ -379,10 +379,10 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-6 bg-gradient-to-r from-red-600 to-rose-600 text-white relative overflow-hidden">
+      <section className="py-32 px-6 bg-black text-white relative overflow-hidden border-t border-[#E8FF00]/30">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <Clock className="w-20 h-20 mx-auto mb-8 opacity-90" />
+          <Clock className="w-20 h-20 mx-auto mb-8" style={{color: '#E8FF00'}} />
           <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
             Inizia la Tua<br/>Trasformazione Oggi
           </h2>

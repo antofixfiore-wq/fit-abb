@@ -133,8 +133,8 @@ export default function Layout({ children, currentPageName }) {
     
     const colors = {
       silver: "bg-gray-200 text-gray-800",
-      gold: "bg-yellow-100 text-yellow-800",
-      premium: "bg-gradient-to-r from-blue-500 to-orange-500 text-white"
+      gold: "bg-yellow-300 text-black",
+      premium: "bg-[#E8FF00] text-black"
     };
 
     return (
@@ -148,12 +148,11 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen flex bg-[#0a0a0a]">
       <style>{`
         :root {
-          --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #f97316 100%);
-          --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #fb923c 100%);
-          --success-color: #10b981;
+          --primary-gradient: linear-gradient(135deg, #000000 0%, #E8FF00 100%);
+          --accent-gradient: linear-gradient(135deg, #1a1a1a 0%, #E8FF00 100%);
+          --success-color: #E8FF00;
           --background: #0a0a0a;
-          --primary-blue: #3b82f6;
-          --primary-orange: #f97316;
+          --primary-yellow: #E8FF00;
         }
       `}</style>
 
@@ -186,7 +185,7 @@ export default function Layout({ children, currentPageName }) {
                     to={item.url}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                       isActive 
-                        ? 'bg-white/10 text-white shadow-lg' 
+                        ? 'bg-[#E8FF00]/10 text-[#E8FF00] border-l-2 border-[#E8FF00]' 
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
@@ -219,8 +218,8 @@ export default function Layout({ children, currentPageName }) {
         {user && (
           <div className="border-t border-white/10 p-4 space-y-3 bg-white/5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-orange-500">
-                <span className="text-white font-semibold text-sm">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{background: '#E8FF00'}}>
+                <span className="text-black font-semibold text-sm">
                   {user.full_name?.charAt(0).toUpperCase() || 'U'}
                 </span>
               </div>
@@ -278,7 +277,7 @@ export default function Layout({ children, currentPageName }) {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
                           isActive 
-                            ? 'bg-white/10 text-white' 
+                            ? 'bg-[#E8FF00]/10 text-[#E8FF00] border-l-2 border-[#E8FF00]' 
                             : 'text-gray-400 hover:bg-white/5 hover:text-white'
                         }`}
                       >
