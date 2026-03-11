@@ -106,7 +106,7 @@ export default function Home() {
           >
             <div className="mb-8 flex justify-center">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6900e246d71384c10b97f155/979b3bbd7_EnergeticBlueandOrangeFitnessAppLogo.png"
+                src="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png"
                 alt="Fit ABB"
                 className="w-32 h-32 object-contain drop-shadow-2xl"
               />
