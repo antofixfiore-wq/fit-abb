@@ -39,6 +39,7 @@ export default function GymDashboard() {
   const [gym, setGym] = useState(null);
   const [memberships, setMemberships] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
+  const [payoutReports, setPayoutReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(null);
@@ -210,8 +211,13 @@ export default function GymDashboard() {
     return subscriptions.filter(s => s.status === "active").length;
   };
 
-  const getTotalRevenue = () => {
-    return subscriptions.reduce((sum, s) => sum + (s.price_paid || 0), 0);
+  const getEstimatedRevenue = () => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+    const monthlyReports = payoutReports.filter(
+      r => r.period_month === currentMonth && r.period_year === currentYear
+    );
+    return monthlyReports.reduce((sum, r) => sum + (r.total_amount || 0), 0);
   };
 
   const handleCreatePost = async (e) => {
@@ -326,30 +332,17 @@ export default function GymDashboard() {
             </div>
 
             {/* Stats */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Incasso Totale</p>
-                      <p className="text-3xl font-bold text-green-600">€{getTotalRevenue().toFixed(2)}</p>
-                    </div>
-                    <Euro className="w-10 h-10 text-green-600 opacity-20" />
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Incasso Stimato (questo mese)</p>
+                    <p className="text-3xl font-bold text-green-600">€{getEstimatedRevenue().toFixed(2)}</p>
                   </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Clienti Abbonati</p>
-                      <p className="text-3xl font-bold text-blue-600">{getActiveSubscriptionsCount()}</p>
-                    </div>
-                    <Users className="w-10 h-10 text-blue-600 opacity-20" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  <Euro className="w-10 h-10 text-green-600 opacity-20" />
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {success && (
