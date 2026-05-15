@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +23,12 @@ import {
   Calendar,
   Image as ImageIcon,
   Bell,
-  X
+  X,
+  FileText,
+  BarChart3
 } from "lucide-react";
+import PayoutReportTab from "@/components/gym/PayoutReportTab";
+import DocumentsPaymentsTab from "@/components/gym/DocumentsPaymentsTab";
 import { motion } from "framer-motion";
 
 export default function GymDashboard() {
@@ -372,14 +375,26 @@ export default function GymDashboard() {
             </Alert>
           )}
 
-          <Tabs defaultValue="photos" className="space-y-6">
-            <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-5 gap-4">
-              <TabsTrigger value="photos">Gestione Foto</TabsTrigger>
-              <TabsTrigger value="memberships">Abbonamenti</TabsTrigger>
-              <TabsTrigger value="subscriptions">Clienti</TabsTrigger>
-              <TabsTrigger value="posts">Post</TabsTrigger>
-              <TabsTrigger value="events">Eventi</TabsTrigger>
+          <Tabs defaultValue="payouts" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-1">
+              <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
+              <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
+              <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
+              <TabsTrigger value="memberships" className="text-xs">Abbonamenti</TabsTrigger>
+              <TabsTrigger value="subscriptions" className="text-xs">Clienti</TabsTrigger>
+              <TabsTrigger value="posts" className="text-xs">Post</TabsTrigger>
+              <TabsTrigger value="events" className="text-xs">Eventi</TabsTrigger>
             </TabsList>
+
+            {/* Payouts Tab */}
+            <TabsContent value="payouts" className="space-y-6">
+              <PayoutReportTab gym={gym} />
+            </TabsContent>
+
+            {/* Documents & Payments Tab */}
+            <TabsContent value="documents" className="space-y-6">
+              <DocumentsPaymentsTab gym={gym} onUpdate={loadData} />
+            </TabsContent>
 
             {/* Photos Tab */}
             <TabsContent value="photos" className="space-y-6">

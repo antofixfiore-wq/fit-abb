@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Building2, User, LogOut, LayoutDashboard, Menu, Sparkles, Users, QrCode, Activity } from "lucide-react";
+import { Home, Building2, User, LogOut, LayoutDashboard, Menu, Sparkles, Users, QrCode, Activity, Euro } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -84,6 +84,11 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Home"),
       icon: Home,
     },
+    ...(user?.role === "admin" ? [{
+      title: "Pagamenti Admin",
+      url: "/AdminPayouts",
+      icon: Euro,
+    }] : []),
     {
       title: "Dashboard",
       url: createPageUrl("ClientDashboard"),

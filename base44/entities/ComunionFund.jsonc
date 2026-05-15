@@ -1,0 +1,58 @@
+{
+  "name": "ComunionFund",
+  "type": "object",
+  "properties": {
+    "period_month": {
+      "type": "number",
+      "description": "Mese di riferimento (1-12)"
+    },
+    "period_year": {
+      "type": "number",
+      "description": "Anno di riferimento"
+    },
+    "total_inactive_users": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero utenti inattivi (0 visite nel periodo)"
+    },
+    "total_collected": {
+      "type": "number",
+      "default": 0,
+      "description": "Totale raccolto dagli utenti inattivi"
+    },
+    "platform_fee": {
+      "type": "number",
+      "default": 0,
+      "description": "10% trattenuto dalla piattaforma"
+    },
+    "distributable_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "90% da distribuire alle palestre"
+    },
+    "total_network_visits": {
+      "type": "number",
+      "default": 0,
+      "description": "Totale accessi su tutta la rete nel periodo"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "calculated",
+        "distributed",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Stato del fondo"
+    },
+    "distributed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data distribuzione"
+    }
+  },
+  "required": [
+    "period_month",
+    "period_year"
+  ]
+}

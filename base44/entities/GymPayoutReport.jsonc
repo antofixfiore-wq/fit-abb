@@ -1,0 +1,81 @@
+{
+  "name": "GymPayoutReport",
+  "type": "object",
+  "properties": {
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "period_month": {
+      "type": "number",
+      "description": "Mese di riferimento (1-12)"
+    },
+    "period_year": {
+      "type": "number",
+      "description": "Anno di riferimento"
+    },
+    "total_visits": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero totale di accessi nel periodo"
+    },
+    "method1_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Guadagno dal Metodo 1 (proporzionale visite)"
+    },
+    "method2_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Guadagno dal Metodo 2 (fondo Comunion)"
+    },
+    "total_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Totale guadagno"
+    },
+    "stripe_transfer_id": {
+      "type": "string",
+      "description": "ID trasferimento Stripe"
+    },
+    "stripe_account_id": {
+      "type": "string",
+      "description": "ID account Stripe Connect della palestra"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "transferred",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Stato del pagamento"
+    },
+    "transferred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data del trasferimento"
+    },
+    "active_subscribers": {
+      "type": "number",
+      "default": 0,
+      "description": "Abbonati attivi nel periodo"
+    },
+    "comunion_share_percent": {
+      "type": "number",
+      "default": 0,
+      "description": "Percentuale del fondo Comunion spettante"
+    }
+  },
+  "required": [
+    "gym_id",
+    "gym_name",
+    "period_month",
+    "period_year"
+  ]
+}

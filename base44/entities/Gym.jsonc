@@ -1,0 +1,135 @@
+{
+  "name": "Gym",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "address": {
+      "type": "string",
+      "description": "Indirizzo completo"
+    },
+    "city": {
+      "type": "string",
+      "description": "Citt\u00e0"
+    },
+    "region": {
+      "type": "string",
+      "description": "Regione"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Numero di telefono"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email di contatto"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione della palestra"
+    },
+    "amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Servizi disponibili"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs delle foto"
+    },
+    "opening_hours": {
+      "type": "object",
+      "description": "Orari di apertura"
+    },
+    "google_rating": {
+      "type": "number",
+      "description": "Valutazione Google (1-5)"
+    },
+    "available_for_silver": {
+      "type": "boolean",
+      "default": true
+    },
+    "available_for_gold": {
+      "type": "boolean",
+      "default": true
+    },
+    "available_for_premium": {
+      "type": "boolean",
+      "default": true
+    },
+    "manager_email": {
+      "type": "string",
+      "description": "Email del gestore"
+    },
+    "is_partner": {
+      "type": "boolean",
+      "default": false
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL logo"
+    },
+    "qr_code": {
+      "type": "string",
+      "description": "Codice QR univoco"
+    },
+    "stripe_account_id": {
+      "type": "string",
+      "description": "ID account Stripe Connect Express della palestra"
+    },
+    "stripe_onboarding_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Onboarding Stripe completato"
+    },
+    "stripe_onboarding_url": {
+      "type": "string",
+      "description": "URL onboarding Stripe Express (temporaneo)"
+    },
+    "visura_url": {
+      "type": "string",
+      "description": "URL documento visura camerale"
+    },
+    "visura_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Stato verifica visura"
+    },
+    "iban": {
+      "type": "string",
+      "description": "IBAN della palestra (backup)"
+    },
+    "payout_method": {
+      "type": "string",
+      "enum": [
+        "method1_visits",
+        "method2_comunion",
+        "both"
+      ],
+      "default": "both",
+      "description": "Metodo di pagamento abilitato"
+    }
+  },
+  "required": [
+    "name",
+    "address",
+    "city"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
