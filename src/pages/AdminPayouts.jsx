@@ -45,8 +45,8 @@ export default function AdminPayouts() {
 
     const [gymsData, reportsData, fundsData, accessesData] = await Promise.all([
       base44.entities.Gym.list(),
-      base44.entities.GymPayoutReport.list("-period_year,-period_month", 100),
-      base44.entities.ComunionFund.list("-period_year,-period_month", 12),
+      base44.entities.GymPayoutReport.list("-period_year", 100),
+      base44.entities.ComunionFund.list("-period_year", 12),
       base44.entities.GymAccess.list("-created_date", 1000)
     ]);
 
