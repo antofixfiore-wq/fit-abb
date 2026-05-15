@@ -97,6 +97,9 @@ export default function GymDashboard() {
 
       const subscriptionsData = await base44.entities.GymSubscription.filter({ gym_id: userGym.id }, "-created_date");
       setSubscriptions(subscriptionsData);
+
+      const reportsData = await base44.entities.GymPayoutReport.filter({ gym_id: userGym.id });
+      setPayoutReports(reportsData);
     } catch (error) {
       console.error("Error loading data:", error);
       setError("Errore nel caricamento dei dati");
