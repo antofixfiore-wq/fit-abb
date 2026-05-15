@@ -522,7 +522,7 @@ export default function ClientDashboard() {
               {user?.banner_image_url ? (
                 <img src={user.banner_image_url} alt="Banner" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-r from-blue-600 to-orange-600"></div>
+                <div className="w-full h-full" style={{ background: "linear-gradient(135deg, #000 0%, #E8FF00 100%)" }}></div>
               )}
               <label className="absolute top-4 right-4 cursor-pointer">
                 <div className="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100">
@@ -576,8 +576,17 @@ export default function ClientDashboard() {
                 <div className="flex-1 pb-4">
                   <h1 className="text-2xl font-bold text-white">{user?.full_name}</h1>
                   {stats.activeSubscription && stats.activeSubscription !== "none" && (
-                    <Badge className="mt-2 bg-gradient-to-r from-blue-600 to-orange-600 text-white">
-                      {stats.activeSubscription.toUpperCase()}
+                    <Badge
+                      className="mt-2 font-bold text-black text-sm px-3 py-1"
+                      style={{ background: "#E8FF00" }}
+                    >
+                      {stats.activeSubscription === "annuale"
+                        ? "Piano Annuale — €365/anno"
+                        : stats.activeSubscription === "mensile"
+                        ? "Piano Mensile — €40/mese"
+                        : stats.activeSubscription === "mattina"
+                        ? "Piano Mattina — €25/mese"
+                        : stats.activeSubscription.toUpperCase()}
                     </Badge>
                   )}
                 </div>
@@ -661,7 +670,8 @@ export default function ClientDashboard() {
         >
           <Button
             onClick={() => setShowCreatePost(!showCreatePost)}
-            className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+            className="w-full text-black font-bold hover:opacity-90"
+            style={{ background: "#E8FF00" }}
             size="lg"
           >
             <Camera className="w-5 h-5 mr-2" />

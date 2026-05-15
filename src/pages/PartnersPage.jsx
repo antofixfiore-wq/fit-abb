@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Search, Building2 } from "lucide-react";
+import { MapPin, Star, Search, Building2, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PartnersPage() {
