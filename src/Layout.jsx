@@ -105,19 +105,9 @@ export default function Layout({ children, currentPageName }) {
       icon: Sparkles,
     },
     {
-      title: "Comunità",
-      url: createPageUrl("Community"),
-      icon: Users,
-    },
-    {
       title: "Palestre",
       url: createPageUrl("Gyms"),
       icon: Building2,
-    },
-    {
-      title: "Personal Trainer",
-      url: createPageUrl("PersonalTrainers"),
-      icon: Users,
     },
     {
       title: "Profilo",
