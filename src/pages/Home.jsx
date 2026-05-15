@@ -74,6 +74,17 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
+      // Se l'utente arriva come ospite, non reindirizzare
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("guest") === "true") {
+        try {
+          const gymsData = await base44.entities.Gym.list("-created_date", 6);
+          setGyms(gymsData);
+        } catch {}
+        setLoading(false);
+        return;
+      }
+
       try {
         const userData = await base44.auth.me();
         setUser(userData);

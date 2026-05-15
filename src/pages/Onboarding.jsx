@@ -24,7 +24,7 @@ export default function Onboarding() {
   }, [step]);
 
   const handleGuest = () => {
-    navigate(createPageUrl("Home"));
+    navigate(createPageUrl("Home") + "?guest=true");
   };
 
   const handleRegister = () => {
