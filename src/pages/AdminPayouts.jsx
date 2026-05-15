@@ -16,8 +16,10 @@ import {
   Clock,
   RefreshCw,
   ArrowRight,
-  Wallet
+  Wallet,
+  Download
 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
 
 export default function AdminPayouts({ embedded = false }) {
@@ -77,6 +79,54 @@ export default function AdminPayouts({ embedded = false }) {
     const names = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
       "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
     return names[m] || m;
+  };
+
+  const [exportMonth, setExportMonth] = useState(String(currentMonth));
+  const [exportYear, setExportYear] = useState(String(currentYear));
+
+  const downloadCSV = () => {
+    const month = parseInt(exportMonth);
+    const year = parseInt(exportYear);
+
+    const monthAccesses = accesses.filter(a => {
+      const d = new Date(a.access_date || a.created_date);
+      return d.getMonth() + 1 === month && d.getFullYear() === year && a.access_granted;
+    });
+
+    const visitMap = {};
+    monthAccesses.forEach(a => {
+      visitMap[a.gym_id] = (visitMap[a.gym_id] || 0) + 1;
+    });
+
+    const rows = [
+      ["Palestra", "Città", "Email Gestore", "P.IVA", "IBAN", "Accessi nel Mese", "Metodo 1 (€)", "Metodo 2 (€)", "Totale (€)", "Stato Pagamento"]
+    ];
+
+    gyms.forEach(gym => {
+      const report = reports.find(r => r.gym_id === gym.id && r.period_month === month && r.period_year === year);
+      const visits = visitMap[gym.id] || 0;
+      rows.push([
+        gym.name,
+        gym.city || "",
+        gym.manager_email || "",
+        gym.piva || "",
+        gym.iban || "",
+        visits,
+        report ? (report.method1_amount || 0).toFixed(2) : "0.00",
+        report ? (report.method2_amount || 0).toFixed(2) : "0.00",
+        report ? (report.total_amount || 0).toFixed(2) : "0.00",
+        report ? (report.status === "transferred" ? "Trasferito" : report.status === "failed" ? "Fallito" : "In attesa") : "Nessun report"
+      ]);
+    });
+
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `fitabb_entrate_${monthName(month)}_${year}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const currentFund = comunionFunds.find(f => f.period_month === currentMonth && f.period_year === currentYear);
@@ -149,6 +199,9 @@ export default function AdminPayouts({ embedded = false }) {
             </TabsTrigger>
             <TabsTrigger value="gyms" className="data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black text-gray-400">
               Palestre
+            </TabsTrigger>
+            <TabsTrigger value="export" className="data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black text-gray-400">
+              Export CSV
             </TabsTrigger>
           </TabsList>
 
@@ -367,6 +420,104 @@ export default function AdminPayouts({ embedded = false }) {
               </CardContent>
             </Card>
           </TabsContent>
+          {/* EXPORT CSV */}
+          <TabsContent value="export">
+            <Card className="bg-black/40 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Download className="w-5 h-5 text-[#E8FF00]" />
+                  Riepilogo Mensile Entrate per Palestra
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <p className="text-gray-400 text-sm">
+                  Scarica un file CSV con il riepilogo delle entrate di ogni palestra affiliata per il mese selezionato.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                  <div className="space-y-1">
+                    <p className="text-xs text-gray-500">Mese</p>
+                    <Select value={exportMonth} onValueChange={setExportMonth}>
+                      <SelectTrigger className="w-40 bg-white/5 border-white/10 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1,2,3,4,5,6,7,8,9,10,11,12].map(m => (
+                          <SelectItem key={m} value={String(m)}>{monthName(m)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs text-gray-500">Anno</p>
+                    <Select value={exportYear} onValueChange={setExportYear}>
+                      <SelectTrigger className="w-32 bg-white/5 border-white/10 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[currentYear, currentYear - 1, currentYear - 2].map(y => (
+                          <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    onClick={downloadCSV}
+                    className="bg-[#E8FF00] text-black font-bold hover:opacity-90"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Scarica CSV — {monthName(parseInt(exportMonth))} {exportYear}
+                  </Button>
+                </div>
+
+                {/* Anteprima */}
+                <div>
+                  <p className="text-xs text-gray-500 mb-3">Anteprima colonne nel file</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-gray-400 border border-white/10 rounded-lg overflow-hidden">
+                      <thead>
+                        <tr className="bg-white/5">
+                          {["Palestra", "Città", "Email Gestore", "P.IVA", "IBAN", "Accessi", "M1 (€)", "M2 (€)", "Totale (€)", "Stato"].map(h => (
+                            <th key={h} className="text-left px-3 py-2 text-gray-300 font-medium whitespace-nowrap">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {gyms.slice(0, 3).map(gym => {
+                          const m = parseInt(exportMonth), y = parseInt(exportYear);
+                          const report = reports.find(r => r.gym_id === gym.id && r.period_month === m && r.period_year === y);
+                          const visits = accesses.filter(a => {
+                            const d = new Date(a.access_date || a.created_date);
+                            return a.gym_id === gym.id && d.getMonth()+1 === m && d.getFullYear() === y && a.access_granted;
+                          }).length;
+                          return (
+                            <tr key={gym.id} className="border-t border-white/5">
+                              <td className="px-3 py-2 text-white">{gym.name}</td>
+                              <td className="px-3 py-2">{gym.city}</td>
+                              <td className="px-3 py-2">{gym.manager_email}</td>
+                              <td className="px-3 py-2">{gym.piva || "—"}</td>
+                              <td className="px-3 py-2">{gym.iban ? gym.iban.slice(0,10)+"…" : "—"}</td>
+                              <td className="px-3 py-2 text-[#E8FF00]">{visits}</td>
+                              <td className="px-3 py-2">€{report ? (report.method1_amount||0).toFixed(2) : "0.00"}</td>
+                              <td className="px-3 py-2">€{report ? (report.method2_amount||0).toFixed(2) : "0.00"}</td>
+                              <td className="px-3 py-2 text-[#E8FF00] font-bold">€{report ? (report.total_amount||0).toFixed(2) : "0.00"}</td>
+                              <td className="px-3 py-2">{report ? (report.status === "transferred" ? "✓ Trasferito" : "⏳ In attesa") : "—"}</td>
+                            </tr>
+                          );
+                        })}
+                        {gyms.length > 3 && (
+                          <tr className="border-t border-white/5">
+                            <td colSpan={10} className="px-3 py-2 text-gray-600 italic">+ {gyms.length - 3} altre palestre nel file completo…</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
         </Tabs>
       </div>
     </div>
