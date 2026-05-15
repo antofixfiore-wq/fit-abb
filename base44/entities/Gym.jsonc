@@ -52,6 +52,14 @@
       "type": "number",
       "description": "Valutazione Google (1-5)"
     },
+    "latitude": {
+      "type": "number",
+      "description": "Latitudine GPS"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Longitudine GPS"
+    },
     "available_for_silver": {
       "type": "boolean",
       "default": true

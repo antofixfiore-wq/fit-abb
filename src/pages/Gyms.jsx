@@ -10,8 +10,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Building2, Search, MapPin, Star, Filter, X, Navigation, TrendingDown, TrendingUp } from "lucide-react";
+import { Building2, Search, MapPin, Star, Filter, X, Navigation, TrendingDown, TrendingUp, Map, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import GymsMap from "@/components/gyms/GymsMap";
 
 export default function Gyms() {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ export default function Gyms() {
   const [sortBy, setSortBy] = useState("rating");
   const [userLocation, setUserLocation] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState("map"); // "map" | "list"
 
   useEffect(() => {
     loadData();
@@ -280,6 +282,21 @@ export default function Gyms() {
                   <Badge className="ml-2 bg-blue-600">{activeFiltersCount()}</Badge>
                 )}
               </Button>
+              {/* Toggle mappa/lista */}
+              <div className="flex border border-white/20 rounded-md overflow-hidden">
+                <button
+                  onClick={() => setViewMode("map")}
+                  className={`px-3 py-2 flex items-center gap-1.5 text-sm transition-colors ${viewMode === "map" ? "bg-[#E8FF00] text-black font-semibold" : "bg-transparent text-gray-400 hover:text-white"}`}
+                >
+                  <Map className="w-4 h-4" /> Mappa
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-3 py-2 flex items-center gap-1.5 text-sm transition-colors ${viewMode === "list" ? "bg-[#E8FF00] text-black font-semibold" : "bg-transparent text-gray-400 hover:text-white"}`}
+                >
+                  <List className="w-4 h-4" /> Lista
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -380,8 +397,20 @@ export default function Gyms() {
         )}
       </AnimatePresence>
 
+      {/* Mappa */}
+      {viewMode === "map" && (
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <GymsMap gyms={filteredGyms} userLocation={userLocation} />
+          {!userLocation && (
+            <p className="text-center text-gray-500 text-xs mt-2">
+              Abilita la geolocalizzazione per vedere le palestre vicino a te
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Gyms Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      {viewMode === "list" && <div className="max-w-7xl mx-auto px-6 py-12">
         {filteredGyms.length === 0 ? (
           <div className="text-center py-20">
             <Building2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -465,7 +494,7 @@ export default function Gyms() {
             })}
           </div>
         )}
-      </div>
+      </div>}
     </div>
   );
 }
