@@ -29,6 +29,8 @@ export default function Gyms() {
   const [userLocation, setUserLocation] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState("map"); // "map" | "list"
+  const [nearbyOnly, setNearbyOnly] = useState(false); // filtro 10 km
+  const [locationStatus, setLocationStatus] = useState("idle"); // "idle" | "loading" | "granted" | "denied"
 
   useEffect(() => {
     loadData();
@@ -37,22 +39,25 @@ export default function Gyms() {
 
   useEffect(() => {
     filterAndSortGyms();
-  }, [searchTerm, regionFilter, cityFilter, selectedAmenities, priceRange, sortBy, gyms, memberships, userLocation]);
+  }, [searchTerm, regionFilter, cityFilter, selectedAmenities, priceRange, sortBy, gyms, memberships, userLocation, nearbyOnly]);
 
   const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.log("Location access denied or unavailable");
-        }
-      );
-    }
+    if (!navigator.geolocation) return;
+    setLocationStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setLocationStatus("granted");
+        setNearbyOnly(true); // attiva automaticamente il filtro 10 km
+        setSortBy("distance");
+      },
+      () => {
+        setLocationStatus("denied");
+      }
+    );
   };
 
   const loadData = async () => {
@@ -119,6 +124,15 @@ export default function Gyms() {
       if (minPrice === null) return true;
       return minPrice >= priceRange[0] && minPrice <= priceRange[1];
     });
+
+    // Filtro 10 km automatico quando attivo
+    if (nearbyOnly && userLocation) {
+      filtered = filtered.filter(gym => {
+        if (!gym.latitude || !gym.longitude) return false;
+        const dist = calculateDistance(userLocation.lat, userLocation.lng, gym.latitude, gym.longitude);
+        return dist <= 10;
+      });
+    }
 
     filtered = filtered.sort((a, b) => {
       switch (sortBy) {
@@ -396,6 +410,41 @@ export default function Gyms() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Banner geolocalizzazione */}
+      {locationStatus === "loading" && (
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 text-sm text-gray-400">
+            <div className="w-4 h-4 border-2 border-[#E8FF00] border-t-transparent rounded-full animate-spin" />
+            Ricerca palestre vicino a te...
+          </div>
+        </div>
+      )}
+      {locationStatus === "granted" && nearbyOnly && (
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="bg-[#E8FF00]/10 border border-[#E8FF00]/30 rounded-xl px-4 py-3 flex items-center justify-between gap-3 text-sm">
+            <div className="flex items-center gap-2 text-[#E8FF00]">
+              <Navigation className="w-4 h-4" />
+              <span className="font-semibold">Palestre entro 10 km da te</span>
+              <span className="text-[#E8FF00]/70">— {filteredGyms.length} trovate</span>
+            </div>
+            <button
+              onClick={() => { setNearbyOnly(false); setSortBy("rating"); }}
+              className="text-gray-400 hover:text-white flex items-center gap-1 text-xs"
+            >
+              <X className="w-3 h-3" /> Mostra tutte
+            </button>
+          </div>
+        </div>
+      )}
+      {locationStatus === "denied" && (
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 text-sm text-gray-500">
+            <MapPin className="w-4 h-4" />
+            Posizione non disponibile — mostriamo tutte le palestre
+          </div>
+        </div>
+      )}
 
       {/* Mappa */}
       {viewMode === "map" && (
