@@ -377,7 +377,7 @@ export default function GymDashboard() {
             </Alert>
           )}
 
-          <Tabs defaultValue="payouts" className="space-y-6">
+          <Tabs defaultValue="access" className="space-y-6">
             <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"}`}>
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
@@ -404,7 +404,9 @@ export default function GymDashboard() {
 
             {/* Access Validation Tab */}
             <TabsContent value="access" className="space-y-6">
-              <AccessValidationTab gymId={gym.id} />
+              <div className="max-w-4xl mx-auto">
+                <AccessValidationTab gymId={gym.id} />
+              </div>
             </TabsContent>
 
             {/* Photos Tab */}
