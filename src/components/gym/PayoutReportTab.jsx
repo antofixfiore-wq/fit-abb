@@ -30,8 +30,8 @@ export default function PayoutReportTab({ gym }) {
   const loadReports = async () => {
     setLoading(true);
     const [reportsData, fundsData, accessesData] = await Promise.all([
-      base44.entities.GymPayoutReport.filter({ gym_id: gym.id }, "-period_year,-period_month", 12),
-      base44.entities.ComunionFund.list("-period_year,-period_month", 6),
+      base44.entities.GymPayoutReport.filter({ gym_id: gym.id }, "-period_year", 12),
+      base44.entities.ComunionFund.list("-period_year", 6),
       base44.entities.GymAccess.filter({ gym_id: gym.id })
     ]);
 
