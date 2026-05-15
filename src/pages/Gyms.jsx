@@ -446,10 +446,10 @@ export default function Gyms() {
         </div>
       )}
 
-      {/* Mappa */}
+      {/* Mappa — mostra TUTTE le palestre con coordinate, indipendentemente dal filtro distanza */}
       {viewMode === "map" && (
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <GymsMap gyms={filteredGyms} userLocation={userLocation} />
+          <GymsMap gyms={gyms} userLocation={userLocation} />
           {!userLocation && (
             <p className="text-center text-gray-500 text-xs mt-2">
               Abilita la geolocalizzazione per vedere le palestre vicino a te

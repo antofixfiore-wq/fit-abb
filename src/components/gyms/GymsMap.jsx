@@ -41,7 +41,7 @@ export default function GymsMap({ gyms, userLocation }) {
   const gymsWithCoords = gyms.filter(g => g.latitude && g.longitude);
 
   return (
-    <div className="w-full h-[500px] md:h-[600px] rounded-xl overflow-hidden border border-white/10">
+    <div className="relative w-full h-[500px] md:h-[600px] rounded-xl overflow-hidden border border-white/10">
       <MapContainer
         center={defaultCenter}
         zoom={userLocation ? 12 : 6}
