@@ -326,18 +326,7 @@ export default function GymDashboard() {
             </div>
 
             {/* Stats */}
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Abbonamenti Attivi</p>
-                      <p className="text-3xl font-bold text-blue-600">{getActiveSubscriptionsCount()}</p>
-                    </div>
-                    <Users className="w-10 h-10 text-blue-600 opacity-20" />
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -353,10 +342,10 @@ export default function GymDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600">Foto Caricate</p>
-                      <p className="text-3xl font-bold text-orange-600">{gym.photos?.length || 0}</p>
+                      <p className="text-sm text-gray-600">Clienti Abbonati</p>
+                      <p className="text-3xl font-bold text-blue-600">{getActiveSubscriptionsCount()}</p>
                     </div>
-                    <ImageIcon className="w-10 h-10 text-orange-600 opacity-20" />
+                    <Users className="w-10 h-10 text-blue-600 opacity-20" />
                   </div>
                 </CardContent>
               </Card>
@@ -378,15 +367,15 @@ export default function GymDashboard() {
           )}
 
           <Tabs defaultValue="access" className="space-y-6">
-            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"}`}>
+            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-3 md:grid-cols-8" : "grid-cols-3 md:grid-cols-7"}`}>
+              <TabsTrigger value="access" className="text-xs">🎫 Check-in</TabsTrigger>
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
-              <TabsTrigger value="access" className="text-xs">🎫 Check-in</TabsTrigger>
-              <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
               <TabsTrigger value="memberships" className="text-xs">Abbonamenti</TabsTrigger>
               <TabsTrigger value="subscriptions" className="text-xs">Clienti</TabsTrigger>
               <TabsTrigger value="posts" className="text-xs">Post</TabsTrigger>
               <TabsTrigger value="events" className="text-xs">Eventi</TabsTrigger>
+              <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
               {user?.role === "admin" && (
                 <TabsTrigger value="admin" className="text-xs">🛡️ Admin</TabsTrigger>
               )}
