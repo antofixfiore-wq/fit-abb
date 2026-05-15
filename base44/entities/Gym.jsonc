@@ -109,7 +109,27 @@
     },
     "iban": {
       "type": "string",
-      "description": "IBAN della palestra (backup)"
+      "description": "IBAN della palestra"
+    },
+    "piva": {
+      "type": "string",
+      "description": "Partita IVA"
+    },
+    "billing_name": {
+      "type": "string",
+      "description": "Ragione sociale / nome titolare per fatturazione"
+    },
+    "billing_address": {
+      "type": "string",
+      "description": "Indirizzo di fatturazione"
+    },
+    "billing_city": {
+      "type": "string",
+      "description": "Citt\u00e0 di fatturazione"
+    },
+    "billing_zip": {
+      "type": "string",
+      "description": "CAP di fatturazione"
     },
     "payout_method": {
       "type": "string",
