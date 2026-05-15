@@ -66,11 +66,21 @@ const subscriptionPlans = [
   },
 ];
 
+// Rileva se l'app gira dentro una WebView iOS nativa (App Store)
+const isIOSNative = () => {
+  const ua = navigator.userAgent || "";
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true;
+  const isWebView = !ua.includes("Safari") || isStandalone;
+  return isIOS && isWebView;
+};
+
 export default function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [gyms, setGyms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const iosNative = isIOSNative();
 
   useEffect(() => {
     const loadData = async () => {
@@ -302,17 +312,21 @@ export default function Home() {
                         {plan.name}
                       </h3>
 
-                      {/* Price */}
-                      <div className="mb-2">
-                        <span className={`text-6xl font-black ${plan.highlight ? "text-black" : "text-white"}`}>
-                          €{plan.price}
-                        </span>
-                        <span className={`text-lg ml-2 ${plan.highlight ? "text-black/60" : "text-gray-500"}`}>
-                          /{plan.period}
-                        </span>
-                      </div>
-                      {plan.priceNote && (
-                        <div className="text-black font-bold text-sm mb-4">{plan.priceNote}</div>
+                      {/* Price — nascosto su iOS nativo (App Store guidelines) */}
+                      {!iosNative && (
+                        <>
+                          <div className="mb-2">
+                            <span className={`text-6xl font-black ${plan.highlight ? "text-black" : "text-white"}`}>
+                              €{plan.price}
+                            </span>
+                            <span className={`text-lg ml-2 ${plan.highlight ? "text-black/60" : "text-gray-500"}`}>
+                              /{plan.period}
+                            </span>
+                          </div>
+                          {plan.priceNote && (
+                            <div className="text-black font-bold text-sm mb-4">{plan.priceNote}</div>
+                          )}
+                        </>
                       )}
 
                       {/* Description */}
@@ -336,19 +350,34 @@ export default function Home() {
                         ))}
                       </ul>
 
-                      {/* CTA */}
-                      <Button
-                        size="lg"
-                        className={`w-full rounded-full font-bold py-6 text-base transition-all ${
-                          plan.highlight
-                            ? "bg-black text-[#E8FF00] hover:bg-gray-900"
-                            : "bg-[#E8FF00] text-black hover:opacity-90"
-                        }`}
-                        onClick={handleCTAClick}
-                      >
-                        Scegli questo piano
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                      {/* CTA — su iOS nativo rimanda al sito web (App Store guidelines) */}
+                      {iosNative ? (
+                        <Button
+                          size="lg"
+                          className={`w-full rounded-full font-bold py-6 text-base transition-all ${
+                            plan.highlight
+                              ? "bg-black text-[#E8FF00] hover:bg-gray-900"
+                              : "bg-[#E8FF00] text-black hover:opacity-90"
+                          }`}
+                          onClick={() => window.open("https://fitabb.com", "_blank")}
+                        >
+                          Scopri di più su fitabb.com
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      ) : (
+                        <Button
+                          size="lg"
+                          className={`w-full rounded-full font-bold py-6 text-base transition-all ${
+                            plan.highlight
+                              ? "bg-black text-[#E8FF00] hover:bg-gray-900"
+                              : "bg-[#E8FF00] text-black hover:opacity-90"
+                          }`}
+                          onClick={handleCTAClick}
+                        >
+                          Scegli questo piano
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
