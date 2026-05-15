@@ -365,6 +365,9 @@ export default function GymDashboard() {
           <Tabs defaultValue="access" className="space-y-6">
             <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-3 md:grid-cols-8" : "grid-cols-3 md:grid-cols-7"}`}>
               <TabsTrigger value="access" className="text-xs">🎫 Check-in</TabsTrigger>
+              {user?.role === "admin" && (
+                <TabsTrigger value="admin" className="text-xs">🛡️ Admin</TabsTrigger>
+              )}
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
               <TabsTrigger value="memberships" className="text-xs">Abbonamenti</TabsTrigger>
@@ -372,9 +375,6 @@ export default function GymDashboard() {
               <TabsTrigger value="posts" className="text-xs">Post</TabsTrigger>
               <TabsTrigger value="events" className="text-xs">Eventi</TabsTrigger>
               <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
-              {user?.role === "admin" && (
-                <TabsTrigger value="admin" className="text-xs">🛡️ Admin</TabsTrigger>
-              )}
             </TabsList>
 
             {/* Payouts Tab */}
@@ -389,9 +389,7 @@ export default function GymDashboard() {
 
             {/* Access Validation Tab */}
             <TabsContent value="access" className="space-y-6">
-              <div className="max-w-4xl mx-auto">
-                <AccessValidationTab gymId={gym.id} />
-              </div>
+              <AccessValidationTab gymId={gym.id} />
             </TabsContent>
 
             {/* Photos Tab */}
@@ -782,7 +780,7 @@ export default function GymDashboard() {
 
             {/* Admin Tab - solo per admin */}
             {user?.role === "admin" && (
-              <TabsContent value="admin">
+              <TabsContent value="admin" className="space-y-6">
                 <AdminPayouts embedded={true} />
               </TabsContent>
             )}
