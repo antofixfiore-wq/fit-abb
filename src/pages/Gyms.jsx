@@ -511,31 +511,42 @@ export default function Gyms() {
                         </div>
                       )}
                     </div>
-                    <CardContent className="p-6">
-                      <h3 className="font-bold text-xl mb-3 text-white">{gym.name}</h3>
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-start gap-2 text-gray-400">
-                          <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
-                          <div className="text-sm">
-                            <div>{gym.city}</div>
-                            {gym.address && <div className="text-gray-500">{gym.address}</div>}
+                    <CardContent className="p-6 space-y-4">
+                      <div>
+                        <h3 className="font-bold text-xl mb-3 text-white">{gym.name}</h3>
+                        <div className="space-y-2 mb-4">
+                          <div className="flex items-start gap-2 text-gray-400">
+                            <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
+                            <div className="text-sm">
+                              <div>{gym.city}</div>
+                              {gym.address && <div className="text-gray-500">{gym.address}</div>}
+                            </div>
                           </div>
                         </div>
+                        {gym.amenities && gym.amenities.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {gym.amenities.slice(0, 4).map((amenity, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs">
+                                {amenity}
+                              </Badge>
+                            ))}
+                            {gym.amenities.length > 4 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{gym.amenities.length - 4}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      {gym.amenities && gym.amenities.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {gym.amenities.slice(0, 4).map((amenity, i) => (
-                            <Badge key={i} variant="secondary" className="text-xs">
-                              {amenity}
-                            </Badge>
-                          ))}
-                          {gym.amenities.length > 4 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{gym.amenities.length - 4}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`${createPageUrl("CheckIn")}?gym_id=${gym.id}`);
+                        }}
+                        className="w-full bg-[#E8FF00] hover:bg-[#E8FF00]/80 text-black font-semibold"
+                      >
+                        💪 Allenati
+                      </Button>
                     </CardContent>
                   </Card>
                 </motion.div>

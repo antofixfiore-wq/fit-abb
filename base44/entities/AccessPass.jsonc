@@ -1,0 +1,92 @@
+{
+  "name": "AccessPass",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "description": "Token unico per QR code"
+    },
+    "numeric_code": {
+      "type": "string",
+      "description": "Codice numerico a 6 cifre"
+    },
+    "client_email": {
+      "type": "string",
+      "description": "Email del cliente"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Nome del cliente"
+    },
+    "client_photo_url": {
+      "type": "string",
+      "description": "URL foto profilo cliente"
+    },
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "silver",
+        "gold",
+        "premium"
+      ],
+      "description": "Tipo abbonamento"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato generato"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando scade (5 minuti dopo generazione)"
+    },
+    "used": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u00c8 stato gi\u00e0 usato?"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato validato"
+    },
+    "validation_method": {
+      "type": "string",
+      "enum": [
+        "qr",
+        "numeric_code"
+      ],
+      "description": "Come \u00e8 stato validato"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "valid",
+        "expired",
+        "used",
+        "invalid"
+      ],
+      "default": "pending",
+      "description": "Stato del pass"
+    }
+  },
+  "required": [
+    "token",
+    "numeric_code",
+    "client_email",
+    "gym_id",
+    "subscription_type",
+    "generated_at",
+    "expires_at"
+  ]
+}

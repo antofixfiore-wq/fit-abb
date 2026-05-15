@@ -11,6 +11,7 @@ import PageNotFound from './lib/PageNotFound';
 import Onboarding from './pages/Onboarding';
 import AdminPayouts from './pages/AdminPayouts';
 import GymOnboarding from './pages/GymOnboarding';
+import CheckIn from './pages/CheckIn';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
         <Route path="/Onboarding" element={<Onboarding />} />
         <Route path="/AdminPayouts" element={<LayoutWrapper currentPageName="AdminPayouts"><AdminPayouts /></LayoutWrapper>} />
         <Route path="/GymOnboarding" element={<GymOnboarding />} />
+        <Route path="/CheckIn" element={<LayoutWrapper currentPageName="CheckIn"><CheckIn /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>

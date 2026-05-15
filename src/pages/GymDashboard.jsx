@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import PayoutReportTab from "@/components/gym/PayoutReportTab";
 import DocumentsPaymentsTab from "@/components/gym/DocumentsPaymentsTab";
+import AccessValidationTab from "@/components/gym/AccessValidationTab";
 import AdminPayouts from "@/pages/AdminPayouts";
 import { motion } from "framer-motion";
 
@@ -377,9 +378,10 @@ export default function GymDashboard() {
           )}
 
           <Tabs defaultValue="payouts" className="space-y-6">
-            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-8" : "grid-cols-3 md:grid-cols-7"}`}>
+            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"}`}>
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
+              <TabsTrigger value="access" className="text-xs">🎫 Check-in</TabsTrigger>
               <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
               <TabsTrigger value="memberships" className="text-xs">Abbonamenti</TabsTrigger>
               <TabsTrigger value="subscriptions" className="text-xs">Clienti</TabsTrigger>
@@ -398,6 +400,11 @@ export default function GymDashboard() {
             {/* Documents & Payments Tab */}
             <TabsContent value="documents" className="space-y-6">
               <DocumentsPaymentsTab gym={gym} onUpdate={loadData} />
+            </TabsContent>
+
+            {/* Access Validation Tab */}
+            <TabsContent value="access" className="space-y-6">
+              <AccessValidationTab gymId={gym.id} />
             </TabsContent>
 
             {/* Photos Tab */}
