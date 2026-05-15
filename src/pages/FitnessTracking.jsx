@@ -268,7 +268,7 @@ export default function FitnessTracking() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
             {statsCards.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -278,16 +278,15 @@ export default function FitnessTracking() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                  <Card className="bg-[#1a1a1a] border-white/10 hover:bg-[#222] transition-all">
+                  <Card className="bg-[#111] border-white/5 rounded-2xl hover:border-white/10 transition-all cursor-default">
                     <CardContent className="p-4">
-                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3`}>
-                        <Icon className="w-5 h-5 text-white" />
+                      <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3`}>
+                        <Icon className="w-4 h-4 text-white" />
                       </div>
-                      <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                      <div className="text-xs text-gray-400">{stat.label}</div>
-                      {stat.subtext && <div className="text-xs text-gray-500 mt-1">{stat.subtext}</div>}
+                      <div className="text-xl font-black text-white leading-tight">{stat.value}</div>
+                      <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
                       {stat.change && (
-                        <div className={`flex items-center gap-1 mt-2 text-xs ${parseFloat(stat.change) > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                        <div className={`flex items-center gap-1 mt-1.5 text-xs ${parseFloat(stat.change) > 0 ? 'text-red-400' : 'text-green-400'}`}>
                           {parseFloat(stat.change) > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                           {Math.abs(parseFloat(stat.change))} kg
                         </div>
@@ -300,16 +299,16 @@ export default function FitnessTracking() {
           </div>
 
           <Tabs defaultValue="metrics" className="space-y-6">
-            <TabsList className="bg-[#1a1a1a] border border-white/10">
-              <TabsTrigger value="metrics" className="data-[state=active]:bg-white data-[state=active]:text-black">
+            <TabsList className="bg-[#111] border border-white/5 rounded-xl p-1">
+              <TabsTrigger value="metrics" className="rounded-lg data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black data-[state=active]:font-bold">
                 <Activity className="w-4 h-4 mr-2" />
                 Metriche
               </TabsTrigger>
-              <TabsTrigger value="plans" className="data-[state=active]:bg-white data-[state=active]:text-black">
+              <TabsTrigger value="plans" className="rounded-lg data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black data-[state=active]:font-bold">
                 <Dumbbell className="w-4 h-4 mr-2" />
                 Schede
               </TabsTrigger>
-              <TabsTrigger value="notes" className="data-[state=active]:bg-white data-[state=active]:text-black">
+              <TabsTrigger value="notes" className="rounded-lg data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black data-[state=active]:font-bold">
                 <StickyNote className="w-4 h-4 mr-2" />
                 Appunti
               </TabsTrigger>

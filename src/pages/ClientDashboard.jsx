@@ -501,35 +501,35 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
+        <div className="w-10 h-10 rounded-full border-2 border-[#E8FF00] border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="mb-6 overflow-hidden bg-[#1a1a1a] border-white/10">
+          <Card className="mb-6 overflow-hidden bg-[#111] border-white/5 rounded-2xl">
             {/* Banner */}
-            <div className="relative h-32 group">
+            <div className="relative h-36 group">
               {user?.banner_image_url ? (
                 <img src={user.banner_image_url} alt="Banner" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full" style={{ background: "linear-gradient(135deg, #000 0%, #E8FF00 100%)" }}></div>
+                <div className="w-full h-full" style={{ background: "linear-gradient(135deg, #111 0%, #2a2a00 50%, #E8FF00 100%)" }}></div>
               )}
               <label className="absolute top-4 right-4 cursor-pointer">
-                <div className="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100">
+                <div className="bg-black/60 hover:bg-black/80 p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
                   {uploadingBanner ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                    <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
                   ) : (
-                    <Edit className="w-5 h-5 text-gray-700" />
+                    <Edit className="w-4 h-4 text-white" />
                   )}
                 </div>
                 <Input
@@ -542,25 +542,25 @@ export default function ClientDashboard() {
               </label>
             </div>
 
-            <CardContent className="pt-0 -mt-16 relative">
+            <CardContent className="pt-0 -mt-16 relative px-6 pb-6">
               <div className="flex flex-col md:flex-row md:items-end gap-4">
                 {/* Profile Image */}
                 <div className="relative group">
-                  <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                  <Avatar className="h-28 w-28 border-4 shadow-2xl" style={{ borderColor: "#E8FF00" }}>
                     {user?.profile_image_url ? (
                       <img src={user.profile_image_url} alt={user.full_name} className="object-cover" />
                     ) : (
-                      <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-orange-500 text-white">
+                      <AvatarFallback className="text-3xl font-black text-black" style={{ background: "#E8FF00" }}>
                         {user?.full_name?.charAt(0).toUpperCase() || 'U'}
                       </AvatarFallback>
                     )}
                   </Avatar>
                   <label className="absolute bottom-0 right-0 cursor-pointer">
-                    <div className="bg-white hover:bg-gray-100 p-2 rounded-full shadow-lg border-2 border-white transition-all">
+                    <div className="bg-black/80 hover:bg-black p-2 rounded-full shadow-lg border border-white/20 transition-all backdrop-blur-sm">
                       {uploadingProfile ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                        <div className="w-3 h-3 rounded-full border-2 border-[#E8FF00] border-t-transparent animate-spin"></div>
                       ) : (
-                        <Camera className="w-4 h-4 text-gray-700" />
+                        <Camera className="w-3 h-3 text-white" />
                       )}
                     </div>
                     <Input
@@ -573,8 +573,8 @@ export default function ClientDashboard() {
                   </label>
                 </div>
 
-                <div className="flex-1 pb-4">
-                  <h1 className="text-2xl font-bold text-white">{user?.full_name}</h1>
+                <div className="flex-1 pb-2">
+                  <h1 className="text-2xl font-black text-white tracking-tight">{user?.full_name}</h1>
                   {stats.activeSubscription && stats.activeSubscription !== "none" && (
                     <Badge
                       className="mt-2 font-bold text-black text-sm px-3 py-1"
@@ -593,23 +593,18 @@ export default function ClientDashboard() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{stats.totalWorkouts}</div>
-                  <div className="text-sm text-gray-400">Allenamenti</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{stats.monthlyVisits}</div>
-                  <div className="text-sm text-gray-400">Questo mese</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-500">{stats.streak}</div>
-                  <div className="text-sm text-gray-400">Giorni di fila</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-500">{feedPosts.filter(p => p.user_email === user.email).length}</div>
-                  <div className="text-sm text-gray-400">Post</div>
-                </div>
+              <div className="grid grid-cols-4 gap-3 mt-5">
+                {[
+                  { val: stats.totalWorkouts, label: "Allenamenti" },
+                  { val: stats.monthlyVisits, label: "Questo mese" },
+                  { val: stats.streak, label: "Giorni streak", accent: true },
+                  { val: feedPosts.filter(p => p.user_email === user?.email).length, label: "Post" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-white/5 rounded-xl p-3 text-center">
+                    <div className={`text-2xl font-black ${s.accent ? "text-[#E8FF00]" : "text-white"}`}>{s.val}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -620,7 +615,7 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
-          className="mb-6"
+          className="mb-4"
         >
           <ProgressStats user={user} />
         </motion.div>
@@ -632,14 +627,14 @@ export default function ClientDashboard() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="mb-6"
         >
-          <Card className="bg-[#1a1a1a] border-white/10">
-            <CardHeader>
+          <Card className="bg-[#111] border-white/5 rounded-2xl">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-500" />
-                  <h3 className="font-semibold text-lg text-white">I Tuoi Badge</h3>
+                  <Award className="w-5 h-5" style={{ color: "#E8FF00" }} />
+                  <h3 className="font-bold text-lg text-white">I Tuoi Badge</h3>
                 </div>
-                <Badge className="bg-gradient-to-r from-blue-600 to-orange-600 text-white">
+                <Badge className="text-black font-bold text-xs px-3" style={{ background: "#E8FF00" }}>
                   {achievements.length} / {allPossibleBadges.length}
                 </Badge>
               </div>
@@ -688,79 +683,50 @@ export default function ClientDashboard() {
               exit={{ opacity: 0, height: 0 }}
               className="mb-6"
             >
-              <Card>
-                <CardHeader>
+              <Card className="bg-[#111] border-white/5 rounded-2xl">
+                <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-lg">Crea Post</h3>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowCreatePost(false)}
-                    >
-                      <X className="w-5 h-5" />
+                    <h3 className="font-bold text-white">Crea Post</h3>
+                    <Button variant="ghost" size="icon" onClick={() => setShowCreatePost(false)} className="text-gray-500 hover:text-white">
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleCreatePost} className="space-y-4">
-                    <div>
-                      <Input
-                        placeholder="Titolo del post"
-                        value={newPost.title}
-                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Textarea
-                        placeholder="Descrizione (opzionale)"
-                        value={newPost.description}
-                        onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
-                        rows={3}
-                      />
-                    </div>
+                  <form onSubmit={handleCreatePost} className="space-y-3">
+                    <Input
+                      placeholder="Titolo del post"
+                      value={newPost.title}
+                      onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                      required
+                      className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl"
+                    />
+                    <Textarea
+                      placeholder="Descrizione (opzionale)"
+                      value={newPost.description}
+                      onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
+                      rows={3}
+                      className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl"
+                    />
                     
-                    {/* Photo Upload */}
-                    <div className="border-2 border-dashed rounded-lg p-4">
+                    <div className="border border-dashed border-white/10 rounded-xl p-4">
                       {newPost.photo_url ? (
                         <div className="relative">
-                          <img
-                            src={newPost.photo_url}
-                            alt="Preview"
-                            className="w-full h-64 object-cover rounded-lg"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => setNewPost({ ...newPost, photo_url: "" })}
-                          >
+                          <img src={newPost.photo_url} alt="Preview" className="w-full h-48 object-cover rounded-xl" />
+                          <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => setNewPost({ ...newPost, photo_url: "" })}>
                             <X className="w-4 h-4" />
                           </Button>
                         </div>
                       ) : (
-                        <label className="flex flex-col items-center gap-2 cursor-pointer">
-                          <Upload className="w-8 h-8 text-gray-400" />
-                          <span className="text-sm text-gray-600">
-                            {uploading ? "Caricamento..." : "Carica una foto"}
-                          </span>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => e.target.files[0] && handlePhotoUpload(e.target.files[0])}
-                            disabled={uploading}
-                            className="hidden"
-                          />
+                        <label className="flex flex-col items-center gap-2 cursor-pointer py-4">
+                          <Upload className="w-7 h-7 text-gray-600" />
+                          <span className="text-sm text-gray-600">{uploading ? "Caricamento..." : "Carica una foto"}</span>
+                          <Input type="file" accept="image/*" onChange={(e) => e.target.files[0] && handlePhotoUpload(e.target.files[0])} disabled={uploading} className="hidden" />
                         </label>
                       )}
                     </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
-                      disabled={!newPost.title}
-                    >
+                    <Button type="submit" className="w-full text-black font-bold rounded-full" style={{ background: "#E8FF00" }} disabled={!newPost.title}>
                       Pubblica
                     </Button>
                   </form>
@@ -770,8 +736,13 @@ export default function ClientDashboard() {
           )}
         </AnimatePresence>
 
+        {/* Feed header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">Community Feed</h2>
+        </div>
+
         {/* Feed */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {feedPosts.map((post, index) => {
             const PostIcon = getPostIcon(post.type);
             const hasLiked = post.liked_by?.includes(user.email);
@@ -781,23 +752,22 @@ export default function ClientDashboard() {
             return (
               <motion.div
                 key={post.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
+                transition={{ duration: 0.3, delay: index * 0.04 }}
               >
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-3">
+                <Card className="overflow-hidden bg-[#111] border-white/5 rounded-2xl hover:border-white/10 transition-all duration-200">
+                  <CardHeader className="pb-2 px-5 pt-5">
                     <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${getPostColor(post.type)} flex items-center justify-center`}>
-                        <PostIcon className="w-6 h-6 text-white" />
+                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${getPostColor(post.type)} flex items-center justify-center flex-shrink-0`}>
+                        <PostIcon className="w-5 h-5 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white">{post.user_name}</h3>
-                        <p className="text-sm text-gray-400 flex items-center gap-2">
-                          <Calendar className="w-3 h-3" />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-white text-sm">{post.user_name}</h3>
+                        <p className="text-xs text-gray-500">
                           {new Date(post.created_date).toLocaleDateString('it-IT', { 
                             day: 'numeric', 
-                            month: 'long',
+                            month: 'short',
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
@@ -805,11 +775,11 @@ export default function ClientDashboard() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-3 px-5 pb-4">
                     <div>
-                      <h4 className="font-semibold text-lg mb-2 text-white">{post.title}</h4>
+                      <h4 className="font-bold text-white mb-1">{post.title}</h4>
                       {post.description && (
-                        <p className="text-gray-300">{post.description}</p>
+                        <p className="text-gray-400 text-sm leading-relaxed">{post.description}</p>
                       )}
                     </div>
                     
@@ -817,40 +787,38 @@ export default function ClientDashboard() {
                       <img
                         src={post.photo_url}
                         alt={post.title}
-                        className="w-full rounded-lg object-cover max-h-96"
+                        className="w-full rounded-xl object-cover max-h-80"
                       />
                     )}
                     
                     {post.gym_name && (
-                      <div className="flex items-center gap-2 text-sm text-gray-400 bg-white/5 rounded-lg p-3">
-                        <MapPin className="w-4 h-4 text-blue-600" />
+                      <div className="flex items-center gap-2 text-xs text-gray-500 bg-white/5 rounded-lg px-3 py-2">
+                        <MapPin className="w-3 h-3" />
                         <span>{post.gym_name}</span>
                       </div>
                     )}
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-3 border-t">
-                      <div className="flex items-center gap-6">
-                        <button
-                          onClick={() => handleLike(post)}
-                          className={`flex items-center gap-2 transition-colors ${
-                            hasLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'
-                          }`}
-                        >
-                          <Heart className={`w-5 h-5 ${hasLiked ? 'fill-red-600' : ''}`} />
-                          <span className="text-sm font-medium">{post.likes || 0}</span>
-                        </button>
-                        <button 
-                          onClick={() => toggleComments(post.id)}
-                          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-                        >
-                          <MessageCircle className="w-5 h-5" />
-                          <span className="text-sm font-medium">{postComments.length}</span>
-                        </button>
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
-                          <Share2 className="w-5 h-5" />
-                        </button>
-                      </div>
+                    <div className="flex items-center gap-5 pt-1 border-t border-white/5">
+                      <button
+                        onClick={() => handleLike(post)}
+                        className={`flex items-center gap-1.5 text-sm transition-colors ${
+                          hasLiked ? 'text-red-400' : 'text-gray-600 hover:text-red-400'
+                        }`}
+                      >
+                        <Heart className={`w-4 h-4 ${hasLiked ? 'fill-red-400' : ''}`} />
+                        <span className="font-medium">{post.likes || 0}</span>
+                      </button>
+                      <button 
+                        onClick={() => toggleComments(post.id)}
+                        className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-white transition-colors"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="font-medium">{postComments.length}</span>
+                      </button>
+                      <button className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-white transition-colors">
+                        <Share2 className="w-4 h-4" />
+                      </button>
                     </div>
 
                     {/* Comments Section */}
@@ -860,29 +828,20 @@ export default function ClientDashboard() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="border-t pt-4 space-y-3"
+                          className="space-y-3 pt-3 border-t border-white/5"
                         >
-                          {/* Comments List */}
                           {postComments.length > 0 && (
-                            <div className="space-y-3 mb-3">
+                            <div className="space-y-2">
                               {postComments.map((comment) => (
-                                <div key={comment.id} className="flex gap-3">
-                                  <Avatar className="h-8 w-8 flex-shrink-0">
-                                    <AvatarFallback className="text-xs bg-gradient-to-br from-blue-400 to-orange-400 text-white">
+                                <div key={comment.id} className="flex gap-2.5">
+                                  <Avatar className="h-7 w-7 flex-shrink-0">
+                                    <AvatarFallback className="text-xs font-bold text-black" style={{ background: "#E8FF00" }}>
                                       {comment.user_name?.charAt(0).toUpperCase() || 'U'}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <div className="flex-1 bg-gray-50 rounded-lg p-3">
-                                    <p className="font-semibold text-sm text-gray-900">{comment.user_name}</p>
-                                    <p className="text-sm text-gray-700 mt-1">{comment.text}</p>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                      {new Date(comment.created_date).toLocaleDateString('it-IT', { 
-                                        day: 'numeric', 
-                                        month: 'short',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                      })}
-                                    </p>
+                                  <div className="flex-1 bg-white/5 rounded-xl px-3 py-2">
+                                    <p className="font-semibold text-xs text-white">{comment.user_name}</p>
+                                    <p className="text-sm text-gray-300 mt-0.5">{comment.text}</p>
                                   </div>
                                 </div>
                               ))}
@@ -895,17 +854,15 @@ export default function ClientDashboard() {
                               placeholder="Scrivi un commento..."
                               value={newComment[post.id] || ""}
                               onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleAddComment(post.id);
-                                }
-                              }}
+                              onKeyPress={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                              className="bg-white/5 border-white/10 text-white placeholder-gray-600 text-sm rounded-xl"
                             />
                             <Button
                               size="icon"
                               onClick={() => handleAddComment(post.id)}
                               disabled={!newComment[post.id]?.trim()}
-                              className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                              className="text-black rounded-xl flex-shrink-0"
+                              style={{ background: "#E8FF00" }}
                             >
                               <Send className="w-4 h-4" />
                             </Button>
@@ -921,18 +878,15 @@ export default function ClientDashboard() {
         </div>
 
         {feedPosts.length === 0 && (
-          <Card className="py-12 bg-[#1a1a1a] border-white/10">
+          <Card className="py-12 bg-[#111] border-white/5 rounded-2xl">
             <CardContent className="text-center">
-              <Camera className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">
-                Nessun post ancora
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Condividi il tuo primo momento di allenamento!
-              </p>
+              <Camera className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Nessun post ancora</h3>
+              <p className="text-gray-600 text-sm mb-5">Condividi il tuo primo momento di allenamento!</p>
               <Button
                 onClick={() => setShowCreatePost(true)}
-                className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700"
+                className="text-black font-bold rounded-full px-6"
+                style={{ background: "#E8FF00" }}
               >
                 <Camera className="w-4 h-4 mr-2" />
                 Crea il primo post
