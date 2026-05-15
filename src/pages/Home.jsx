@@ -77,10 +77,15 @@ export default function Home() {
       try {
         const userData = await base44.auth.me();
         setUser(userData);
-        const gymsData = await base44.entities.Gym.list("-created_date", 6);
-        setGyms(gymsData);
+        // Se non ha abbonamento attivo, vai all'onboarding
+        if (!userData?.subscription_type || userData.subscription_type === "none") {
+          navigate(createPageUrl("Onboarding"));
+          return;
+        }
       } catch (error) {
-        // not logged in
+        // non loggato → onboarding
+        navigate(createPageUrl("Onboarding"));
+        return;
       }
       try {
         const gymsData = await base44.entities.Gym.list("-created_date", 6);

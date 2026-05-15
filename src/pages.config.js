@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import About from './pages/About';
+import Onboarding from './pages/Onboarding';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Contact from './pages/Contact';
