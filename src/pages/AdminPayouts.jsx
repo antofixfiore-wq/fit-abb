@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function AdminPayouts() {
+export default function AdminPayouts({ embedded = false }) {
   const [user, setUser] = useState(null);
   const [gyms, setGyms] = useState([]);
   const [reports, setReports] = useState([]);
@@ -87,13 +87,13 @@ export default function AdminPayouts() {
   const pendingVisuraGyms = gyms.filter(g => g.visura_url && g.visura_status === "pending").length;
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
+    <div className="flex items-center justify-center py-12">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E8FF00]"></div>
     </div>
   );
 
   if (error) return (
-    <div className="min-h-screen bg-[#0a0a0a] p-6 flex items-center justify-center">
+    <div className="p-6 flex items-center justify-center">
       <Alert className="bg-red-900/20 border-red-500/30 max-w-md">
         <AlertCircle className="h-4 w-4 text-red-400" />
         <AlertDescription className="text-red-300">{error}</AlertDescription>
@@ -102,7 +102,7 @@ export default function AdminPayouts() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-6">
+    <div className={embedded ? "p-2" : "min-h-screen bg-[#0a0a0a] p-6"}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

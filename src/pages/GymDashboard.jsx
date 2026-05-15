@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import PayoutReportTab from "@/components/gym/PayoutReportTab";
 import DocumentsPaymentsTab from "@/components/gym/DocumentsPaymentsTab";
+import AdminPayouts from "@/pages/AdminPayouts";
 import { motion } from "framer-motion";
 
 export default function GymDashboard() {
@@ -376,7 +377,7 @@ export default function GymDashboard() {
           )}
 
           <Tabs defaultValue="payouts" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-1">
+            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-8" : "grid-cols-3 md:grid-cols-7"}`}>
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
               <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
@@ -384,6 +385,9 @@ export default function GymDashboard() {
               <TabsTrigger value="subscriptions" className="text-xs">Clienti</TabsTrigger>
               <TabsTrigger value="posts" className="text-xs">Post</TabsTrigger>
               <TabsTrigger value="events" className="text-xs">Eventi</TabsTrigger>
+              {user?.role === "admin" && (
+                <TabsTrigger value="admin" className="text-xs">🛡️ Admin</TabsTrigger>
+              )}
             </TabsList>
 
             {/* Payouts Tab */}
@@ -781,6 +785,13 @@ export default function GymDashboard() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* Admin Tab - solo per admin */}
+            {user?.role === "admin" && (
+              <TabsContent value="admin">
+                <AdminPayouts embedded={true} />
+              </TabsContent>
+            )}
 
             {/* Events Tab */}
             <TabsContent value="events" className="space-y-6">

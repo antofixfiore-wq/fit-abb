@@ -84,11 +84,6 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Home"),
       icon: Home,
     },
-    ...(user?.role === "admin" ? [{
-      title: "Pagamenti Admin",
-      url: "/AdminPayouts",
-      icon: Euro,
-    }] : []),
     {
       title: "Dashboard",
       url: createPageUrl("ClientDashboard"),
