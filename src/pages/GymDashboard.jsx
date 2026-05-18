@@ -30,6 +30,7 @@ import {
 import PayoutReportTab from "@/components/gym/PayoutReportTab";
 import DocumentsPaymentsTab from "@/components/gym/DocumentsPaymentsTab";
 import AccessValidationTab from "@/components/gym/AccessValidationTab";
+import OnboardingChecklist from "@/components/gym/OnboardingChecklist";
 import AdminPayouts from "@/pages/AdminPayouts";
 import { motion } from "framer-motion";
 
@@ -63,6 +64,14 @@ export default function GymDashboard() {
     valid_until: ""
   });
 
+  const [activeTab, setActiveTab] = useState("access");
+
+  const [gymInfo, setGymInfo] = useState({ description: "", opening_hours: {} });
+  const [savingInfo, setSavingInfo] = useState(false);
+
+  const DAYS = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+  const DAY_KEYS = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     description: "",
@@ -91,6 +100,10 @@ export default function GymDashboard() {
       }
 
       setGym(userGym);
+      setGymInfo({
+        description: userGym.description || "",
+        opening_hours: userGym.opening_hours || {},
+      });
 
       const membershipsData = await base44.entities.GymMembership.filter({ gym_id: userGym.id });
       setMemberships(membershipsData);
@@ -212,6 +225,42 @@ export default function GymDashboard() {
 
   const getActiveSubscriptionsCount = () => {
     return subscriptions.filter(s => s.status === "active").length;
+  };
+
+  const handleSaveInfo = async () => {
+    setSavingInfo(true);
+    try {
+      await base44.entities.Gym.update(gym.id, {
+        description: gymInfo.description,
+        opening_hours: gymInfo.opening_hours,
+      });
+      await loadData();
+      setSuccess("Informazioni aggiornate!");
+    } catch {
+      setError("Errore nel salvataggio");
+    }
+    setSavingInfo(false);
+  };
+
+  const setHour = (dayKey, field, value) => {
+    setGymInfo(prev => ({
+      ...prev,
+      opening_hours: {
+        ...prev.opening_hours,
+        [dayKey]: { ...prev.opening_hours[dayKey], [field]: value },
+      },
+    }));
+  };
+
+  const toggleDay = (dayKey) => {
+    setGymInfo(prev => {
+      const current = prev.opening_hours[dayKey];
+      if (current) {
+        const { [dayKey]: _, ...rest } = prev.opening_hours;
+        return { ...prev, opening_hours: rest };
+      }
+      return { ...prev, opening_hours: { ...prev.opening_hours, [dayKey]: { open: "09:00", close: "21:00" } } };
+    });
   };
 
   const getEstimatedRevenue = () => {
@@ -362,19 +411,23 @@ export default function GymDashboard() {
             </Alert>
           )}
 
-          <Tabs defaultValue="access" className="space-y-6">
-            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-3 md:grid-cols-8" : "grid-cols-3 md:grid-cols-7"}`}>
+          {/* Onboarding checklist */}
+          <OnboardingChecklist gym={gym} onTabChange={setActiveTab} />
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className={`grid w-full gap-1 ${user?.role === "admin" ? "grid-cols-4 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"}`}>
               <TabsTrigger value="access" className="text-xs">🎫 Check-in</TabsTrigger>
               {user?.role === "admin" && (
                 <TabsTrigger value="admin" className="text-xs">🛡️ Admin</TabsTrigger>
               )}
               <TabsTrigger value="payouts" className="text-xs">💰 Guadagni</TabsTrigger>
               <TabsTrigger value="documents" className="text-xs">📄 Documenti</TabsTrigger>
+              <TabsTrigger value="info" className="text-xs">📝 Info</TabsTrigger>
+              <TabsTrigger value="photos" className="text-xs">📷 Foto</TabsTrigger>
               <TabsTrigger value="memberships" className="text-xs">Abbonamenti</TabsTrigger>
               <TabsTrigger value="subscriptions" className="text-xs">Clienti</TabsTrigger>
               <TabsTrigger value="posts" className="text-xs">Post</TabsTrigger>
               <TabsTrigger value="events" className="text-xs">Eventi</TabsTrigger>
-              <TabsTrigger value="photos" className="text-xs">Foto</TabsTrigger>
             </TabsList>
 
             {/* Payouts Tab */}
@@ -390,6 +443,77 @@ export default function GymDashboard() {
             {/* Access Validation Tab */}
             <TabsContent value="access" className="space-y-6">
               <AccessValidationTab gymId={gym.id} />
+            </TabsContent>
+
+            {/* Info Tab */}
+            <TabsContent value="info" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Descrizione</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    value={gymInfo.description}
+                    onChange={e => setGymInfo(p => ({ ...p, description: e.target.value }))}
+                    placeholder="Racconta la tua palestra: attrezzature, atmosfera, specialità..."
+                    rows={5}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Orari di apertura</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {DAY_KEYS.map((key, i) => {
+                      const isOpen = !!gymInfo.opening_hours[key];
+                      const hours = gymInfo.opening_hours[key] || {};
+                      return (
+                        <div key={key} className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => toggleDay(key)}
+                            className={`w-24 text-xs font-semibold py-1.5 rounded-lg border transition-all ${
+                              isOpen ? "bg-green-50 border-green-300 text-green-700" : "bg-gray-50 border-gray-200 text-gray-400"
+                            }`}
+                          >
+                            {DAYS[i]}
+                          </button>
+                          {isOpen ? (
+                            <div className="flex items-center gap-2 flex-1">
+                              <Input
+                                type="time"
+                                value={hours.open || "09:00"}
+                                onChange={e => setHour(key, "open", e.target.value)}
+                                className="w-28 text-sm"
+                              />
+                              <span className="text-gray-400 text-sm">–</span>
+                              <Input
+                                type="time"
+                                value={hours.close || "21:00"}
+                                onChange={e => setHour(key, "close", e.target.value)}
+                                className="w-28 text-sm"
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 text-sm">Chiuso</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button
+                onClick={handleSaveInfo}
+                disabled={savingInfo}
+                className="w-full bg-gradient-to-r from-blue-600 to-orange-600"
+              >
+                {savingInfo ? "Salvataggio..." : "Salva informazioni"}
+              </Button>
             </TabsContent>
 
             {/* Photos Tab */}
