@@ -37,8 +37,8 @@ export default function Onboarding() {
   };
 
   const handleGuest = () => {
-    // Vai sempre alla Home
-    navigate(createPageUrl("Home"));
+    // Vai alla Home con parametro guest=true per attivare il promo dopo 5 secondi
+    navigate(createPageUrl("Home") + "?guest=true");
   };
 
   return (
