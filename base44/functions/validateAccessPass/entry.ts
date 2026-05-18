@@ -68,11 +68,23 @@ Deno.serve(async (req) => {
     // Verifica abbonamento ancora attivo
     const clientUser = await base44.asServiceRole.entities.User.filter({ email: accessPass.client_email });
     const client = clientUser[0];
-    if (!client || !client.subscription_type || client.subscription_type === 'none') {
+    const validTypes = ['gold', 'plus', 'premium'];
+    if (!client || !validTypes.includes(client.subscription_type)) {
       return Response.json({
         validation_status: 'denied',
         denial_reason: 'abbonamento_non_attivo',
         message: 'Abbonamento del cliente non attivo'
+      }, { status: 403 });
+    }
+
+    // Verifica che la palestra accetti il piano del cliente
+    const gym = await base44.asServiceRole.entities.Gym.get(accessPass.gym_id);
+    const availabilityField = `available_for_${client.subscription_type}`;
+    if (gym && gym[availabilityField] === false) {
+      return Response.json({
+        validation_status: 'denied',
+        denial_reason: 'piano_non_valido_palestra',
+        message: `Questa palestra non accetta il piano ${client.subscription_type}`
       }, { status: 403 });
     }
 

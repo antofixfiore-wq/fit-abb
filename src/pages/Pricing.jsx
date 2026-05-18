@@ -12,7 +12,7 @@ export default function Pricing() {
     {
       type: "gold",
       name: "Gold",
-      price: 39.99,
+      price: 40,
       color: "from-yellow-400 to-yellow-600",
       bgColor: "bg-yellow-50",
       features: [

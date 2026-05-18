@@ -122,14 +122,17 @@ export default function Layout({ children, currentPageName }) {
     }
     
     const colors = {
-      silver: "bg-gray-200 text-gray-800",
       gold: "bg-yellow-300 text-black",
-      premium: "bg-[#E8FF00] text-black"
+      plus: "bg-[#E8FF00] text-black",
+      premium: "bg-blue-200 text-blue-900"
     };
 
+    const names = { gold: "Gold", plus: "Plus", premium: "Platinum" };
+    const color = colors[user.subscription_type] || "bg-gray-200 text-gray-800";
+
     return (
-      <Badge className={`${colors[user.subscription_type]} text-xs`}>
-        {user.subscription_type.toUpperCase()}
+      <Badge className={`${color} text-xs`}>
+        {names[user.subscription_type] || user.subscription_type.toUpperCase()}
       </Badge>
     );
   };
