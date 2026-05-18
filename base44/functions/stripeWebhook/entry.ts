@@ -5,10 +5,10 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 // Mappa price_id -> plan_type interno
 const PRICE_TO_PLAN = {
-  'price_1TYMrSDL9ritAoOVEGrOmX3J': 'gold',
-  'price_1TYMrSDL9ritAoOVYTYACYgp': 'plus',
-  'price_1TYMrSDL9ritAoOVr5mBfcES': 'annuale_gold',
-  'price_1TYMrSDL9ritAoOVsUGaXEMI': 'annuale_plus'
+  'price_1TYNUEDL9ritAoOVxMN3gpvS': 'gold',
+  'price_1TYNUEDL9ritAoOVgmKN8wgk': 'plus',
+  'price_1TYNUIDL9ritAoOVyrj1xUq4': 'annuale_gold',
+  'price_1TYNUIDL9ritAoOVWEoOrwtp': 'annuale_plus'
 };
 
 // Mappa plan -> subscription_type sul profilo utente
