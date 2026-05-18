@@ -203,7 +203,7 @@ html {
 .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Prevent text selection on buttons, icons, and nav tabs for native app feel */
-button, .btn, [role="button"], .lucide, svg.icon, nav a, .nav-item, .tabs-trigger, .tab-button {
+button, .btn, [role="button"], .lucide, svg.icon, nav a, .nav-item, .tabs-trigger, .tab-button, .touch-manipulation {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -211,7 +211,35 @@ button, .btn, [role="button"], .lucide, svg.icon, nav a, .nav-item, .tabs-trigge
   -webkit-touch-callout: none;
 }
 
+/* Touch optimizations for mobile */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Larger touch targets for mobile (min 44x44px as per iOS/Android guidelines) */
+@media (max-width: 768px) {
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove tap highlight on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 /* Pull-to-refresh support for scrollable content */
 .pull-to-refresh {
   overscroll-behavior-y: contain;
+}
+
+/* Smooth scrolling with momentum on iOS */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent zoom on double-tap for iOS */
+* {
+  touch-action: pan-x pan-y;
 }

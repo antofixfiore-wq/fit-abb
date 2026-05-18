@@ -242,23 +242,23 @@ export default function Gyms() {
         </div>
       </div>
 
-      {/* Search and Sort Bar */}
-      <div className="bg-[#1a1a1a] border-b border-white/10 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
+      {/* Search and Sort Bar - Mobile optimized */}
+      <div className="bg-[#1a1a1a] border-b border-white/10 sticky top-0 z-10 shadow-sm backdrop-blur-xl safe-top">
+        <div className="px-4 py-3">
+          <div className="flex flex-col gap-3">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
-                placeholder="Cerca per nome, città..."
+                placeholder="Cerca palestra..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-12 text-base touch-manipulation"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto pb-1">
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Ordina per" />
+                <SelectTrigger className="w-full min-w-[140px] h-12 touch-manipulation">
+                  <SelectValue placeholder="Ordina" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="rating">
@@ -267,18 +267,8 @@ export default function Gyms() {
                       Rating
                     </div>
                   </SelectItem>
-                  <SelectItem value="price-asc">
-                    <div className="flex items-center gap-2">
-                      <TrendingDown className="w-4 h-4" />
-                      Prezzo crescente
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="price-desc">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" />
-                      Prezzo decrescente
-                    </div>
-                  </SelectItem>
+                  <SelectItem value="price-asc">Prezzo ↑</SelectItem>
+                  <SelectItem value="price-desc">Prezzo ↓</SelectItem>
                   {userLocation && (
                     <SelectItem value="distance">
                       <div className="flex items-center gap-2">
@@ -293,27 +283,26 @@ export default function Gyms() {
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="relative"
+                className="h-12 min-w-[48px] px-3 touch-manipulation"
               >
-                <Filter className="w-4 h-4 mr-2" />
-                Filtri
+                <Filter className="w-5 h-5" />
                 {activeFiltersCount() > 0 && (
-                  <Badge className="ml-2 bg-blue-600">{activeFiltersCount()}</Badge>
+                  <Badge className="ml-1 bg-blue-600 min-w-[20px] h-5 text-xs">{activeFiltersCount()}</Badge>
                 )}
               </Button>
               {/* Toggle mappa/lista */}
-              <div className="flex border border-white/20 rounded-md overflow-hidden">
+              <div className="flex border border-white/20 rounded-lg overflow-hidden shrink-0">
                 <button
                   onClick={() => setViewMode("map")}
-                  className={`px-3 py-2 flex items-center gap-1.5 text-sm transition-colors ${viewMode === "map" ? "bg-[#E8FF00] text-black font-semibold" : "bg-transparent text-gray-400 hover:text-white"}`}
+                  className={`px-3 py-2 flex items-center justify-center transition-colors touch-manipulation ${viewMode === "map" ? "bg-[#E8FF00] text-black" : "bg-transparent text-gray-400"}`}
                 >
-                  <Map className="w-4 h-4" /> Mappa
+                  <Map className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`px-3 py-2 flex items-center gap-1.5 text-sm transition-colors ${viewMode === "list" ? "bg-[#E8FF00] text-black font-semibold" : "bg-transparent text-gray-400 hover:text-white"}`}
+                  className={`px-3 py-2 flex items-center justify-center transition-colors touch-manipulation ${viewMode === "list" ? "bg-[#E8FF00] text-black" : "bg-transparent text-gray-400"}`}
                 >
-                  <List className="w-4 h-4" /> Lista
+                  <List className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -471,23 +460,19 @@ export default function Gyms() {
         </div>
       )}
 
-      {/* Gyms Grid */}
-      {viewMode === "list" && <div className="max-w-7xl mx-auto px-6 py-12">
+      {/* Gyms Grid - Mobile optimized */}
+      {viewMode === "list" && <div className="max-w-7xl mx-auto px-4 py-8">
         {filteredGyms.length === 0 ? (
-          <div className="text-center py-20">
-            <Building2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              Nessuna palestra trovata
-            </h3>
-            <p className="text-gray-500 mb-4">
-              Prova a modificare i filtri di ricerca
-            </p>
-            <Button variant="outline" onClick={clearFilters}>
+          <div className="text-center py-16">
+            <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-white mb-2">Nessuna palestra trovata</h3>
+            <p className="text-gray-500 text-sm mb-4">Prova a modificare i filtri</p>
+            <Button variant="outline" onClick={clearFilters} className="h-11 px-6 touch-manipulation">
               Cancella filtri
             </Button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredGyms.map((gym, index) => {
               const minPrice = getGymMinPrice(gym.id);
               return (
@@ -496,56 +481,51 @@ export default function Gyms() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{ y: -5 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <Card className="overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 h-full bg-[#1a1a1a] border-white/10 group"
+                  <Card className="overflow-hidden cursor-pointer active:scale-[0.98] transition-all h-full bg-[#1a1a1a] border-white/10 touch-manipulation"
                     onClick={() => navigate(`${createPageUrl("GymDetail")}?id=${gym.id}`)}>
-                    <div className="relative h-56 bg-black overflow-hidden">
+                    <div className="relative h-48 bg-black overflow-hidden">
                       {gym.photos?.[0] ? (
                         <img
                           src={gym.photos[0]}
                           alt={gym.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover active:scale-105 transition-transform"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-orange-100">
-                          <Building2 className="w-20 h-20 text-blue-300" />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/5 to-white/[0.02]">
+                          <Building2 className="w-16 h-16 text-white/10" />
                         </div>
                       )}
                       {gym.google_rating && (
-                        <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-sm">{gym.google_rating}</span>
+                        <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 fill-[#E8FF00] text-[#E8FF00]" />
+                          <span className="text-xs font-bold text-white">{gym.google_rating}</span>
                         </div>
                       )}
                       {minPrice && (
-                        <div className="absolute bottom-4 left-4 bg-blue-600 text-white rounded-lg px-3 py-1.5 shadow-lg">
-                          <span className="text-sm font-semibold">Da €{minPrice}/mese</span>
+                        <div className="absolute bottom-3 left-3 bg-[#E8FF00] text-black rounded-lg px-2.5 py-1.5 shadow-lg">
+                          <span className="text-xs font-bold">Da €{minPrice}/mese</span>
                         </div>
                       )}
                     </div>
-                    <CardContent className="p-6 space-y-4">
+                    <CardContent className="p-4 space-y-3">
                       <div>
-                        <h3 className="font-bold text-xl mb-3 text-white">{gym.name}</h3>
-                        <div className="space-y-2 mb-4">
-                          <div className="flex items-start gap-2 text-gray-400">
-                            <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
-                            <div className="text-sm">
-                              <div>{gym.city}</div>
-                              {gym.address && <div className="text-gray-500">{gym.address}</div>}
-                            </div>
-                          </div>
+                        <h3 className="font-bold text-base mb-2 text-white">{gym.name}</h3>
+                        <div className="flex items-center gap-1.5 text-gray-400 text-sm">
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">{gym.city}</span>
                         </div>
                         {gym.amenities && gym.amenities.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {gym.amenities.slice(0, 4).map((amenity, i) => (
-                              <Badge key={i} variant="secondary" className="text-xs">
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {gym.amenities.slice(0, 3).map((amenity, i) => (
+                              <Badge key={i} variant="secondary" className="text-[10px] px-2 py-0.5 h-auto">
                                 {amenity}
                               </Badge>
                             ))}
-                            {gym.amenities.length > 4 && (
-                              <Badge variant="outline" className="text-xs">
-                                +{gym.amenities.length - 4}
+                            {gym.amenities.length > 3 && (
+                              <Badge variant="outline" className="text-[10px] px-2 py-0.5 h-auto">
+                                +{gym.amenities.length - 3}
                               </Badge>
                             )}
                           </div>
@@ -556,7 +536,7 @@ export default function Gyms() {
                           e.stopPropagation();
                           navigate(`${createPageUrl("CheckIn")}?gym_id=${gym.id}`);
                         }}
-                        className="w-full bg-[#E8FF00] hover:bg-[#E8FF00]/80 text-black font-semibold"
+                        className="w-full bg-[#E8FF00] hover:bg-[#E8FF00]/90 text-black font-semibold h-11 touch-manipulation"
                       >
                         💪 Allenati
                       </Button>
