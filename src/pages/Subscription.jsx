@@ -132,14 +132,15 @@ export default function Subscription() {
         return;
       }
 
-      const response = await base44.functions.invoke('createCheckoutSession', {
+      const response = await base44.functions.invoke('manageSubscription', {
+        action: 'create_checkout',
         plan_type: planType,
         success_url: `${window.location.origin}/Subscription?plan=${planType}&success=true`,
         cancel_url: `${window.location.origin}/Subscription?plan=${planType}`,
       });
 
-      if (response.data?.url) {
-        window.location.href = response.data.url;
+      if (response.data?.checkout_url) {
+        window.location.href = response.data.checkout_url;
       } else {
         setError("Errore nella creazione della sessione di pagamento.");
       }

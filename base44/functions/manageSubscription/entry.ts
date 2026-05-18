@@ -48,8 +48,8 @@ Deno.serve(async (req) => {
         mode: 'subscription',
         payment_method_types: ['card'],
         line_items: [{ price: PRICE_IDS[plan_type], quantity: 1 }],
-        success_url: success_url || `${Deno.env.get('APP_URL')}/Profile?subscription=success`,
-        cancel_url: cancel_url || `${Deno.env.get('APP_URL')}/Subscription?plan=${plan_type}`,
+        success_url: success_url || `${req.headers.get('origin')}/Profile?subscription=success`,
+        cancel_url: cancel_url || `${req.headers.get('origin')}/Subscription?plan=${plan_type}`,
         metadata: {
           base44_app_id: Deno.env.get('BASE44_APP_ID'),
           plan_type,

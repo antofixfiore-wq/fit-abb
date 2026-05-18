@@ -38,6 +38,23 @@ Deno.serve(async (req) => {
     switch (event.type) {
 
       // Pagamento abbonamento completato (prima attivazione o rinnovo)
+      // Salva stripe_customer_id al completamento del checkout
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        const userEmail = session.metadata?.user_email;
+        const customerId = session.customer;
+        if (userEmail && customerId) {
+          const users = await base44.asServiceRole.entities.User.filter({ email: userEmail });
+          if (users[0] && !users[0].stripe_customer_id) {
+            await base44.asServiceRole.entities.User.update(users[0].id, {
+              stripe_customer_id: customerId
+            });
+            console.log(`stripe_customer_id salvato per ${userEmail}: ${customerId}`);
+          }
+        }
+        break;
+      }
+
       case 'invoice.paid': {
         const invoice = event.data.object;
         if (invoice.billing_reason === 'subscription_create' || invoice.billing_reason === 'subscription_cycle') {
