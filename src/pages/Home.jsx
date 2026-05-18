@@ -122,18 +122,15 @@ export default function Home() {
           navigate(createPageUrl("Onboarding"));
           return;
         }
+        // Utente con abbonamento attivo → niente promo
+        const gymsData = await base44.entities.Gym.list("-created_date", 6);
+        setGyms(gymsData);
+        setLoading(false);
       } catch (error) {
         // non loggato → onboarding
         navigate(createPageUrl("Onboarding"));
         return;
       }
-      try {
-        const gymsData = await base44.entities.Gym.list("-created_date", 6);
-        setGyms(gymsData);
-      } catch {}
-      setLoading(false);
-      // Mostra il promo dopo 1 secondo per utenti con abbonamento
-      setTimeout(() => setShowPromo(true), 1000);
     };
     loadData();
   }, []);
