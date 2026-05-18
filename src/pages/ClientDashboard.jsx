@@ -515,16 +515,17 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0a0a0a] pb-24">
       <PullToRefresh onRefresh={loadData}>
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 pt-4">
         {/* Header Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-4"
         >
-          <Card className="mb-6 overflow-hidden bg-[#111] border-white/5 rounded-2xl">
+          <Card className="overflow-hidden bg-[#111] border-white/5 rounded-2xl">
             {/* Banner */}
             <div className="relative h-36 group">
               {user?.banner_image_url ? (
@@ -623,7 +624,7 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
-          className="mb-4"
+          className="mb-3"
         >
           <ProgressStats user={user} />
         </motion.div>
@@ -633,7 +634,7 @@ export default function ClientDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="mb-6"
+          className="mb-4"
         >
           <Card className="bg-[#111] border-white/5 rounded-2xl">
             <CardHeader className="pb-4">
@@ -745,12 +746,12 @@ export default function ClientDashboard() {
         </AnimatePresence>
 
         {/* Feed header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur-sm py-3 mb-3 border-b border-white/5">
           <h2 className="text-lg font-bold text-white">Community Feed</h2>
         </div>
 
         {/* Feed */}
-        <div className="space-y-3">
+        <div className="space-y-3 pb-4">
           {feedPosts.map((post, index) => {
             const PostIcon = getPostIcon(post.type);
             const hasLiked = post.liked_by?.includes(user.email);
@@ -783,7 +784,7 @@ export default function ClientDashboard() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3 px-5 pb-4">
+                  <CardContent className="space-y-3 px-4 pb-3">
                     <div>
                       <h4 className="font-bold text-white mb-1">{post.title}</h4>
                       {post.description && (
