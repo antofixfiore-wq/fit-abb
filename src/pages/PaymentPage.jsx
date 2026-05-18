@@ -24,14 +24,14 @@ const PLANS = {
   },
   annuale_gold: { 
     name: 'Gold Annuale', 
-    price: '€480/anno', 
+    price: '€365/anno', 
     features: ['Tutti i benefit Gold', 'Risparmio del 20%', 'Pagamento unico'],
     color: 'from-yellow-400 to-yellow-600',
     badge: 'bg-yellow-500'
   },
   annuale_plus: { 
     name: 'Plus Annuale', 
-    price: '€840/anno', 
+    price: '€650/anno', 
     features: ['Tutti i benefit Plus', 'Risparmio del 20%', 'Pagamento unico'],
     color: 'from-[#E8FF00] to-yellow-400',
     badge: 'bg-[#E8FF00]'
@@ -56,7 +56,18 @@ export default function PaymentPage() {
       return;
     }
 
+    // Timeout di 30 secondi per la validazione
+    const timeoutId = setTimeout(() => {
+      if (loading && validating) {
+        setError('Tempo di risposta eccessivo. Riprova più tardi.');
+        setLoading(false);
+        setValidating(false);
+      }
+    }, 30000);
+
     validateToken();
+
+    return () => clearTimeout(timeoutId);
   }, [token]);
 
   const validateToken = async () => {
@@ -75,6 +86,7 @@ export default function PaymentPage() {
         setTokenData(response.data);
       }
     } catch (err) {
+      console.error('Errore validazione token:', err);
       setError('Errore di connessione. Riprova più tardi.');
     } finally {
       setValidating(false);
@@ -95,9 +107,11 @@ export default function PaymentPage() {
       if (response.data?.checkout_url) {
         // Controlla se siamo in iframe
         if (window !== window.top) {
-          setError('Il pagamento deve essere completato in una nuova finestra. Clicca qui sotto per aprire il checkout.');
-          // Mostra bottone per aprire in nuova finestra
-          window.open(response.data.checkout_url, '_blank');
+          // Siamo in iframe - apri in nuova finestra
+          const newWindow = window.open(response.data.checkout_url, '_blank');
+          if (!newWindow) {
+            setError('Il popup è stato bloccato. Permetti i popup per questo sito e riprova.');
+          }
         } else {
           window.location.href = response.data.checkout_url;
         }
@@ -105,6 +119,7 @@ export default function PaymentPage() {
         setError(response.data?.error || 'Errore nella creazione del pagamento');
       }
     } catch (err) {
+      console.error('Errore durante il checkout:', err);
       setError('Errore durante il pagamento. Riprova.');
     } finally {
       setSelectedPlan(null);

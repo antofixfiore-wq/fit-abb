@@ -53,6 +53,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Token già utilizzato' }, { status: 400 });
     }
 
+    // Verifica che l'email esista nell'entity User
+    const users = await base44.asServiceRole.entities.User.filter({ email: tokenData.email });
+    if (users.length === 0) {
+      console.error(`Email nel token non trovata: ${tokenData.email}`);
+      return Response.json({ error: 'Email non valida' }, { status: 400 });
+    }
+
     const { action } = body || {};
 
     // === VALIDA TOKEN ===

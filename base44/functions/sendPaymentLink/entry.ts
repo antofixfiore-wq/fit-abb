@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'npm:uuid@9.0.0';
 const PLANS = {
   gold: { name: 'Gold', price: '€40/mese' },
   plus: { name: 'Plus', price: '€70/mese' },
-  annuale_gold: { name: 'Gold Annuale', price: '€480/anno' },
-  annuale_plus: { name: 'Plus Annuale', price: '€840/anno' }
+  annuale_gold: { name: 'Gold Annuale', price: '€365/anno' },
+  annuale_plus: { name: 'Plus Annuale', price: '€650/anno' }
 };
 
 Deno.serve(async (req) => {

@@ -43,13 +43,23 @@ Deno.serve(async (req) => {
         const session = event.data.object;
         const userEmail = session.metadata?.user_email;
         const customerId = session.customer;
+        const planType = session.metadata?.plan_type;
         if (userEmail && customerId) {
           const users = await base44.asServiceRole.entities.User.filter({ email: userEmail });
-          if (users[0] && !users[0].stripe_customer_id) {
-            await base44.asServiceRole.entities.User.update(users[0].id, {
+          if (users[0]) {
+            const updateData = {
               stripe_customer_id: customerId
-            });
-            console.log(`stripe_customer_id salvato per ${userEmail}: ${customerId}`);
+            };
+            // Imposta stato attivo se non esiste già
+            if (!users[0].subscription_status) {
+              updateData.subscription_status = 'active';
+            }
+            if (planType && !users[0].subscription_plan) {
+              updateData.subscription_plan = planType;
+              updateData.subscription_type = PLAN_TO_SUB_TYPE[planType] || planType;
+            }
+            await base44.asServiceRole.entities.User.update(users[0].id, updateData);
+            console.log(`Checkout completato per ${userEmail}: customer_id=${customerId}, plan=${planType}`);
           }
         }
         break;
@@ -60,6 +70,7 @@ Deno.serve(async (req) => {
         if (invoice.billing_reason === 'subscription_create' || invoice.billing_reason === 'subscription_cycle') {
           const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
           const planType = subscription.metadata?.plan_type;
+          const paymentToken = subscription.metadata?.payment_token;
           const userEmail = subscription.metadata?.user_email;
 
           if (!userEmail || !planType) break;
@@ -80,6 +91,18 @@ Deno.serve(async (req) => {
               subscription_cancel_at_period_end: false,
               subscription_status: 'active'
             });
+          }
+
+          // Marca il token come usato
+          if (paymentToken) {
+            const tokens = await base44.asServiceRole.entities.PaymentToken.filter({ token: paymentToken });
+            if (tokens[0] && !tokens[0].used) {
+              await base44.asServiceRole.entities.PaymentToken.update(tokens[0].id, {
+                used: true,
+                subscription_id: subscription.id
+              });
+              console.log(`Token ${paymentToken} marcato come usato`);
+            }
           }
 
           console.log(`Abbonamento attivato/rinnovato per ${userEmail}: ${planType} fino al ${endDate}`);
