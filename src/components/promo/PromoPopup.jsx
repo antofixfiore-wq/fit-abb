@@ -1,14 +1,22 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Check, Gift, Euro } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createPageUrl } from "@/utils";
 
 export default function PromoPopup({ onClose }) {
+  const navigate = useNavigate();
   const [closed, setClosed] = useState(false);
 
   const handleClose = () => {
     setClosed(true);
     setTimeout(() => onClose(), 300);
+  };
+
+  const handleSubscribe = () => {
+    handleClose();
+    navigate(createPageUrl("Auth") + "?mode=register&type=client");
   };
 
   return (
@@ -88,10 +96,7 @@ export default function PromoPopup({ onClose }) {
             <Button
               size="lg"
               className="w-full bg-[#E8FF00] text-black font-bold text-base py-6 rounded-full hover:opacity-90 transition-opacity shadow-lg"
-              onClick={() => {
-                handleClose();
-                window.location.href = "/Onboarding";
-              }}
+              onClick={handleSubscribe}
             >
               <Gift className="w-5 h-5 mr-2" />
               Iscriviti Subito!

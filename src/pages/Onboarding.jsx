@@ -37,13 +37,22 @@ export default function Onboarding() {
   };
 
   const handleGuest = () => {
-    setShowPromo(true);
+    // Non mostrare il promo se l'utente ha già un abbonamento
+    base44.auth.me().then(user => {
+      if (user && (user.subscription_type === "gold" || user.subscription_type === "plus" || user.subscription_type === "premium")) {
+        navigate(createPageUrl("Home"));
+      } else {
+        setShowPromo(true);
+      }
+    }).catch(() => {
+      setShowPromo(true);
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative">
+    <div className="min-h-screen bg-[#0a0a0a] relative overflow-hidden">
       {showPromo && <PromoPopup onClose={() => setShowPromo(false)} />}
-      <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative px-6">
+      <div className="min-h-screen flex flex-col items-center justify-center relative px-6">
       {/* Background glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
