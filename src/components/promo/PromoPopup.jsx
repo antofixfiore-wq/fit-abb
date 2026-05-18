@@ -13,18 +13,15 @@ export default function PromoPopup({ onClose }) {
     setClosed(true);
     setTimeout(() => {
       onClose();
-      navigate("/");
     }, 300);
   };
 
   const handleSubscribe = () => {
-    handleClose();
     navigate(createPageUrl("Auth") + "?mode=register&type=client");
   };
 
   const handleGuest = () => {
     handleClose();
-    navigate("/");
   };
 
   return (
