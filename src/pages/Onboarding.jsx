@@ -41,9 +41,9 @@ export default function Onboarding() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[#0a0a0a] relative">
       {showPromo && <PromoPopup onClose={() => setShowPromo(false)} />}
-      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center overflow-hidden relative px-6">
+      <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative px-6">
       {/* Background glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
@@ -266,6 +266,6 @@ export default function Onboarding() {
 
       </AnimatePresence>
     </div>
-    </>
+    </div>
   );
 }
