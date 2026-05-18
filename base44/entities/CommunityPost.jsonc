@@ -1,0 +1,67 @@
+{
+  "name": "CommunityPost",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'autore del post"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nome dell'autore"
+    },
+    "user_photo_url": {
+      "type": "string",
+      "description": "Foto profilo dell'autore"
+    },
+    "caption": {
+      "type": "string",
+      "description": "Didascalia del post"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "URL della foto caricata"
+    },
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra (opzionale)"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra (opzionale)"
+    },
+    "boosts": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di boost (like)"
+    },
+    "boosted_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Email degli utenti che hanno boostato"
+    },
+    "comments_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di commenti"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se true, visibile nel tab Discover"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato creato il post"
+    }
+  },
+  "required": [
+    "user_email",
+    "user_name",
+    "caption"
+  ]
+}

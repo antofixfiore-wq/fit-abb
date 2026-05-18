@@ -1,0 +1,37 @@
+{
+  "name": "CommunityComment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID del post"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'autore del commento"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nome dell'autore"
+    },
+    "user_photo_url": {
+      "type": "string",
+      "description": "Foto profilo dell'autore"
+    },
+    "text": {
+      "type": "string",
+      "description": "Testo del commento"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato creato il commento"
+    }
+  },
+  "required": [
+    "post_id",
+    "user_email",
+    "user_name",
+    "text"
+  ]
+}

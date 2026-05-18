@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Building2, User, QrCode, LayoutDashboard } from "lucide-react";
+import { Home, Building2, User, QrCode, LayoutDashboard, Users } from "lucide-react";
 import { useNavigationState } from "@/hooks/useNavigationState";
 
 const navItems = [
   { title: "Home", url: createPageUrl("Home"), icon: Home },
   { title: "Palestre", url: createPageUrl("Gyms"), icon: Building2 },
+  { title: "Community", url: "/Community", icon: Users },
   { title: "Check-in", url: "/CheckIn", icon: QrCode, highlight: true },
   { title: "Dashboard", url: createPageUrl("ClientDashboard"), icon: LayoutDashboard },
   { title: "Profilo", url: createPageUrl("Profile"), icon: User },

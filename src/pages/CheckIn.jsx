@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { AlertCircle, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Share2 } from 'lucide-react';
 import CheckInCard from '@/components/checkin/CheckInCard';
 import { toast } from 'sonner';
 
@@ -163,7 +163,7 @@ export default function CheckIn() {
     );
   }
 
-  // Se il pass è generato, mostra CheckInCard
+  // Se il pass è generato, mostra CheckInCard + bottone share
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
       <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center gap-3">
@@ -172,7 +172,7 @@ export default function CheckIn() {
         </Button>
         <span className="text-white font-semibold">Il tuo pass</span>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 gap-4">
         <CheckInCard
           accessPass={accessPass}
           onRegenerate={() => {
@@ -181,6 +181,18 @@ export default function CheckIn() {
           }}
           isLoading={isLoading}
         />
+        
+        {/* Bottone Condividi */}
+        <div className="w-full max-w-sm">
+          <Button
+            onClick={() => navigate(`/ShareAfterCheckIn?gym_id=${gymId}`)}
+            className="w-full h-12 text-black font-bold rounded-2xl"
+            style={{ background: "#E8FF00" }}
+          >
+            <Share2 className="w-5 h-5 mr-2" />
+            Condividi con la Community
+          </Button>
+        </div>
       </div>
     </div>
   );

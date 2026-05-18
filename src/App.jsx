@@ -25,6 +25,8 @@ import SendPaymentLinks from './pages/SendPaymentLinks';
 import ASIAssociation from './pages/ASIAssociation';
 import BillingHistory from './pages/BillingHistory';
 import AdminGyms from './pages/AdminGyms';
+import Community from './pages/Community';
+import ShareAfterCheckIn from './pages/ShareAfterCheckIn';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -286,6 +288,28 @@ const AuthenticatedApp = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <LayoutWrapper currentPageName="CompleteProfile"><CompleteProfile /></LayoutWrapper>
+          </motion.div>
+        } />
+        <Route path="/Community" element={
+          <motion.div
+            key="community"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <LayoutWrapper currentPageName="Community"><Community /></LayoutWrapper>
+          </motion.div>
+        } />
+        <Route path="/ShareAfterCheckIn" element={
+          <motion.div
+            key="share-after-checkin"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <ShareAfterCheckIn />
           </motion.div>
         } />
         <Route path="*" element={

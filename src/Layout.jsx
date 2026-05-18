@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Building2, User, LogOut, LayoutDashboard, Menu, Sparkles, Users, QrCode, Activity, Euro, Receipt } from "lucide-react";
+import { Home, Building2, User, LogOut, LayoutDashboard, Menu, Sparkles, Users, QrCode, Activity, Euro, Receipt, MessageCircle } from "lucide-react";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -104,6 +104,11 @@ export default function Layout({ children, currentPageName }) {
       title: "AI Workout",
       url: createPageUrl("WorkoutPlanner"),
       icon: Sparkles,
+    },
+    {
+      title: "Community",
+      url: "/Community",
+      icon: MessageCircle,
     },
     {
       title: "Palestre",

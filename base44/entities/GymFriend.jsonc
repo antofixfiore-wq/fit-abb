@@ -1,0 +1,38 @@
+{
+  "name": "GymFriend",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente che richiede/ha la connessione"
+    },
+    "friend_email": {
+      "type": "string",
+      "description": "Email dell'amico"
+    },
+    "friend_name": {
+      "type": "string",
+      "description": "Nome dell'amico"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Stato della richiesta di amicizia"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stata inviata la richiesta"
+    }
+  },
+  "required": [
+    "user_email",
+    "friend_email",
+    "friend_name"
+  ]
+}

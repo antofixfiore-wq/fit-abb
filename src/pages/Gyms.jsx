@@ -665,10 +665,11 @@ export default function Gyms() {
             })}
           </div>
         )}
-      </div>}
+      </div>
 
       {/* Users Grid */}
-      {viewMode === "list" && searchType === "users" && <div className="max-w-7xl mx-auto px-4 py-8">
+      {viewMode === "list" && searchType === "users" && (
+        <div className="max-w-7xl mx-auto px-4 py-8">
         {filteredUsers.length === 0 ? (
           <div className="text-center py-16">
             <Users className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -726,6 +727,7 @@ export default function Gyms() {
           </div>
         )}
       </div>
+      )}
       </PullToRefresh>
     </div>
   );
