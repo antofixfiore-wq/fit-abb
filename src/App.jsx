@@ -16,6 +16,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import DeleteAccount from './pages/DeleteAccount';
 import AppStoreLanding from './pages/AppStoreLanding';
+import BillingHistory from './pages/BillingHistory';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -68,6 +69,7 @@ const AuthenticatedApp = () => {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/delete-account" element={<DeleteAccount />} />
         <Route path="/about" element={<AppStoreLanding />} />
+        <Route path="/BillingHistory" element={<LayoutWrapper currentPageName="BillingHistory"><BillingHistory /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
