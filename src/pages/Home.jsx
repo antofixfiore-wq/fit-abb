@@ -5,8 +5,9 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Star, Building2, ArrowRight, MapPin, Zap, Clock, Infinity, ChevronDown, Gift } from "lucide-react";
-import { motion } from "framer-motion";
+import { Check, Star, Building2, ArrowRight, MapPin, Zap, Clock, Infinity, ChevronDown, Gift, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import PromoPopup from "@/components/promo/PromoPopup";
 
 const subscriptionPlans = [
   {
@@ -95,6 +96,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [gyms, setGyms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPromo, setShowPromo] = useState(false);
   const iosNative = isIOSNative();
 
   useEffect(() => {
@@ -107,6 +109,8 @@ export default function Home() {
           setGyms(gymsData);
         } catch {}
         setLoading(false);
+        // Mostra il promo dopo 1 secondo
+        setTimeout(() => setShowPromo(true), 1000);
         return;
       }
 
@@ -128,6 +132,8 @@ export default function Home() {
         setGyms(gymsData);
       } catch {}
       setLoading(false);
+      // Mostra il promo dopo 1 secondo per utenti con abbonamento
+      setTimeout(() => setShowPromo(true), 1000);
     };
     loadData();
   }, []);
@@ -142,6 +148,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+      {showPromo && <PromoPopup onClose={() => setShowPromo(false)} />}
 
       {/* ─── PROMO BANNER ─── */}
       <div className="bg-gradient-to-r from-[#E8FF00] via-[#f0ff33] to-[#E8FF00] text-black py-3 px-4 text-center relative overflow-hidden">
