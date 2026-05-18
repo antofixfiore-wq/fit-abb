@@ -14,6 +14,7 @@ const subscriptionDetails = {
     name: "Gold",
     price: 40,
     period: "mese",
+    serviceFee: 2.99,
     color: "from-yellow-400 to-yellow-600",
     benefits: [
       "Accesso a palestre Gold",
@@ -21,7 +22,6 @@ const subscriptionDetails = {
       "AI Workout Planner",
       "Community e badge",
       "Eventi esclusivi",
-      "+ €2,99 costo di servizio per accesso"
     ]
   },
   annuale_gold: {
@@ -29,6 +29,7 @@ const subscriptionDetails = {
     price: 365,
     period: "anno",
     priceNote: "= 1€ al giorno",
+    serviceFee: 2.99,
     color: "from-yellow-400 to-yellow-600",
     benefits: [
       "Accesso a tutte le palestre Gold",
@@ -36,7 +37,6 @@ const subscriptionDetails = {
       "AI Workout Planner",
       "Tracking allenamenti e progressi",
       "Community e badge",
-      "+ €2,99 costo di servizio per accesso"
     ]
   },
   annuale_plus: {
@@ -44,6 +44,7 @@ const subscriptionDetails = {
     price: 650,
     period: "anno",
     priceNote: "= 1,78€ al giorno",
+    serviceFee: 3.99,
     color: "from-[#E8FF00] to-yellow-400",
     benefits: [
       "Ingressi illimitati H24",
@@ -51,13 +52,13 @@ const subscriptionDetails = {
       "Palestre Gold + Platinum",
       "AI Workout Planner",
       "Community e badge",
-      "+ €3,99 costo di servizio per accesso"
     ]
   },
   plus: {
     name: "Plus",
     price: 70,
     period: "mese",
+    serviceFee: 3.99,
     color: "from-[#E8FF00] to-yellow-400",
     benefits: [
       "Accesso a palestre Gold e Platinum",
@@ -65,13 +66,13 @@ const subscriptionDetails = {
       "AI Workout Planner",
       "Community e badge",
       "Eventi esclusivi",
-      "+ €3,99 costo di servizio per accesso"
     ]
   },
   premium: {
     name: "Platinum",
     price: 99.99,
     period: "mese",
+    serviceFee: null,
     color: "from-blue-500 to-orange-500",
     benefits: [
       "Accesso a tutte le palestre partner",
@@ -255,22 +256,36 @@ export default function Subscription() {
                 </Alert>
               )}
 
-              <div className="border-t pt-6 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Abbonamento {selectedPlan.period === "anno" ? "annuale" : "mensile"}:</span>
-                  <span className="text-xl font-bold">€{selectedPlan.price}</span>
+              <div className="border-t pt-6">
+                <h3 className="font-semibold mb-4 text-lg">Riepilogo costi</h3>
+                <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Abbonamento {selectedPlan.period === "anno" ? "annuale" : "mensile"}</span>
+                    <div className="text-right">
+                      <span className="font-bold text-gray-900">€{selectedPlan.price}</span>
+                      <span className="text-xs text-gray-400 ml-1">/{selectedPlan.period}</span>
+                    </div>
+                  </div>
+                  {selectedPlan.priceNote && (
+                    <p className="text-sm text-green-600 font-medium">{selectedPlan.priceNote}</p>
+                  )}
+                  {selectedPlan.serviceFee && (
+                    <>
+                      <div className="border-t border-gray-200 pt-3 flex justify-between items-start">
+                        <div>
+                          <span className="text-gray-600 text-sm">Costo di servizio per accesso</span>
+                          <p className="text-xs text-gray-400 mt-0.5">Addebitato ad ogni ingresso in palestra</p>
+                        </div>
+                        <span className="font-semibold text-gray-900">€{selectedPlan.serviceFee.toFixed(2)}</span>
+                      </div>
+                      <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700">
+                        💡 Il costo di servizio è separato dall'abbonamento e viene applicato solo quando accedi fisicamente a una palestra.
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <span>Costo di servizio per ogni accesso in palestra:</span>
-                  <span className="font-medium">
-                    {["plus", "annuale_plus"].includes(new URLSearchParams(window.location.search).get("plan")) ? "€3,99" : "€2,99"}
-                  </span>
-                </div>
-                {selectedPlan.priceNote && (
-                  <p className="text-sm text-green-600 font-medium">{selectedPlan.priceNote}</p>
-                )}
-                <p className="text-xs text-gray-400 pt-1">
-                  Il costo di servizio viene addebitato ad ogni accesso in palestra. L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}.
+                <p className="text-xs text-gray-400 mt-3">
+                  L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}. Puoi disdire in qualsiasi momento.
                 </p>
               </div>
 
