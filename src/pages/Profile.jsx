@@ -619,6 +619,26 @@ export default function Profile() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Footer links - Apple requirement */}
+          <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-3">
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <a href="/privacy" className="text-gray-400 hover:text-[#E8FF00] transition-colors">
+                Privacy Policy
+              </a>
+              <span className="text-gray-600">•</span>
+              <a href="/terms" className="text-gray-400 hover:text-[#E8FF00] transition-colors">
+                Termini e Condizioni
+              </a>
+              <span className="text-gray-600">•</span>
+              <a href="mailto:supporto@fit-abb.com" className="text-gray-400 hover:text-[#E8FF00] transition-colors">
+                Supporto
+              </a>
+            </div>
+            <p className="text-xs text-gray-500">
+              © {new Date().getFullYear()} Fit ABB - Tutti i diritti riservati
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>

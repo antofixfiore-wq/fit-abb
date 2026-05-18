@@ -638,6 +638,56 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Footer - Apple requirement */}
+      <footer className="bg-black text-white py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <img src="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png" alt="Fit ABB" className="w-8 h-8" />
+                <span className="font-bold text-lg">Fit ABB</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Allenati in tutta Italia con un solo abbonamento.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Link Rapidi</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href={createPageUrl("Gyms")} className="hover:text-[#E8FF00]">Palestre</a></li>
+                <li><a href="#pricing" className="hover:text-[#E8FF00]">Prezzi</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#E8FF00]">Come Funziona</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Legale</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="/privacy" className="hover:text-[#E8FF00]">Privacy Policy</a></li>
+                <li><a href="/terms" className="hover:text-[#E8FF00]">Termini e Condizioni</a></li>
+                <li><a href="/delete-account" className="hover:text-[#E8FF00]">Elimina Account</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Contatti</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="mailto:supporto@fit-abb.com" className="hover:text-[#E8FF00]">supporto@fit-abb.com</a></li>
+                <li className="text-gray-500">Italia</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-gray-500">
+              © {new Date().getFullYear()} Fit ABB. Tutti i diritti riservati.
+            </p>
+            <div className="flex gap-4 text-xs text-gray-500">
+              <span>GDPR Compliant</span>
+              <span>•</span>
+              <span>Sicuro e Protetto</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
