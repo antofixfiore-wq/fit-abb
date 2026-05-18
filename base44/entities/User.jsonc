@@ -2,101 +2,41 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "subscription_type": {
+    "address": {
       "type": "string",
-      "enum": [
-        "none",
-        "gold",
-        "plus",
-        "premium"
-      ],
-      "default": "none"
+      "description": "Indirizzo completo"
     },
-    "subscription_plan": {
+    "city": {
       "type": "string",
-      "description": "Piano Stripe esatto: gold, plus, annuale_gold, annuale_plus"
+      "description": "Citt\u00e0"
     },
-    "subscription_status": {
+    "cap": {
       "type": "string",
-      "enum": [
-        "active",
-        "past_due",
-        "cancelled",
-        "trialing"
-      ],
-      "default": "active",
-      "description": "Stato abbonamento Stripe"
-    },
-    "subscription_cancel_at_period_end": {
-      "type": "boolean",
-      "default": false,
-      "description": "Se true, l'abbonamento non si rinnova alla scadenza"
-    },
-    "stripe_customer_id": {
-      "type": "string",
-      "description": "ID customer Stripe"
-    },
-    "stripe_subscription_id": {
-      "type": "string",
-      "description": "ID subscription Stripe attiva"
-    },
-    "subscription_start_date": {
-      "type": "string",
-      "format": "date"
-    },
-    "subscription_end_date": {
-      "type": "string",
-      "format": "date"
-    },
-    "id_document_url": {
-      "type": "string"
-    },
-    "medical_certificate_url": {
-      "type": "string"
-    },
-    "documents_verified": {
-      "type": "boolean",
-      "default": false
+      "description": "CAP"
     },
     "phone": {
-      "type": "string"
-    },
-    "birth_date": {
       "type": "string",
-      "format": "date"
+      "description": "Numero di telefono"
     },
-    "profile_image_url": {
-      "type": "string"
-    },
-    "banner_image_url": {
-      "type": "string"
-    },
-    "followed_gyms": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": []
-    },
-    "total_points": {
-      "type": "number",
-      "default": 0
-    },
-    "level": {
-      "type": "number",
-      "default": 1
-    },
-    "current_streak": {
-      "type": "number",
-      "default": 0
-    },
-    "completed_workouts": {
-      "type": "number",
-      "default": 0
-    },
-    "last_workout_date": {
+    "codice_fiscale": {
       "type": "string",
-      "format": "date"
+      "description": "Codice fiscale"
+    },
+    "asi_documents_uploaded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Documenti ASI caricati"
+    },
+    "asi_association_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Stato associazione ASI"
     }
   }
 }

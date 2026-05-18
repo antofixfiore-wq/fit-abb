@@ -1,0 +1,76 @@
+{
+  "name": "ASIAssociation",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Nome completo"
+    },
+    "codice_fiscale": {
+      "type": "string",
+      "description": "Codice fiscale"
+    },
+    "address": {
+      "type": "string",
+      "description": "Indirizzo completo"
+    },
+    "city": {
+      "type": "string",
+      "description": "Citt\u00e0"
+    },
+    "cap": {
+      "type": "string",
+      "description": "CAP"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Numero di telefono"
+    },
+    "document_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URL documenti (certificato medico, documento, tessera)"
+    },
+    "subscription_type": {
+      "type": "string",
+      "description": "Tipo abbonamento (gold/plus/premium)"
+    },
+    "association_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data associazione"
+    },
+    "asi_form_submitted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Form ASI inviato"
+    },
+    "asi_response": {
+      "type": "string",
+      "description": "Risposta API ASI"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "submitted",
+        "completed",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Stato associazione"
+    }
+  },
+  "required": [
+    "user_email",
+    "full_name",
+    "codice_fiscale",
+    "subscription_type"
+  ]
+}

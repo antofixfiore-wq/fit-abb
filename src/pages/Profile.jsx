@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy, Building2, CreditCard, X, RefreshCw, LogOut } from "lucide-react";
+import { Upload, CheckCircle, CheckCircle2, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy, Building2, CreditCard, X, RefreshCw, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import ProgressStats from "../components/gamification/ProgressStats";
 import BadgeCard from "../components/gamification/BadgeCard";
@@ -549,6 +549,45 @@ export default function Profile() {
                   </AlertDescription>
                 </Alert>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Sezione Associazione ASI */}
+          <Card className="bg-[#1a1a1a] border-[#E8FF00]/20">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-[#E8FF00]" />
+                <CardTitle className="text-white text-base">Associazione ASI</CardTitle>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Ottieni la tua tessera ASI gratuita con l'abbonamento
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="bg-[#E8FF00]/10 border border-[#E8FF00]/30 rounded-xl p-4">
+                <p className="text-sm text-white mb-2">
+                  <strong className="text-[#E8FF00]">Gratis!</strong> Con il tuo abbonamento FitAbb hai diritto alla tessera ASI
+                </p>
+                <ul className="text-xs text-gray-300 space-y-1 mb-3">
+                  <li>✓ Copertura assicurativa sportiva</li>
+                  <li>✓ Accesso a eventi e gare ASI</li>
+                  <li>✓ Tesseramento valido su tutto il territorio nazionale</li>
+                </ul>
+                {user?.asi_association_status === "completed" ? (
+                  <Badge className="bg-[#E8FF00] text-black w-full justify-center">
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    Associazione Completata
+                  </Badge>
+                ) : (
+                  <Button
+                    onClick={() => window.location.href = "/ASIAssociation"}
+                    className="w-full bg-[#E8FF00] text-black hover:bg-[#E8FF00]/90"
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Completa Associazione ASI
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
 
