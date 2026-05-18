@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertCircle, ArrowLeft, Dumbbell, Check } from "lucide-react";
+import { CheckCircle, AlertCircle, ArrowLeft, Dumbbell, Check, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 
 const subscriptionDetails = {
@@ -89,32 +89,39 @@ export default function Subscription() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [planType, setPlanType] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadUser();
+    const urlParams = new URLSearchParams(window.location.search);
+    const pt = urlParams.get("plan");
+
+    // Se torna da Stripe con success=true, mostra conferma
+    if (urlParams.get("success") === "true") {
+      navigate(createPageUrl("Profile"));
+      return;
+    }
+
+    if (pt && subscriptionDetails[pt]) {
+      setPlanType(pt);
+      setSelectedPlan(subscriptionDetails[pt]);
+    } else {
+      navigate(createPageUrl("Home"));
+    }
+
+    base44.auth.me().then(setUser).catch(() => {
+      base44.auth.redirectToLogin(window.location.href);
+    });
   }, []);
 
-  const loadUser = async () => {
-    try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const planType = urlParams.get("plan");
-      
-      if (planType && subscriptionDetails[planType]) {
-        setSelectedPlan(subscriptionDetails[planType]);
-      } else {
-        navigate(createPageUrl("Home"));
-      }
-    } catch (error) {
-      base44.auth.redirectToLogin(window.location.href);
-    }
-  };
-
   const handleConfirmSubscription = async () => {
+    // Blocca se siamo in iframe (preview Base44)
+    if (window.self !== window.top) {
+      setError("Il pagamento è disponibile solo dall'app pubblicata, non dall'anteprima.");
+      return;
+    }
+
     setProcessing(true);
     setError(null);
 
@@ -125,21 +132,20 @@ export default function Subscription() {
         return;
       }
 
-      const startDate = new Date();
-      const endDate = new Date();
-      endDate.setMonth(endDate.getMonth() + 1);
-
-      await base44.auth.updateMe({
-        subscription_type: Object.keys(subscriptionDetails).find(
-          key => subscriptionDetails[key].name === selectedPlan.name
-        ),
-        subscription_start_date: startDate.toISOString().split('T')[0],
-        subscription_end_date: endDate.toISOString().split('T')[0]
+      const response = await base44.functions.invoke('createCheckoutSession', {
+        plan_type: planType,
+        success_url: `${window.location.origin}/Subscription?plan=${planType}&success=true`,
+        cancel_url: `${window.location.origin}/Subscription?plan=${planType}`,
       });
 
-      navigate(createPageUrl("Profile"));
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      } else {
+        setError("Errore nella creazione della sessione di pagamento.");
+      }
     } catch (error) {
-      setError("Errore durante l'attivazione dell'abbonamento. Riprova.");
+      console.error(error);
+      setError("Errore durante il pagamento. Riprova.");
     }
     setProcessing(false);
   };
@@ -290,13 +296,23 @@ export default function Subscription() {
               </div>
 
               <Button
-                className={`w-full ${documentsComplete ? 'bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700' : ''}`}
+                className={`w-full ${documentsComplete ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold' : ''}`}
                 size="lg"
                 onClick={handleConfirmSubscription}
                 disabled={!documentsComplete || processing}
               >
-                {processing ? "Elaborazione..." : "Conferma e Attiva Abbonamento"}
+                {processing ? (
+                  "Reindirizzamento al pagamento..."
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5" />
+                    Procedi al Pagamento
+                  </span>
+                )}
               </Button>
+              <p className="text-xs text-center text-gray-400">
+                Pagamento sicuro tramite Stripe · SSL encrypted
+              </p>
             </CardContent>
           </Card>
         </motion.div>

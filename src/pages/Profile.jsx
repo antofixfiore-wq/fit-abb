@@ -56,12 +56,46 @@ export default function Profile() {
     setLoading(false);
   };
 
-  const handleCancelSubscription = async (subscription) => {
-    if (!confirm("Sei sicuro di voler cancellare questo abbonamento?")) return;
+  const handleCancelPlatformSubscription = async () => {
+    if (!confirm("Sei sicuro? Manterrai l'accesso fino alla fine del periodo già pagato, poi l'abbonamento non si rinnoverà.")) return;
     
     setError(null);
     setSuccess(null);
     
+    try {
+      const response = await base44.functions.invoke('manageSubscription', { action: 'cancel_subscription' });
+      if (response.data?.success) {
+        await loadUser();
+        setSuccess("Abbonamento impostato per la cancellazione a fine periodo. Mantieni l'accesso fino alla scadenza.");
+      } else {
+        setError(response.data?.error || "Errore nella cancellazione");
+      }
+    } catch (error) {
+      setError("Errore nella cancellazione dell'abbonamento");
+    }
+  };
+
+  const handleReactivatePlatformSubscription = async () => {
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      const response = await base44.functions.invoke('manageSubscription', { action: 'reactivate_subscription' });
+      if (response.data?.success) {
+        await loadUser();
+        setSuccess("Abbonamento riattivato con successo! Si rinnoverà automaticamente.");
+      } else {
+        setError(response.data?.error || "Errore nella riattivazione");
+      }
+    } catch (error) {
+      setError("Errore nella riattivazione dell'abbonamento");
+    }
+  };
+
+  const handleCancelSubscription = async (subscription) => {
+    if (!confirm("Sei sicuro di voler cancellare questo abbonamento palestra?")) return;
+    setError(null);
+    setSuccess(null);
     try {
       await base44.entities.GymSubscription.update(subscription.id, { status: "cancelled" });
       await loadUser();
@@ -74,18 +108,12 @@ export default function Profile() {
   const handleRenewSubscription = async (subscription) => {
     setError(null);
     setSuccess(null);
-    
     try {
       const membership = memberships.find(m => m.id === subscription.membership_id);
-      if (!membership) {
-        setError("Piano abbonamento non trovato");
-        return;
-      }
-
+      if (!membership) { setError("Piano abbonamento non trovato"); return; }
       const newStartDate = new Date();
       const newEndDate = new Date();
       newEndDate.setDate(newEndDate.getDate() + membership.duration_days);
-
       await base44.entities.GymSubscription.create({
         user_id: user.id,
         gym_id: subscription.gym_id,
@@ -95,7 +123,6 @@ export default function Profile() {
         status: "active",
         price_paid: membership.price
       });
-
       await loadUser();
       setSuccess("Abbonamento rinnovato con successo!");
     } catch (error) {

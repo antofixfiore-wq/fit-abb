@@ -77,6 +77,28 @@ Deno.serve(async (req) => {
       }, { status: 403 });
     }
 
+    // Verifica scadenza abbonamento
+    if (client.subscription_end_date) {
+      const endDate = new Date(client.subscription_end_date);
+      endDate.setHours(23, 59, 59, 999);
+      if (endDate < now) {
+        return Response.json({
+          validation_status: 'denied',
+          denial_reason: 'abbonamento_scaduto',
+          message: 'Abbonamento del cliente scaduto'
+        }, { status: 403 });
+      }
+    }
+
+    // Verifica stato abbonamento (es. past_due)
+    if (client.subscription_status === 'past_due' || client.subscription_status === 'cancelled') {
+      return Response.json({
+        validation_status: 'denied',
+        denial_reason: 'abbonamento_non_valido',
+        message: `Abbonamento non valido (stato: ${client.subscription_status})`
+      }, { status: 403 });
+    }
+
     // Verifica che la palestra accetti il piano del cliente
     const gym = await base44.asServiceRole.entities.Gym.get(accessPass.gym_id);
     const availabilityField = `available_for_${client.subscription_type}`;

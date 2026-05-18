@@ -45,9 +45,10 @@ Deno.serve(async (req) => {
       }, { status: 404 });
     }
 
-    // Verifica disponibilità per tipo abbonamento
+    // Verifica disponibilità per tipo abbonamento (normalizza annuale_gold → gold)
     const subscription_type = userSubscription.subscription_type;
-    const availabilityField = `available_for_${subscription_type}`;
+    const normalizedType = subscription_type.replace('annuale_', '');
+    const availabilityField = `available_for_${normalizedType}`;
     if (gym[availabilityField] === false) {
       return Response.json({
         error: `Palestra non disponibile per piano ${subscription_type}`,
