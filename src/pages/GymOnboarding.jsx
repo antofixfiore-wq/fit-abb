@@ -25,6 +25,7 @@ export default function GymOnboarding() {
     address: "",
     phone: "",
     email: "",
+    // Dati fiscali - da completare dopo
     piva: "",
     billing_name: "",
     iban: "",
@@ -55,10 +56,7 @@ export default function GymOnboarding() {
       if (!form.name || !form.city || !form.address || !form.email)
         return setError("Compila nome, indirizzo, città ed email.") || false;
     }
-    if (step === 2) {
-      if (!form.piva || !form.billing_name || !form.iban)
-        return setError("Compila P.IVA, ragione sociale e IBAN.") || false;
-    }
+    // Step 2 è opzionale - si può completare dopo
     return true;
   };
 
@@ -70,15 +68,12 @@ export default function GymOnboarding() {
     setSaving(true);
     setError("");
     try {
-      await base44.entities.Gym.create({
+      const gymData = {
         name: form.name,
         city: form.city,
         address: form.address,
         phone: form.phone,
         email: form.email,
-        piva: form.piva,
-        billing_name: form.billing_name,
-        iban: form.iban,
         manager_email: user.email,
         visura_status: "pending",
         is_partner: false,
@@ -86,7 +81,14 @@ export default function GymOnboarding() {
         available_for_gold: true,
         available_for_premium: true,
         payout_method: "both",
-      });
+      };
+      
+      // Aggiungi dati fiscali se compilati
+      if (form.piva) gymData.piva = form.piva;
+      if (form.billing_name) gymData.billing_name = form.billing_name;
+      if (form.iban) gymData.iban = form.iban;
+      
+      await base44.entities.Gym.create(gymData);
       navigate("/GymDashboard");
     } catch {
       setError("Errore nel salvataggio. Riprova.");
@@ -246,7 +248,7 @@ export default function GymOnboarding() {
               </div>
             )}
 
-            {/* ── STEP 2: Dati fiscali ── */}
+            {/* ── STEP 2: Dati fiscali (opzionali) ── */}
             {step === 2 && (
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-6">
@@ -255,33 +257,34 @@ export default function GymOnboarding() {
                   </div>
                   <div>
                     <h2 className="text-white font-bold text-lg">Dati fiscali</h2>
-                    <p className="text-gray-500 text-xs">Necessari per i pagamenti mensili</p>
+                    <p className="text-gray-500 text-xs">Facoltativi - puoi completarli dopo</p>
                   </div>
                 </div>
 
-                <div className="bg-blue-900/20 border border-blue-500/20 rounded-xl p-3 mb-5">
-                  <p className="text-blue-300 text-xs">🔒 Dati usati esclusivamente per i pagamenti. Potrai completare i dettagli dalla dashboard.</p>
+                <div className="bg-green-900/20 border border-green-500/20 rounded-xl p-3 mb-5">
+                  <p className="text-green-300 text-xs font-semibold">✓ Step 1 completato!</p>
+                  <p className="text-green-200 text-xs mt-1">La tua palestra è già registrata. Questi dati servono solo per i pagamenti.</p>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-400 text-xs">Partita IVA *</Label>
+                    <Label className="text-gray-400 text-xs">Partita IVA (opzionale)</Label>
                     <Input value={form.piva} onChange={set("piva")} placeholder="IT12345678901" className={inputCls} />
                   </div>
                   <div>
-                    <Label className="text-gray-400 text-xs">IBAN *</Label>
+                    <Label className="text-gray-400 text-xs">IBAN (opzionale)</Label>
                     <Input value={form.iban} onChange={set("iban")} placeholder="IT60X0542811101..." className={inputCls} />
                   </div>
                   <div className="sm:col-span-2">
-                    <Label className="text-gray-400 text-xs">Ragione Sociale / Nome Titolare *</Label>
+                    <Label className="text-gray-400 text-xs">Ragione Sociale (opzionale)</Label>
                     <Input value={form.billing_name} onChange={set("billing_name")} placeholder="Fitness SRL o Mario Rossi" className={inputCls} />
                   </div>
                 </div>
 
                 <div className="bg-[#E8FF00]/5 border border-[#E8FF00]/20 rounded-xl p-4 mt-5">
-                  <p className="text-[#E8FF00] text-xs font-semibold mb-1">⚡ Ci siamo quasi!</p>
+                  <p className="text-[#E8FF00] text-xs font-semibold mb-1">💡 Suggerimento</p>
                   <p className="text-gray-400 text-xs leading-relaxed">
-                    Dopo questo step accedi subito alla dashboard. Da lì potrai caricare foto, orari, visura camerale e completare l'integrazione Stripe.
+                    Puoi saltare questo step e completare i dati fiscali dalla dashboard quando sei pronto ad accettare abbonamenti.
                   </p>
                 </div>
               </div>
@@ -301,12 +304,30 @@ export default function GymOnboarding() {
                 Avanti <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} disabled={saving} className="flex-1 font-bold text-black" style={{ background: "#E8FF00" }}>
-                {saving
-                  ? <><Loader2 className="w-4 h-4 mr-2 animate-spin text-black" />Salvataggio...</>
-                  : <><CheckCircle className="w-4 h-4 mr-2" />Entra nella Dashboard</>
-                }
-              </Button>
+              <>
+                <Button 
+                  onClick={() => {
+                    // Salta step 2 e vai diretto alla dashboard
+                    handleSubmit();
+                  }} 
+                  className="flex-1 font-bold text-black" 
+                  style={{ background: "#E8FF00" }}
+                  disabled={saving}
+                >
+                  {saving
+                    ? <><Loader2 className="w-4 h-4 mr-2 animate-spin text-black" />Salvataggio...</>
+                    : <><CheckCircle className="w-4 h-4 mr-2" />Vai alla Dashboard</>
+                  }
+                </Button>
+                <Button 
+                  onClick={handleSubmit} 
+                  variant="outline"
+                  className="flex-1 border-white/10 text-white hover:bg-white/5"
+                  disabled={saving}
+                >
+                  Compila dopo
+                </Button>
+              </>
             )}
           </div>
         )}

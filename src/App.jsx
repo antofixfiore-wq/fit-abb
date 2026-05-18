@@ -16,6 +16,7 @@ import CheckIn from './pages/CheckIn';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import DeleteAccount from './pages/DeleteAccount';
+import CompleteProfile from './pages/CompleteProfile';
 import AppStoreLanding from './pages/AppStoreLanding';
 import PaymentPage from './pages/PaymentPage';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -274,6 +275,17 @@ const AuthenticatedApp = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <LayoutWrapper currentPageName="AdminGyms"><AdminGyms /></LayoutWrapper>
+          </motion.div>
+        } />
+        <Route path="/CompleteProfile" element={
+          <motion.div
+            key="complete-profile"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <LayoutWrapper currentPageName="CompleteProfile"><CompleteProfile /></LayoutWrapper>
           </motion.div>
         } />
         <Route path="*" element={
