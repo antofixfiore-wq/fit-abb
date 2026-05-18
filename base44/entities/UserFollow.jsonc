@@ -1,0 +1,23 @@
+{
+  "name": "UserFollow",
+  "type": "object",
+  "properties": {
+    "follower_email": {
+      "type": "string",
+      "description": "Email di chi segue"
+    },
+    "following_email": {
+      "type": "string",
+      "description": "Email di chi viene seguito"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 iniziato il follow"
+    }
+  },
+  "required": [
+    "follower_email",
+    "following_email"
+  ]
+}

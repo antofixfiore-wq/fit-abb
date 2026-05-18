@@ -2,61 +2,38 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "address": {
+    "username": {
       "type": "string",
-      "description": "Indirizzo completo"
+      "description": "Username unico dell'utente"
     },
-    "city": {
+    "avatar_url": {
       "type": "string",
-      "description": "Citt\u00e0"
+      "description": "URL dell'avatar"
     },
-    "cap": {
-      "type": "string",
-      "description": "CAP"
-    },
-    "phone": {
-      "type": "string",
-      "description": "Numero di telefono"
-    },
-    "codice_fiscale": {
-      "type": "string",
-      "description": "Codice fiscale"
-    },
-    "asi_documents_uploaded": {
+    "is_public": {
       "type": "boolean",
       "default": false,
-      "description": "Documenti ASI caricati"
+      "description": "Profilo pubblico"
     },
-    "asi_association_status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "processing",
-        "completed",
-        "failed"
-      ],
-      "default": "pending",
-      "description": "Stato associazione ASI"
-    },
-    "profile_public": {
+    "geolocation_allowed": {
       "type": "boolean",
-      "default": true,
-      "description": "Profilo visibile pubblicamente"
+      "default": false,
+      "description": "Consenso geolocalizzazione"
+    },
+    "nearby_discovery_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consenso scoperta nearby"
     },
     "allow_friend_requests": {
       "type": "boolean",
       "default": true,
-      "description": "Consenti richieste di amicizia"
+      "description": "Consenti richieste amicizia"
     },
     "allow_comments": {
       "type": "boolean",
       "default": true,
-      "description": "Consenti commenti sui miei post"
-    },
-    "allow_nearby_discovery": {
-      "type": "boolean",
-      "default": true,
-      "description": "Consenti scoperta da utenti vicini"
+      "description": "Consenti commenti"
     },
     "blocked_users": {
       "type": "array",
@@ -64,14 +41,37 @@
         "type": "string"
       },
       "default": [],
-      "description": "Email utenti bloccati"
+      "description": "Email degli utenti bloccati"
+    },
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "gold",
+        "plus",
+        "premium"
+      ],
+      "default": "none"
+    },
+    "total_posts": {
+      "type": "number",
+      "default": 0,
+      "description": "Contatore denormalizzato post"
+    },
+    "total_boosts_received": {
+      "type": "number",
+      "default": 0,
+      "description": "Boost totali ricevuti"
+    },
+    "followers_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di follower"
+    },
+    "following_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di utenti seguiti"
     }
-  },
-  "required": [
-    "address",
-    "city",
-    "cap",
-    "phone",
-    "codice_fiscale"
-  ]
+  }
 }
