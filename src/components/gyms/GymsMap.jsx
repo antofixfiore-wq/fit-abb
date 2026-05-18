@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Building2 } from "lucide-react";
 
 // Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -39,6 +40,17 @@ export default function GymsMap({ gyms, userLocation }) {
     : [41.9, 12.5];
 
   const gymsWithCoords = gyms.filter(g => g.latitude && g.longitude);
+
+  if (gymsWithCoords.length === 0 && !userLocation) {
+    return (
+      <div className="w-full h-[500px] md:h-[600px] rounded-xl overflow-hidden border border-white/10 flex items-center justify-center bg-[#1a1a1a]">
+        <div className="text-center text-white text-sm">
+          <Building2 className="w-16 h-16 mx-auto mb-4 text-gray-600" />
+          <p>Nessuna palestra disponibile</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-[500px] md:h-[600px] rounded-xl overflow-hidden border border-white/10">
