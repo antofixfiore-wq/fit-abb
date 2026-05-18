@@ -262,21 +262,21 @@ export default function Home() {
       </section>
 
       {/* ─── PIANI ─── */}
-      <section id="piani" className="py-24 px-6 bg-[#0a0a0a]">
+      <section id="piani" className="py-16 md:py-24 px-6 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10 md:mb-16"
           >
-            <Badge className="mb-4 bg-white/5 text-gray-300 border-white/10 px-4 py-2 text-sm">
+            <Badge className="mb-3 md:mb-4 bg-white/5 text-gray-300 border-white/10 px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm">
               Abbonamenti
             </Badge>
-            <h2 className="text-4xl md:text-6xl font-black mb-4">
+            <h2 className="text-3xl md:text-6xl font-black mb-3 md:mb-4">
               Scegli il tuo piano
             </h2>
-            <p className="text-gray-400 text-xl">
+            <p className="text-gray-400 text-base md:text-xl">
               Un abbonamento, libertà totale in tutte le palestre Fit Abb
             </p>
           </motion.div>
@@ -436,18 +436,18 @@ export default function Home() {
       </section>
 
       {/* ─── COME FUNZIONA ─── */}
-      <section className="py-24 px-6 bg-black">
+      <section className="py-16 md:py-24 px-6 bg-black">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">Come funziona</h2>
-            <p className="text-gray-400 text-lg">3 passi per iniziare ad allenarti ovunque</p>
+            <h2 className="text-3xl md:text-5xl font-black mb-3 md:mb-4">Come funziona</h2>
+            <p className="text-gray-400 text-base md:text-lg">3 passi per iniziare ad allenarti ovunque</p>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             {[
               { num: "01", title: "Scegli il piano", desc: "Seleziona l'abbonamento più adatto alle tue esigenze e al tuo budget." },
               { num: "02", title: "Trova la palestra", desc: "Cerca tra centinaia di palestre convenzionate vicino a te in tutta Italia." },
@@ -462,13 +462,13 @@ export default function Home() {
                 className="text-center"
               >
                 <div
-                  className="text-6xl font-black mb-4 block"
+                  className="text-5xl md:text-6xl font-black mb-3 md:mb-4 block"
                   style={{ color: "#E8FF00", opacity: 0.3 }}
                 >
                   {step.num}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                <p className="text-gray-400">{step.desc}</p>
+                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">{step.title}</h3>
+                <p className="text-gray-400 text-sm md:text-base">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -477,29 +477,29 @@ export default function Home() {
 
       {/* ─── PALESTRE ─── */}
       {gyms.length > 0 && (
-        <section className="py-24 px-6 bg-[#0a0a0a]">
+        <section className="py-16 md:py-24 px-6 bg-[#0a0a0a]">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
+              className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4"
             >
               <div>
-                <h2 className="text-4xl md:text-5xl font-black mb-2">Palestre convenzionate</h2>
-                <p className="text-gray-400 text-lg">Alcune delle strutture che ti aspettano</p>
+                <h2 className="text-3xl md:text-5xl font-black mb-2">Palestre convenzionate</h2>
+                <p className="text-gray-400 text-base md:text-lg">Alcune delle strutture che ti aspettano</p>
               </div>
               <Button
                 variant="outline"
                 onClick={() => navigate(createPageUrl("Gyms"))}
-                className="border-white/20 text-white hover:bg-white/10 rounded-full px-6 self-start md:self-auto"
+                className="border-white/20 text-white hover:bg-white/10 rounded-full px-4 md:px-6 py-2 text-sm md:text-base self-start md:self-auto"
               >
                 Esplora palestre convenzionate
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-2" />
               </Button>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {gyms.slice(0, 6).map((gym, i) => (
                 <motion.div
                   key={gym.id}
@@ -547,32 +547,32 @@ export default function Home() {
       )}
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-32 px-6 relative overflow-hidden" style={{ background: "#E8FF00" }}>
+      <section className="py-20 md:py-32 px-6 relative overflow-hidden" style={{ background: "#E8FF00" }}>
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-6xl font-black text-black mb-6 leading-tight">
+            <h2 className="text-3xl md:text-6xl font-black text-black mb-4 md:mb-6 leading-tight">
               Inizia oggi.<br />1€ al giorno.
             </h2>
-            <p className="text-black/70 text-xl mb-10">
+            <p className="text-black/70 text-base md:text-xl mb-8 md:mb-10">
               Unisciti a migliaia di persone che si allenano già con Fit Abb
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-black text-[#E8FF00] hover:bg-gray-900 text-lg font-bold px-12 py-8 rounded-full shadow-xl"
+                className="bg-black text-[#E8FF00] hover:bg-gray-900 text-sm md:text-lg font-bold px-8 md:px-12 py-6 md:py-8 rounded-full shadow-xl"
                 onClick={handleCTAClick}
               >
                 Esplora i piani di abbonamento
-                <ArrowRight className="w-6 h-6 ml-3" />
+                <ArrowRight className="w-4 h-4 md:w-6 md:h-6 ml-2 md:ml-3" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-black/30 text-black hover:bg-black/10 text-lg px-10 py-8 rounded-full"
+                className="border-black/30 text-black hover:bg-black/10 text-sm md:text-lg px-8 md:px-10 py-6 md:py-8 rounded-full"
                 onClick={() => navigate(createPageUrl("Gyms"))}
               >
                 Esplora palestre convenzionate
