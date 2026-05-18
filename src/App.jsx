@@ -28,6 +28,7 @@ import AdminGyms from './pages/AdminGyms';
 import Community from './pages/Community';
 import ShareAfterCheckIn from './pages/ShareAfterCheckIn';
 import Settings from './pages/Settings';
+import PrivacyOnboarding from './pages/PrivacyOnboarding';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -322,6 +323,17 @@ const AuthenticatedApp = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <LayoutWrapper currentPageName="Settings"><Settings /></LayoutWrapper>
+          </motion.div>
+        } />
+        <Route path="/PrivacyOnboarding" element={
+          <motion.div
+            key="privacy-onboarding"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <LayoutWrapper currentPageName="PrivacyOnboarding"><PrivacyOnboarding /></LayoutWrapper>
           </motion.div>
         } />
         <Route path="*" element={
