@@ -728,9 +728,9 @@ export default function Gyms() {
             ))}
           </div>
         )}
-        </div>
-      )}
       </div>
+      )}
     </PullToRefresh>
+    </div>
   );
 }
