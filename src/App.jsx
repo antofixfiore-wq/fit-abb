@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { setupIframeMessaging } from './lib/iframe-messaging';
 import PageNotFound from './lib/PageNotFound';
 import Onboarding from './pages/Onboarding';
+import Auth from './pages/Auth';
 import AdminPayouts from './pages/AdminPayouts';
 import GymOnboarding from './pages/GymOnboarding';
 import CheckIn from './pages/CheckIn';
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
         <Route path="/Onboarding" element={<Onboarding />} />
+        <Route path="/Auth" element={<Auth />} />
         <Route path="/AdminPayouts" element={<LayoutWrapper currentPageName="AdminPayouts"><AdminPayouts /></LayoutWrapper>} />
         <Route path="/GymOnboarding" element={<GymOnboarding />} />
         <Route path="/CheckIn" element={<LayoutWrapper currentPageName="CheckIn"><CheckIn /></LayoutWrapper>} />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
@@ -19,19 +19,19 @@ export default function Onboarding() {
   }, [step]);
 
   const handleClientLogin = () => {
-    base44.auth.redirectToLogin(createPageUrl("ClientDashboard"));
+    navigate(createPageUrl("Auth") + "?mode=login&type=client");
   };
 
   const handleGymLogin = () => {
-    base44.auth.redirectToLogin("/GymDashboard");
+    navigate(createPageUrl("Auth") + "?mode=login&type=gym");
   };
 
   const handleClientRegister = () => {
-    base44.auth.redirectToLogin(createPageUrl("ClientDashboard"));
+    navigate(createPageUrl("Auth") + "?mode=register&type=client");
   };
 
   const handleGymRegister = () => {
-    base44.auth.redirectToLogin("/GymOnboarding");
+    navigate(createPageUrl("Auth") + "?mode=register&type=gym");
   };
 
   const handleGuest = () => {
