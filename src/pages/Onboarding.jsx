@@ -37,17 +37,8 @@ export default function Onboarding() {
   };
 
   const handleGuest = () => {
-    // Non mostrare il promo se l'utente ha già un abbonamento
-    base44.auth.me().then(user => {
-      if (user && (user.subscription_type === "gold" || user.subscription_type === "plus" || user.subscription_type === "premium")) {
-        navigate(createPageUrl("Home"));
-      } else {
-        setShowPromo(true);
-      }
-    }).catch(() => {
-      // Utente non loggato (guest) - vai direttamente alla Home
-      navigate(createPageUrl("Home"));
-    });
+    // Vai sempre alla Home
+    navigate(createPageUrl("Home"));
   };
 
   return (

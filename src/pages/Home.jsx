@@ -101,7 +101,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
-      // Se l'utente arriva come ospite, non reindirizzare
+      // Se l'utente arriva come ospite (dall'onboarding), mostra promo dopo 5 secondi
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("guest") === "true") {
         try {
@@ -109,8 +109,8 @@ export default function Home() {
           setGyms(gymsData);
         } catch {}
         setLoading(false);
-        // Mostra il promo dopo 1 secondo
-        setTimeout(() => setShowPromo(true), 1000);
+        // Mostra il promo dopo 5 secondi
+        setTimeout(() => setShowPromo(true), 5000);
         return;
       }
 
