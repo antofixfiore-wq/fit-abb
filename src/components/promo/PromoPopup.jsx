@@ -21,7 +21,7 @@ export default function PromoPopup({ onClose }) {
 
   const handleGuest = () => {
     handleClose();
-    navigate("/Onboarding");
+    navigate("/");
   };
 
   return (
