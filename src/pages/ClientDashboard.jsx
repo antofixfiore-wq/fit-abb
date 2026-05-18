@@ -17,7 +17,8 @@ import {
   Upload,
   Send,
   Users,
-  Edit
+  Edit,
+  Dumbbell
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -29,7 +30,8 @@ export default function ClientDashboard() {
   const [newComment, setNewComment] = useState({});
   const [stats, setStats] = useState({
     totalPosts: 0,
-    followers: 0
+    followers: 0,
+    workouts: 0
   });
   const [loading, setLoading] = useState(true);
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -74,11 +76,15 @@ export default function ClientDashboard() {
       // Carica gym friend (follower)
       const followers = await base44.entities.UserFollow.filter({ following_email: userData.email });
       
+      // Carica workout (check-in)
+      const gymAccesses = await base44.entities.GymAccess.filter({ user_email: userData.email });
+      
       setFollowersList(followers);
       
       setStats({
         totalPosts: posts.filter(p => p.user_email === userData.email).length,
-        followers: followers.length
+        followers: followers.length,
+        workouts: gymAccesses.length
       });
     } catch (error) {
       console.error("Error loading data:", error);
@@ -156,14 +162,7 @@ export default function ClientDashboard() {
     }
   };
 
-  const handleBoost = async (postId) => {
-    try {
-      await base44.functions.invoke("createBoost", { postId });
-      await loadData();
-    } catch (error) {
-      console.error("Error boosting post:", error);
-    }
-  };
+
 
   const handleAddComment = async (postId) => {
     const commentText = newComment[postId];
@@ -294,7 +293,7 @@ export default function ClientDashboard() {
                 {[
                   { val: stats.totalPosts, label: "Post" },
                   { val: stats.followers, label: "GymFriend", clickable: true },
-                  { val: user?.total_boosts_received || 0, label: "Boost" },
+                  { val: stats.workouts, label: "Workout" },
                 ].map((s) => (
                   <div 
                     key={s.label} 
@@ -449,15 +448,6 @@ export default function ClientDashboard() {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-5 pt-1 border-t border-white/5">
-                      <button
-                        onClick={() => handleBoost(post.id)}
-                        className={`flex items-center gap-1.5 text-sm transition-colors ${
-                          hasBoosted ? 'text-[#E8FF00]' : 'text-gray-600 hover:text-[#E8FF00]'
-                        }`}
-                      >
-                        <Heart className={`w-4 h-4 ${hasBoosted ? 'fill-[#E8FF00]' : ''}`} />
-                        <span className="font-medium">{post.boost_count || 0}</span>
-                      </button>
                       <button 
                         onClick={() => toggleComments(post.id)}
                         className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-white transition-colors"
