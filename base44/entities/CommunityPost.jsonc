@@ -30,6 +30,22 @@
       "type": "string",
       "description": "Nome della palestra (opzionale)"
     },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "only_me",
+        "gym_friends",
+        "gym_friends_nearby",
+        "public"
+      ],
+      "default": "gym_friends",
+      "description": "Visibilit\u00e0 del post"
+    },
+    "show_gym_name": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mostra nome palestra nel post"
+    },
     "boosts": {
       "type": "number",
       "default": 0,
@@ -47,11 +63,6 @@
       "type": "number",
       "default": 0,
       "description": "Numero di commenti"
-    },
-    "is_public": {
-      "type": "boolean",
-      "default": true,
-      "description": "Se true, visibile nel tab Discover"
     },
     "created_date": {
       "type": "string",

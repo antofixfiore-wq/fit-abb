@@ -25,9 +25,15 @@ import {
   Upload,
   Search,
   UserPlus,
-  Check
+  Check,
+  Lock,
+  Shield,
+  Eye
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function Community() {
   const navigate = useNavigate();
@@ -45,7 +51,8 @@ export default function Community() {
     photo_url: "",
     gym_id: "",
     gym_name: "",
-    is_public: true
+    visibility: "gym_friends",
+    show_gym_name: false
   });
 
   useEffect(() => {
@@ -57,7 +64,6 @@ export default function Community() {
       const userData = await base44.auth.me();
       setUser(userData);
 
-      // Carica amici accettati
       const allFriends = await base44.entities.GymFriend.filter({ 
         $or: [{ user_email: userData.email }, { friend_email: userData.email }] 
       });
@@ -66,29 +72,28 @@ export default function Community() {
         .map(f => f.user_email === userData.email ? f.friend_email : f.user_email);
       setFriends(acceptedFriends);
 
-      // Carica richieste di amicizia
       const requests = await base44.entities.GymFriend.filter({ 
         friend_email: userData.email,
         status: "pending"
       });
       setFriendRequests(requests);
 
-      // Carica post in base al tab
       let loadedPosts;
       if (activeTab === "gymfriends") {
-        // Post solo dagli amici accettati
         const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
         loadedPosts = allPosts.filter(post => 
-          (acceptedFriends.includes(post.user_email) || post.user_email === userData.email)
+          (acceptedFriends.includes(post.user_email) || post.user_email === userData.email) &&
+          post.visibility !== "only_me"
         );
       } else {
-        // Post pubblici (Discover)
-        loadedPosts = await base44.entities.CommunityPost.filter({ is_public: true }, "-created_date", 50);
+        const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
+        loadedPosts = allPosts.filter(post => 
+          (post.visibility === "public" || post.user_email === userData.email)
+        );
       }
 
       setPosts(loadedPosts || []);
 
-      // Carica commenti per ogni post
       const allComments = await base44.entities.CommunityComment.list("-created_date");
       const commentsByPost = {};
       allComments.forEach(comment => {
@@ -133,7 +138,7 @@ export default function Community() {
         created_date: new Date().toISOString()
       });
       
-      setNewPost({ caption: "", photo_url: "", gym_id: "", gym_name: "", is_public: true });
+      setNewPost({ caption: "", photo_url: "", gym_id: "", gym_name: "", visibility: "gym_friends", show_gym_name: false });
       setShowCreatePost(false);
       await loadData();
     } catch (error) {
@@ -177,7 +182,6 @@ export default function Community() {
         created_date: new Date().toISOString()
       });
       
-      // Aggiorna counter commenti
       const post = posts.find(p => p.id === postId);
       await base44.entities.CommunityPost.update(postId, {
         comments_count: (post?.comments_count || 0) + 1
@@ -215,6 +219,23 @@ export default function Community() {
     }
   };
 
+  const handleReport = async (post, reason) => {
+    try {
+      await base44.entities.UserReport.create({
+        reporter_email: user.email,
+        reported_user_email: post.user_email,
+        reported_post_id: post.id,
+        reason,
+        description: "",
+        status: "pending",
+        created_date: new Date().toISOString()
+      });
+      await loadData();
+    } catch (error) {
+      console.error("Error reporting post:", error);
+    }
+  };
+
   const getRelativeTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -225,6 +246,26 @@ export default function Community() {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h fa`;
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}g fa`;
     return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+  };
+
+  const getVisibilityIcon = (visibility) => {
+    switch (visibility) {
+      case "only_me": return <Lock className="w-3 h-3" />;
+      case "gym_friends": return <Users className="w-3 h-3" />;
+      case "gym_friends_nearby": return <Users className="w-3 h-3" />;
+      case "public": return <Globe className="w-3 h-3" />;
+      default: return <Globe className="w-3 h-3" />;
+    }
+  };
+
+  const getVisibilityLabel = (visibility) => {
+    switch (visibility) {
+      case "only_me": return "Solo io";
+      case "gym_friends": return "GymFriends";
+      case "gym_friends_nearby": return "GymFriends + Vicini";
+      case "public": return "Pubblico";
+      default: return "Pubblico";
+    }
   };
 
   if (loading) {
@@ -239,26 +280,30 @@ export default function Community() {
     <div className="min-h-screen bg-[#0a0a0a] pb-24">
       <PullToRefresh onRefresh={loadData}>
       <div className="max-w-2xl mx-auto px-4 pt-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-4"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-black text-white">Community</h1>
-            <Button
-              onClick={() => setShowCreatePost(true)}
-              className="text-black font-bold rounded-full"
-              style={{ background: "#E8FF00" }}
-              size="sm"
-            >
-              <Camera className="w-4 h-4 mr-1" />
-              Nuovo
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigate(createPageUrl("Settings"))}
+                className="h-9 w-9 rounded-full"
+              >
+                <Shield className="w-4 h-4" />
+              </Button>
+              <Button
+                onClick={() => setShowCreatePost(true)}
+                className="text-black font-bold rounded-full"
+                style={{ background: "#E8FF00" }}
+                size="sm"
+              >
+                <Camera className="w-4 h-4 mr-1" />
+                Nuovo
+              </Button>
+            </div>
           </div>
 
-          {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-white/5 rounded-full p-1">
               <TabsTrigger value="gymfriends" className="rounded-full data-[state=active]:bg-[#E8FF00] data-[state=active]:text-black">
@@ -272,7 +317,6 @@ export default function Community() {
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-4">
-              {/* Friend Requests */}
               {activeTab === "gymfriends" && friendRequests.length > 0 && (
                 <Card className="bg-[#111] border-white/5 rounded-2xl mb-4">
                   <CardContent className="p-4">
@@ -292,20 +336,10 @@ export default function Community() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => handleFriendRequest(request, false)}
-                              className="h-9 w-9 rounded-full"
-                            >
+                            <Button size="icon" variant="outline" onClick={() => handleFriendRequest(request, false)} className="h-9 w-9 rounded-full">
                               <X className="w-4 h-4" />
                             </Button>
-                            <Button
-                              size="icon"
-                              onClick={() => handleFriendRequest(request, true)}
-                              className="h-9 w-9 rounded-full"
-                              style={{ background: "#E8FF00" }}
-                            >
+                            <Button size="icon" onClick={() => handleFriendRequest(request, true)} className="h-9 w-9 rounded-full" style={{ background: "#E8FF00" }}>
                               <Check className="w-4 h-4" />
                             </Button>
                           </div>
@@ -316,7 +350,6 @@ export default function Community() {
                 </Card>
               )}
 
-              {/* Posts */}
               {posts.length === 0 ? (
                 <Card className="py-12 bg-[#111] border-white/5 rounded-2xl">
                   <CardContent className="text-center">
@@ -347,7 +380,10 @@ export default function Community() {
                       comments={comments[post.id] || []}
                       getRelativeTime={getRelativeTime}
                       sendFriendRequest={sendFriendRequest}
+                      handleReport={handleReport}
                       isFriend={friends.includes(post.user_email) || post.user_email === user.email}
+                      getVisibilityIcon={getVisibilityIcon}
+                      getVisibilityLabel={getVisibilityLabel}
                     />
                   ))}
                 </div>
@@ -358,7 +394,6 @@ export default function Community() {
       </div>
       </PullToRefresh>
 
-      {/* Create Post Modal */}
       <AnimatePresence>
         {showCreatePost && (
           <CreatePostModal
@@ -375,19 +410,15 @@ export default function Community() {
   );
 }
 
-function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime, sendFriendRequest, isFriend }) {
+function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime, sendFriendRequest, handleReport, isFriend, getVisibilityIcon, getVisibilityLabel }) {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [hasBoosted] = useState(post.boosted_by?.includes(user.email));
+  const [showReportMenu, setShowReportMenu] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mb-4"
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
       <Card className="bg-[#111] border-white/5 rounded-2xl overflow-hidden">
-        {/* Header */}
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
@@ -400,7 +431,13 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
               )}
             </Avatar>
             <div>
-              <p className="font-semibold text-white text-sm">{post.user_name || "Utente"}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-white text-sm">{post.user_name || "Utente"}</p>
+                <div className="flex items-center gap-1 text-gray-500 bg-white/5 rounded-full px-2 py-0.5">
+                  {getVisibilityIcon(post.visibility)}
+                  <span className="text-[10px]">{getVisibilityLabel(post.visibility)}</span>
+                </div>
+              </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Clock className="w-3 h-3" />
                 {getRelativeTime(post.created_date)}
@@ -408,32 +445,43 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {!isFriend && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => sendFriendRequest(post.user_email, post.user_name)}
-                className="h-8 text-xs"
-              >
+            {!isFriend && user.allow_friend_requests && (
+              <Button size="sm" variant="outline" onClick={() => sendFriendRequest(post.user_email, post.user_name)} className="h-8 text-xs">
                 <UserPlus className="w-3 h-3 mr-1" />
                 Connetti
               </Button>
             )}
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <Flag className="w-4 h-4" />
-            </Button>
+            <div className="relative">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowReportMenu(!showReportMenu)}>
+                <Flag className="w-4 h-4" />
+              </Button>
+              {showReportMenu && (
+                <div className="absolute right-0 top-full mt-1 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl z-10 min-w-[150px]">
+                  <button onClick={() => { handleReport(post, "spam"); setShowReportMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 rounded-t-xl">
+                    📧 Spam
+                  </button>
+                  <button onClick={() => { handleReport(post, "harassment"); setShowReportMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5">
+                    ⚠️ Molestie
+                  </button>
+                  <button onClick={() => { handleReport(post, "inappropriate_content"); setShowReportMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5">
+                    🚫 Contenuto inappropriato
+                  </button>
+                  <button onClick={() => { handleReport(post, "other"); setShowReportMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 rounded-b-xl">
+                    ⚙️ Altro
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Caption */}
         {post.caption && (
           <div className="px-4 pb-3">
             <p className="text-white text-sm">{post.caption}</p>
           </div>
         )}
 
-        {/* Gym Tag */}
-        {post.gym_name && (
+        {post.gym_name && post.show_gym_name && (
           <div className="px-4 pb-3">
             <div className="flex items-center gap-2 text-xs text-gray-500 bg-white/5 rounded-lg px-3 py-2 inline-flex">
               <MapPin className="w-3 h-3" />
@@ -442,34 +490,20 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
           </div>
         )}
 
-        {/* Photo */}
         {post.photo_url && (
           <div className="relative">
-            <img
-              src={post.photo_url}
-              alt="Post"
-              className="w-full object-cover max-h-96"
-            />
+            <img src={post.photo_url} alt="Post" className="w-full object-cover max-h-96" />
           </div>
         )}
 
-        {/* Actions */}
         <CardContent className="p-4 pt-3">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => onBoost(post)}
-                className={`flex items-center gap-1.5 text-sm transition-colors ${
-                  hasBoosted ? 'text-[#E8FF00]' : 'text-gray-600 hover:text-[#E8FF00]'
-                }`}
-              >
+              <button onClick={() => onBoost(post)} className={`flex items-center gap-1.5 text-sm transition-colors ${hasBoosted ? 'text-[#E8FF00]' : 'text-gray-600 hover:text-[#E8FF00]'}`}>
                 <Heart className={`w-5 h-5 ${hasBoosted ? 'fill-[#E8FF00]' : ''}`} />
                 <span className="font-medium">{post.boosts || 0}</span>
               </button>
-              <button
-                onClick={() => setShowComments(!showComments)}
-                className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-white transition-colors"
-              >
+              <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-white transition-colors">
                 <MessageCircle className="w-5 h-5" />
                 <span className="font-medium">{post.comments_count || 0}</span>
               </button>
@@ -482,15 +516,9 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
             </button>
           </div>
 
-          {/* Comments Section */}
           <AnimatePresence>
             {showComments && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3 pt-3 border-t border-white/5"
-              >
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-3 pt-3 border-t border-white/5">
                 {comments.length > 0 && (
                   <div className="space-y-2">
                     {comments.map((comment) => (
@@ -513,22 +541,9 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
                   </div>
                 )}
 
-                {/* Add Comment */}
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="Scrivi un commento..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (onAddComment(post.id, newComment), setNewComment(""))}
-                    className="bg-white/5 border-white/10 text-white placeholder-gray-600 text-sm rounded-xl"
-                  />
-                  <Button
-                    size="icon"
-                    onClick={() => { onAddComment(post.id, newComment); setNewComment(""); }}
-                    disabled={!newComment.trim()}
-                    className="text-black rounded-xl flex-shrink-0"
-                    style={{ background: "#E8FF00" }}
-                  >
+                  <Input placeholder="Scrivi un commento..." value={newComment} onChange={(e) => setNewComment(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && (onAddComment(post.id, newComment), setNewComment(""))} className="bg-white/5 border-white/10 text-white placeholder-gray-600 text-sm rounded-xl" />
+                  <Button size="icon" onClick={() => { onAddComment(post.id, newComment); setNewComment(""); }} disabled={!newComment.trim()} className="text-black rounded-xl flex-shrink-0" style={{ background: "#E8FF00" }}>
                     <Share2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -543,20 +558,8 @@ function PostCard({ post, user, onBoost, onAddComment, comments, getRelativeTime
 
 function CreatePostModal({ newPost, setNewPost, setShowCreatePost, handlePhotoUpload, handleCreatePost, uploading }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={() => setShowCreatePost(false)}
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowCreatePost(false)}>
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">Nuovo Post</h2>
           <Button variant="ghost" size="icon" onClick={() => setShowCreatePost(false)}>
@@ -565,27 +568,13 @@ function CreatePostModal({ newPost, setNewPost, setShowCreatePost, handlePhotoUp
         </div>
 
         <form onSubmit={handleCreatePost} className="p-4 space-y-4">
-          {/* Caption */}
-          <Textarea
-            placeholder="Scrivi una didascalia..."
-            value={newPost.caption}
-            onChange={(e) => setNewPost({ ...newPost, caption: e.target.value })}
-            rows={3}
-            className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl resize-none"
-          />
+          <Textarea placeholder="Scrivi una didascalia..." value={newPost.caption} onChange={(e) => setNewPost({ ...newPost, caption: e.target.value })} rows={3} className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl resize-none" />
 
-          {/* Photo Upload */}
           <div className="border border-dashed border-white/10 rounded-xl p-4">
             {newPost.photo_url ? (
               <div className="relative">
                 <img src={newPost.photo_url} alt="Preview" className="w-full h-48 object-cover rounded-xl" />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2"
-                  onClick={() => setNewPost({ ...newPost, photo_url: "" })}
-                >
+                <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => setNewPost({ ...newPost, photo_url: "" })}>
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -593,49 +582,57 @@ function CreatePostModal({ newPost, setNewPost, setShowCreatePost, handlePhotoUp
               <label className="flex flex-col items-center gap-2 cursor-pointer py-4">
                 <Upload className="w-7 h-7 text-gray-600" />
                 <span className="text-sm text-gray-600">{uploading ? "Caricamento..." : "Carica una foto"}</span>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => e.target.files[0] && handlePhotoUpload(e.target.files[0])}
-                  disabled={uploading}
-                  className="hidden"
-                />
+                <Input type="file" accept="image/*" onChange={(e) => e.target.files[0] && handlePhotoUpload(e.target.files[0])} disabled={uploading} className="hidden" />
               </label>
             )}
           </div>
 
-          {/* Gym Tag (Optional) */}
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-gray-500" />
-            <Input
-              placeholder="Tagga palestra (opzionale)"
-              value={newPost.gym_name}
-              onChange={(e) => setNewPost({ ...newPost, gym_name: e.target.value })}
-              className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl"
-            />
+            <Input placeholder="Tagga palestra (opzionale)" value={newPost.gym_name} onChange={(e) => setNewPost({ ...newPost, gym_name: e.target.value })} className="bg-white/5 border-white/10 text-white placeholder-gray-600 rounded-xl" />
           </div>
 
-          {/* Privacy Toggle */}
           <div className="flex items-center justify-between bg-white/5 rounded-xl p-3">
-            <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-300">Pubblico (visibile nel Discover)</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={newPost.is_public}
-              onChange={(e) => setNewPost({ ...newPost, is_public: e.target.checked })}
-              className="w-4 h-4 rounded"
-            />
+            <Label htmlFor="show-gym" className="text-sm text-gray-300">Mostra nome palestra</Label>
+            <input type="checkbox" id="show-gym" checked={newPost.show_gym_name} onChange={(e) => setNewPost({ ...newPost, show_gym_name: e.target.checked })} className="w-4 h-4 rounded" />
           </div>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full text-black font-bold rounded-full"
-            style={{ background: "#E8FF00" }}
-            disabled={(!newPost.caption && !newPost.photo_url)}
-          >
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-300">Visibilità</Label>
+            <Select value={newPost.visibility} onValueChange={(value) => setNewPost({ ...newPost, visibility: value })}>
+              <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="only_me">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    Solo io
+                  </div>
+                </SelectItem>
+                <SelectItem value="gym_friends">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    GymFriends only
+                  </div>
+                </SelectItem>
+                <SelectItem value="gym_friends_nearby">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    GymFriends + vicini
+                  </div>
+                </SelectItem>
+                <SelectItem value="public">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    Fit ABB community (public)
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button type="submit" className="w-full text-black font-bold rounded-full" style={{ background: "#E8FF00" }} disabled={(!newPost.caption && !newPost.photo_url)}>
             Pubblica nella Community
           </Button>
         </form>

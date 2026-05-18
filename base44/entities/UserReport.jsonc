@@ -1,0 +1,54 @@
+{
+  "name": "UserReport",
+  "type": "object",
+  "properties": {
+    "reporter_email": {
+      "type": "string",
+      "description": "Email di chi segnala"
+    },
+    "reported_user_email": {
+      "type": "string",
+      "description": "Email dell'utente segnalato"
+    },
+    "reported_post_id": {
+      "type": "string",
+      "description": "ID del post segnalato (opzionale)"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "spam",
+        "harassment",
+        "inappropriate_content",
+        "fake_profile",
+        "other"
+      ],
+      "description": "Motivo della segnalazione"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione dettagliata"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "pending",
+      "description": "Stato della segnalazione"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stata creata la segnalazione"
+    }
+  },
+  "required": [
+    "reporter_email",
+    "reported_user_email",
+    "reason"
+  ]
+}

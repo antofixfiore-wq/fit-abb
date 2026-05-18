@@ -27,6 +27,7 @@ import BillingHistory from './pages/BillingHistory';
 import AdminGyms from './pages/AdminGyms';
 import Community from './pages/Community';
 import ShareAfterCheckIn from './pages/ShareAfterCheckIn';
+import Settings from './pages/Settings';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -310,6 +311,17 @@ const AuthenticatedApp = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <ShareAfterCheckIn />
+          </motion.div>
+        } />
+        <Route path="/Settings" element={
+          <motion.div
+            key="settings"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <LayoutWrapper currentPageName="Settings"><Settings /></LayoutWrapper>
           </motion.div>
         } />
         <Route path="*" element={

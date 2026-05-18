@@ -37,6 +37,41 @@
       ],
       "default": "pending",
       "description": "Stato associazione ASI"
+    },
+    "profile_public": {
+      "type": "boolean",
+      "default": true,
+      "description": "Profilo visibile pubblicamente"
+    },
+    "allow_friend_requests": {
+      "type": "boolean",
+      "default": true,
+      "description": "Consenti richieste di amicizia"
+    },
+    "allow_comments": {
+      "type": "boolean",
+      "default": true,
+      "description": "Consenti commenti sui miei post"
+    },
+    "allow_nearby_discovery": {
+      "type": "boolean",
+      "default": true,
+      "description": "Consenti scoperta da utenti vicini"
+    },
+    "blocked_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Email utenti bloccati"
     }
-  }
+  },
+  "required": [
+    "address",
+    "city",
+    "cap",
+    "phone",
+    "codice_fiscale"
+  ]
 }
