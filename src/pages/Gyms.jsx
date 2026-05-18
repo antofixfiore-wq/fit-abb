@@ -122,43 +122,6 @@ export default function Gyms() {
       );
     }
 
-    setFilteredGyms(filtered);
-  };
-
-  const filterAndSortUsers = () => {
-    let filtered = users;
-
-    if (searchTerm) {
-      filtered = filtered.filter(user =>
-        user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (regionFilter !== "all") {
-      filtered = filtered.filter(user => user.region === regionFilter);
-    }
-
-    if (cityFilter !== "all") {
-      filtered = filtered.filter(user => user.city === cityFilter);
-    }
-
-    filtered = filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return (a.full_name || "").localeCompare(b.full_name || "");
-        case "workouts":
-          return (b.completed_workouts || 0) - (a.completed_workouts || 0);
-        case "level":
-          return (b.level || 1) - (a.level || 1);
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredUsers(filtered);
-  };
-
     if (regionFilter !== "all") {
       filtered = filtered.filter(gym => gym.region === regionFilter);
     }
@@ -215,6 +178,40 @@ export default function Gyms() {
     });
 
     setFilteredGyms(filtered);
+  };
+
+  const filterAndSortUsers = () => {
+    let filtered = users;
+
+    if (searchTerm) {
+      filtered = filtered.filter(user =>
+        user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (regionFilter !== "all") {
+      filtered = filtered.filter(user => user.region === regionFilter);
+    }
+
+    if (cityFilter !== "all") {
+      filtered = filtered.filter(user => user.city === cityFilter);
+    }
+
+    filtered = filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return (a.full_name || "").localeCompare(b.full_name || "");
+        case "workouts":
+          return (b.completed_workouts || 0) - (a.completed_workouts || 0);
+        case "level":
+          return (b.level || 1) - (a.level || 1);
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredUsers(filtered);
   };
 
   const getUniqueRegions = () => {
@@ -672,65 +669,65 @@ export default function Gyms() {
       {/* Users Grid */}
       {viewMode === "list" && searchType === "users" && (
         <div className="max-w-7xl mx-auto px-4 py-8">
-        {filteredUsers.length === 0 ? (
-          <div className="text-center py-16">
-            <Users className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-white mb-2">Nessun cliente trovato</h3>
-            <p className="text-gray-500 text-sm mb-4">Prova a modificare i filtri</p>
-            <Button variant="outline" onClick={clearFilters} className="h-11 px-6 touch-manipulation">
-              Cancella filtri
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((user, index) => (
-              <motion.div
-                key={user.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Card className="overflow-hidden h-full bg-[#1a1a1a] border-white/10 touch-manipulation">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style={{ background: "#E8FF00" }}>
-                        {user.full_name?.charAt(0).toUpperCase() || 'U'}
+          {filteredUsers.length === 0 ? (
+            <div className="text-center py-16">
+              <Users className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+              <h3 className="text-lg font-semibold text-white mb-2">Nessun cliente trovato</h3>
+              <p className="text-gray-500 text-sm mb-4">Prova a modificare i filtri</p>
+              <Button variant="outline" onClick={clearFilters} className="h-11 px-6 touch-manipulation">
+                Cancella filtri
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredUsers.map((user, index) => (
+                <motion.div
+                  key={user.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Card className="overflow-hidden h-full bg-[#1a1a1a] border-white/10 touch-manipulation">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style={{ background: "#E8FF00" }}>
+                          {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-base text-white">{user.full_name || "Utente"}</h3>
+                          {user.city && (
+                            <div className="flex items-center gap-1 text-gray-400 text-sm">
+                              <MapPin className="w-3 h-3" />
+                              <span>{user.city}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-base text-white">{user.full_name || "Utente"}</h3>
-                        {user.city && (
-                          <div className="flex items-center gap-1 text-gray-400 text-sm">
-                            <MapPin className="w-3 h-3" />
-                            <span>{user.city}</span>
-                          </div>
-                        )}
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+                        <div className="text-center">
+                          <div className="text-lg font-bold text-[#E8FF00]">{user.completed_workouts || 0}</div>
+                          <div className="text-xs text-gray-500">Allenamenti</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-lg font-bold text-[#E8FF00]">{user.level || 1}</div>
+                          <div className="text-xs text-gray-500">Livello</div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-[#E8FF00]">{user.completed_workouts || 0}</div>
-                        <div className="text-xs text-gray-500">Allenamenti</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-[#E8FF00]">{user.level || 1}</div>
-                        <div className="text-xs text-gray-500">Livello</div>
-                      </div>
-                    </div>
-                    {user.subscription_type && user.subscription_type !== "none" && (
-                      <Badge className="w-full justify-center text-black font-bold text-xs px-3" style={{ background: "#E8FF00" }}>
-                        {user.subscription_type.toUpperCase()}
-                      </Badge>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </div>
+                      {user.subscription_type && user.subscription_type !== "none" && (
+                        <Badge className="w-full justify-center text-black font-bold text-xs px-3" style={{ background: "#E8FF00" }}>
+                          {user.subscription_type.toUpperCase()}
+                        </Badge>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
-    </PullToRefresh>
+      </PullToRefresh>
     </div>
   );
 }
