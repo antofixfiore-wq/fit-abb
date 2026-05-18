@@ -11,7 +11,10 @@ export default function PromoPopup({ onClose }) {
 
   const handleClose = () => {
     setClosed(true);
-    setTimeout(() => onClose(), 300);
+    setTimeout(() => {
+      onClose();
+      navigate("/");
+    }, 300);
   };
 
   const handleSubscribe = () => {
