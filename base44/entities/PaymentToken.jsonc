@@ -1,0 +1,49 @@
+{
+  "name": "PaymentToken",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "description": "Token unico per il pagamento"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email del destinatario"
+    },
+    "plan_type": {
+      "type": "string",
+      "enum": [
+        "gold",
+        "plus",
+        "annuale_gold",
+        "annuale_plus"
+      ],
+      "description": "Tipo di abbonamento"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato creato"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scadenza token (7 giorni)"
+    },
+    "used": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u00c8 stato gi\u00e0 usato?"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "ID abbonamento Stripe dopo il pagamento"
+    }
+  },
+  "required": [
+    "token",
+    "email",
+    "plan_type",
+    "expires_at"
+  ]
+}

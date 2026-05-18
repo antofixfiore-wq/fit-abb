@@ -17,6 +17,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import DeleteAccount from './pages/DeleteAccount';
 import AppStoreLanding from './pages/AppStoreLanding';
+import PaymentPage from './pages/PaymentPage';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
+import SendPaymentLinks from './pages/SendPaymentLinks';
 import BillingHistory from './pages/BillingHistory';
 import AdminGyms from './pages/AdminGyms';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -72,6 +76,10 @@ const AuthenticatedApp = () => {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/delete-account" element={<DeleteAccount />} />
         <Route path="/about" element={<AppStoreLanding />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
+        <Route path="/send-payment-link" element={<SendPaymentLinks />} />
         <Route path="/BillingHistory" element={<LayoutWrapper currentPageName="BillingHistory"><BillingHistory /></LayoutWrapper>} />
         <Route path="/AdminGyms" element={<LayoutWrapper currentPageName="AdminGyms"><AdminGyms /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
