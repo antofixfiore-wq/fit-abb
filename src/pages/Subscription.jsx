@@ -255,16 +255,22 @@ export default function Subscription() {
                 </Alert>
               )}
 
-              <div className="border-t pt-6">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-gray-600">Totale {selectedPlan.period === "anno" ? "annuale" : "mensile"}:</span>
-                  <span className="text-2xl font-bold">€{selectedPlan.price}</span>
+              <div className="border-t pt-6 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Abbonamento {selectedPlan.period === "anno" ? "annuale" : "mensile"}:</span>
+                  <span className="text-xl font-bold">€{selectedPlan.price}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm text-gray-500">
+                  <span>Costo di servizio per ogni accesso in palestra:</span>
+                  <span className="font-medium">
+                    {["plus", "annuale_plus"].includes(new URLSearchParams(window.location.search).get("plan")) ? "€3,99" : "€2,99"}
+                  </span>
                 </div>
                 {selectedPlan.priceNote && (
-                  <p className="text-sm text-green-600 font-medium mb-2">{selectedPlan.priceNote}</p>
+                  <p className="text-sm text-green-600 font-medium">{selectedPlan.priceNote}</p>
                 )}
-                <p className="text-sm text-gray-500">
-                  L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}
+                <p className="text-xs text-gray-400 pt-1">
+                  Il costo di servizio viene addebitato ad ogni accesso in palestra. L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}.
                 </p>
               </div>
 
