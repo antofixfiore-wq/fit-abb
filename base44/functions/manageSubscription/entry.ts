@@ -5,10 +5,10 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 // Mappa plan -> Stripe price ID
 const PRICE_IDS = {
-  gold: 'price_1TYNUEDL9ritAoOVxMN3gpvS',
-  plus: 'price_1TYNUEDL9ritAoOVgmKN8wgk',
-  annuale_gold: 'price_1TYNUIDL9ritAoOVyrj1xUq4',
-  annuale_plus: 'price_1TYNUIDL9ritAoOVWEoOrwtp'
+  gold: 'price_1TYNVlDL9ritAoOVVjBYgr25',
+  plus: 'price_1TYNVlDL9ritAoOVpTOMnYoj',
+  annuale_gold: 'price_1TYNVlDL9ritAoOVR03zYG5m',
+  annuale_plus: 'price_1TYNVlDL9ritAoOV8pihahMe'
 };
 
 Deno.serve(async (req) => {
