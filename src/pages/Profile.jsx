@@ -28,6 +28,12 @@ export default function Profile() {
 
   useEffect(() => {
     loadUser();
+    // Mostra messaggio successo se si torna dal checkout Stripe
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('subscription') === 'success') {
+      setSuccess('🎉 Abbonamento attivato con successo! Il rinnovo è automatico.');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   const loadUser = async () => {
@@ -206,45 +212,84 @@ export default function Profile() {
       premium: { bg: "bg-blue-50", text: "text-blue-800", gradient: "from-blue-500 to-orange-500" }
     };
 
-    const prices = { gold: 40, plus: 70, premium: 99.99 };
+    const prices = { gold: "€40/mese", plus: "€70/mese", premium: "€99,99/mese" };
     const names = { gold: "Gold", plus: "Plus", premium: "Platinum" };
-    const style = colors[user.subscription_type];
+    const style = colors[user.subscription_type] || colors.gold;
+
+    const isCancellingAtPeriodEnd = user.subscription_cancel_at_period_end;
+    const isPastDue = user.subscription_status === 'past_due';
 
     return (
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-[#1a1a1a] border-white/10">
         <div className={`h-2 bg-gradient-to-r ${style.gradient}`}></div>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-white">
               <Award className="w-6 h-6" />
               Il Tuo Abbonamento
             </CardTitle>
-            <Badge className={`${style.bg} ${style.text} text-sm px-3 py-1`}>
-              {user.subscription_type.toUpperCase()}
-            </Badge>
+            <div className="flex flex-col items-end gap-1">
+              <Badge className={`${style.bg} ${style.text} text-sm px-3 py-1`}>
+                {names[user.subscription_type] || user.subscription_type.toUpperCase()}
+              </Badge>
+              {isCancellingAtPeriodEnd && (
+                <Badge className="bg-orange-100 text-orange-800 text-xs">Disdetta a scadenza</Badge>
+              )}
+              {isPastDue && (
+                <Badge variant="destructive" className="text-xs">Pagamento in attesa</Badge>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Piano:</span>
-            <span className="font-semibold text-lg">{names[user.subscription_type] || user.subscription_type.toUpperCase()}</span>
+            <span className="text-gray-400">Piano:</span>
+            <span className="font-semibold text-white">{names[user.subscription_type] || user.subscription_type.toUpperCase()}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Prezzo:</span>
-            <span className="font-semibold text-lg">€{prices[user.subscription_type]}/mese</span>
+            <span className="text-gray-400">Prezzo:</span>
+            <span className="font-semibold text-white">{prices[user.subscription_type]}</span>
           </div>
           {user.subscription_start_date && (
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Inizio:</span>
-              <span className="font-medium">{new Date(user.subscription_start_date).toLocaleDateString('it-IT')}</span>
+              <span className="text-gray-400">Inizio:</span>
+              <span className="font-medium text-white">{new Date(user.subscription_start_date).toLocaleDateString('it-IT')}</span>
             </div>
           )}
           {user.subscription_end_date && (
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Scadenza:</span>
-              <span className="font-medium">{new Date(user.subscription_end_date).toLocaleDateString('it-IT')}</span>
+              <span className="text-gray-400">{isCancellingAtPeriodEnd ? "Accesso fino al:" : "Prossimo rinnovo:"}</span>
+              <span className="font-medium text-white">{new Date(user.subscription_end_date).toLocaleDateString('it-IT')}</span>
             </div>
           )}
+
+          <div className="pt-2 border-t border-white/10">
+            {isCancellingAtPeriodEnd ? (
+              <Button
+                onClick={handleReactivatePlatformSubscription}
+                size="sm"
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Riattiva Rinnovo Automatico
+              </Button>
+            ) : (
+              <Button
+                onClick={handleCancelPlatformSubscription}
+                size="sm"
+                variant="outline"
+                className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Disdici abbonamento
+              </Button>
+            )}
+            {isCancellingAtPeriodEnd && (
+              <p className="text-xs text-gray-500 mt-2 text-center">
+                Manterrai l'accesso fino alla scadenza, poi l'abbonamento non si rinnoverà.
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
     );

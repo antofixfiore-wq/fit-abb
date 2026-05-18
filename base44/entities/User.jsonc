@@ -12,6 +12,34 @@
       ],
       "default": "none"
     },
+    "subscription_plan": {
+      "type": "string",
+      "description": "Piano Stripe esatto: gold, plus, annuale_gold, annuale_plus"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "cancelled",
+        "trialing"
+      ],
+      "default": "active",
+      "description": "Stato abbonamento Stripe"
+    },
+    "subscription_cancel_at_period_end": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, l'abbonamento non si rinnova alla scadenza"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "ID customer Stripe"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "ID subscription Stripe attiva"
+    },
     "subscription_start_date": {
       "type": "string",
       "format": "date"
@@ -70,16 +98,5 @@
       "type": "string",
       "format": "date"
     }
-  },
-  "required": [
-    "subscription_start_date",
-    "subscription_end_date",
-    "id_document_url",
-    "medical_certificate_url",
-    "phone",
-    "birth_date",
-    "profile_image_url",
-    "banner_image_url",
-    "last_workout_date"
-  ]
+  }
 }
