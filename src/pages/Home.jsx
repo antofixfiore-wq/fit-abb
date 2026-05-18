@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Star, Building2, ArrowRight, MapPin, Zap, Clock, Infinity, ChevronDown } from "lucide-react";
+import { Check, Star, Building2, ArrowRight, MapPin, Zap, Clock, Infinity, ChevronDown, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 
 const subscriptionPlans = [
@@ -142,6 +142,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+
+      {/* ─── PROMO BANNER ─── */}
+      <div className="bg-gradient-to-r from-[#E8FF00] via-[#f0ff33] to-[#E8FF00] text-black py-3 px-4 text-center relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-center gap-2"
+        >
+          <Gift className="w-4 h-4 md:w-5 md:h-5" />
+          <span className="text-sm md:text-base font-bold">
+            PRIMO MESE GRATIS - Solo €20 di iscrizione!
+          </span>
+          <ArrowRight className="w-4 h-4 md:w-5 md:h-5 animate-pulse" />
+        </motion.div>
+      </div>
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-[85vh] md:min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden pt-safe pb-safe">

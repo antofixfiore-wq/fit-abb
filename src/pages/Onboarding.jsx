@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, User, LogIn, Building2, ChevronLeft, Dumbbell } from "lucide-react";
+import { ArrowRight, User, LogIn, Building2, ChevronLeft, Dumbbell, Gift } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import PromoPopup from "@/components/promo/PromoPopup";
 
 // step: "splash" | "choice" | "who"
 export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState("splash");
+  const [showPromo, setShowPromo] = useState(false);
 
   React.useEffect(() => {
     if (step === "splash") {
@@ -35,11 +37,13 @@ export default function Onboarding() {
   };
 
   const handleGuest = () => {
-    navigate(createPageUrl("Home") + "?guest=true");
+    setShowPromo(true);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center overflow-hidden relative px-6">
+    <>
+      {showPromo && <PromoPopup onClose={() => setShowPromo(false)} />}
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center overflow-hidden relative px-6">
       {/* Background glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
@@ -262,5 +266,6 @@ export default function Onboarding() {
 
       </AnimatePresence>
     </div>
+    </>
   );
 }

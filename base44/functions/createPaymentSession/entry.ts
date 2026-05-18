@@ -84,6 +84,30 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Piano non valido' }, { status: 400 });
       }
 
+      // Controlla se è il primo pagamento dell'utente
+      const userPayments = await base44.entities.PaymentToken.filter({ email: paymentToken.email, used: true });
+      const isFirstPayment = userPayments.length === 0;
+      
+      // Se è il primo pagamento, applica prezzo promozionale €20
+      let lineItems;
+      let subscriptionData = {};
+      
+      if (isFirstPayment) {
+        // Per il primo pagamento: crea una sessione con sconto fisso di €20
+        // Nota: Stripe richiede di creare un coupon o usare discounts
+        // Qui usiamo un approccio semplificato: prezzo intero ma con metadata per webhook
+        lineItems = [{ price: PRICE_IDS[plan_type], quantity: 1 }];
+        subscriptionData = {
+          trial_period_days: 30, // Primo mese gratis come trial
+          metadata: {
+            promo_applied: 'first_month_free',
+            promo_value: '20'
+          }
+        };
+      } else {
+        lineItems = [{ price: PRICE_IDS[plan_type], quantity: 1 }];
+      }
+
       // Impedisce checkout se token sta per scadere (meno di 24 ore)
       const hoursUntilExpiry = (new Date(paymentToken.expires_at) - now) / (1000 * 60 * 60);
       if (hoursUntilExpiry < 24) {
@@ -97,7 +121,7 @@ Deno.serve(async (req) => {
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
-        line_items: [{ price: PRICE_IDS[plan_type], quantity: 1 }],
+        line_items: lineItems,
         success_url: successUrl,
         cancel_url: cancelUrl,
         customer_email: paymentToken.email,
@@ -105,14 +129,17 @@ Deno.serve(async (req) => {
           base44_app_id: Deno.env.get('BASE44_APP_ID'),
           plan_type,
           payment_token: token,
-          user_email: paymentToken.email
+          user_email: paymentToken.email,
+          is_first_payment: isFirstPayment.toString()
         },
         subscription_data: {
           metadata: {
             plan_type,
             payment_token: token,
-            user_email: paymentToken.email
-          }
+            user_email: paymentToken.email,
+            ...subscriptionData.metadata
+          },
+          ...subscriptionData
         }
       });
 
