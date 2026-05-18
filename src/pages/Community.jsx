@@ -83,12 +83,14 @@ export default function Community() {
         const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
         loadedPosts = allPosts.filter(post => 
           (acceptedFriends.includes(post.user_email) || post.user_email === userData.email) &&
-          post.visibility !== "only_me"
+          post.visibility !== "only_me" &&
+          !userData.blocked_users?.includes(post.user_email)
         );
       } else {
         const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
         loadedPosts = allPosts.filter(post => 
-          (post.visibility === "public" || post.user_email === userData.email)
+          (post.visibility === "public" || post.user_email === userData.email) &&
+          !userData.blocked_users?.includes(post.user_email)
         );
       }
 

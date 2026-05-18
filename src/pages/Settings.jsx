@@ -296,7 +296,7 @@ export default function Settings() {
                       <select 
                         value={reportData.reason}
                         onChange={(e) => setReportData({ ...reportData, reason: e.target.value })}
-                        className="w-full bg-white/5 border-white/10 text-white rounded-lg px-3 py-2"
+                        className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2"
                       >
                         <option value="">Seleziona motivo</option>
                         <option value="spam">Spam</option>
