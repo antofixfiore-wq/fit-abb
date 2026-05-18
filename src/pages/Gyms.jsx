@@ -11,15 +11,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Building2, Search, MapPin, Star, Filter, X, Navigation, TrendingDown, TrendingUp, Map, List } from "lucide-react";
+import { Building2, Users, Search, MapPin, Star, Filter, X, Navigation, TrendingDown, TrendingUp, Map, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import GymsMap from "@/components/gyms/GymsMap";
 
 export default function Gyms() {
   const navigate = useNavigate();
+  const [searchType, setSearchType] = useState("gyms"); // "gyms" | "users"
   const [gyms, setGyms] = useState([]);
+  const [users, setUsers] = useState([]);
   const [memberships, setMemberships] = useState([]);
   const [filteredGyms, setFilteredGyms] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [regionFilter, setRegionFilter] = useState("all");
@@ -39,8 +42,12 @@ export default function Gyms() {
   }, []);
 
   useEffect(() => {
-    filterAndSortGyms();
-  }, [searchTerm, regionFilter, cityFilter, selectedAmenities, priceRange, sortBy, gyms, memberships, userLocation, nearbyOnly]);
+    if (searchType === "gyms") {
+      filterAndSortGyms();
+    } else {
+      filterAndSortUsers();
+    }
+  }, [searchTerm, regionFilter, cityFilter, selectedAmenities, priceRange, sortBy, gyms, memberships, users, userLocation, nearbyOnly, searchType]);
 
   const getUserLocation = () => {
     if (!navigator.geolocation) return;
@@ -63,18 +70,26 @@ export default function Gyms() {
 
   const loadData = async () => {
     try {
-      const [gymsData, membershipsData] = await Promise.all([
+      const [gymsData, membershipsData, usersData] = await Promise.all([
         base44.entities.Gym.list(),
-        base44.entities.GymMembership.list()
+        base44.entities.GymMembership.list(),
+        base44.entities.User.list()
       ]);
       setGyms(gymsData || []);
       setMemberships(membershipsData || []);
       setFilteredGyms(gymsData || []);
+      // Filtra solo utenti regolari (non admin) e escludi se stessi
+      const currentUser = await base44.auth.me();
+      const regularUsers = (usersData || []).filter(u => u.role !== "admin" && u.email !== currentUser.email);
+      setUsers(regularUsers);
+      setFilteredUsers(regularUsers);
     } catch (error) {
       console.error("Error loading data:", error);
       setGyms([]);
       setMemberships([]);
       setFilteredGyms([]);
+      setUsers([]);
+      setFilteredUsers([]);
     }
     setLoading(false);
   };
@@ -106,6 +121,43 @@ export default function Gyms() {
         gym.address?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
+    setFilteredGyms(filtered);
+  };
+
+  const filterAndSortUsers = () => {
+    let filtered = users;
+
+    if (searchTerm) {
+      filtered = filtered.filter(user =>
+        user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (regionFilter !== "all") {
+      filtered = filtered.filter(user => user.region === regionFilter);
+    }
+
+    if (cityFilter !== "all") {
+      filtered = filtered.filter(user => user.city === cityFilter);
+    }
+
+    filtered = filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return (a.full_name || "").localeCompare(b.full_name || "");
+        case "workouts":
+          return (b.completed_workouts || 0) - (a.completed_workouts || 0);
+        case "level":
+          return (b.level || 1) - (a.level || 1);
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredUsers(filtered);
+  };
 
     if (regionFilter !== "all") {
       filtered = filtered.filter(gym => gym.region === regionFilter);
@@ -166,14 +218,16 @@ export default function Gyms() {
   };
 
   const getUniqueRegions = () => {
-    const regions = [...new Set(gyms.map(gym => gym.region).filter(Boolean))];
+    const data = searchType === "gyms" ? gyms : users;
+    const regions = [...new Set(data.map(item => item.region).filter(Boolean))];
     return regions.sort();
   };
 
   const getUniqueCities = () => {
-    let cities = gyms.map(gym => gym.city).filter(Boolean);
+    const data = searchType === "gyms" ? gyms : users;
+    let cities = data.map(item => item.city).filter(Boolean);
     if (regionFilter !== "all") {
-      cities = gyms.filter(g => g.region === regionFilter).map(g => g.city).filter(Boolean);
+      cities = data.filter(item => item.region === regionFilter).map(item => item.city).filter(Boolean);
     }
     return [...new Set(cities)].sort();
   };
@@ -234,9 +288,39 @@ export default function Gyms() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl md:text-5xl font-black mb-4">Le Nostre Palestre</h1>
+            {/* Toggle Tipo Ricerca */}
+            <div className="flex gap-4 mb-6">
+              <button
+                onClick={() => setSearchType("gyms")}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
+                  searchType === "gyms" 
+                    ? "bg-[#E8FF00] text-black" 
+                    : "bg-white/10 text-gray-400 hover:text-white"
+                }`}
+              >
+                <Building2 className="w-5 h-5" />
+                Palestre
+              </button>
+              <button
+                onClick={() => setSearchType("users")}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
+                  searchType === "users" 
+                    ? "bg-[#E8FF00] text-black" 
+                    : "bg-white/10 text-gray-400 hover:text-white"
+                }`}
+              >
+                <Users className="w-5 h-5" />
+                Clienti
+              </button>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black mb-4">
+              {searchType === "gyms" ? "Le Nostre Palestre" : "I Nostri Clienti"}
+            </h1>
             <p className="text-xl text-gray-400">
-              {filteredGyms.length} di {gyms.length} palestre partner in tutta Italia
+              {searchType === "gyms" 
+                ? `${filteredGyms.length} di ${gyms.length} palestre partner in tutta Italia`
+                : `${filteredUsers.length} di ${users.length} clienti attivi`
+              }
             </p>
           </motion.div>
         </div>
@@ -249,7 +333,7 @@ export default function Gyms() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
-                placeholder="Cerca palestra..."
+                placeholder={searchType === "gyms" ? "Cerca palestra..." : "Cerca cliente..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 h-12 text-base touch-manipulation"
@@ -257,28 +341,48 @@ export default function Gyms() {
             </div>
             <div className="flex gap-2 overflow-x-auto pb-1">
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full min-w-[140px] h-12 touch-manipulation">
-                  <SelectValue placeholder="Ordina" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rating">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4" />
-                      Rating
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="price-asc">Prezzo ↑</SelectItem>
-                  <SelectItem value="price-desc">Prezzo ↓</SelectItem>
-                  {userLocation && (
-                    <SelectItem value="distance">
+              <SelectTrigger className="w-full min-w-[140px] h-12 touch-manipulation">
+                <SelectValue placeholder="Ordina" />
+              </SelectTrigger>
+              <SelectContent>
+                {searchType === "gyms" ? (
+                  <>
+                    <SelectItem value="rating">
                       <div className="flex items-center gap-2">
-                        <Navigation className="w-4 h-4" />
-                        Distanza
+                        <Star className="w-4 h-4" />
+                        Rating
                       </div>
                     </SelectItem>
-                  )}
-                  <SelectItem value="name">Nome A-Z</SelectItem>
-                </SelectContent>
+                    <SelectItem value="price-asc">Prezzo ↑</SelectItem>
+                    <SelectItem value="price-desc">Prezzo ↓</SelectItem>
+                    {userLocation && (
+                      <SelectItem value="distance">
+                        <div className="flex items-center gap-2">
+                          <Navigation className="w-4 h-4" />
+                          Distanza
+                        </div>
+                      </SelectItem>
+                    )}
+                    <SelectItem value="name">Nome A-Z</SelectItem>
+                  </>
+                ) : (
+                  <>
+                    <SelectItem value="name">Nome A-Z</SelectItem>
+                    <SelectItem value="workouts">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" />
+                        Allenamenti
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="level">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4" />
+                        Livello
+                      </div>
+                    </SelectItem>
+                  </>
+                )}
+              </SelectContent>
               </Select>
               <Button
                 variant="outline"
@@ -440,8 +544,8 @@ export default function Gyms() {
         </div>
       )}
 
-      {/* Mappa — mostra TUTTE le palestre con coordinate, indipendentemente dal filtro distanza */}
-      {viewMode === "map" && (
+      {/* Mappa — solo per palestre */}
+      {viewMode === "map" && searchType === "gyms" && (
         <div className="max-w-7xl mx-auto px-6 py-6">
           {gyms.length > 0 ? (
             <GymsMap gyms={gyms} userLocation={userLocation} />
@@ -460,8 +564,22 @@ export default function Gyms() {
         </div>
       )}
 
+      {/* Messaggio per mappa clienti */}
+      {viewMode === "map" && searchType === "users" && (
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="text-center py-20">
+            <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">Mappa non disponibile</h3>
+            <p className="text-gray-500">La visualizzazione mappa è disponibile solo per le palestre</p>
+            <Button variant="outline" onClick={() => setViewMode("list")} className="mt-4">
+              Passa alla lista
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Gyms Grid - Mobile optimized */}
-      {viewMode === "list" && <div className="max-w-7xl mx-auto px-4 py-8">
+      {viewMode === "list" && searchType === "gyms" && <div className="max-w-7xl mx-auto px-4 py-8">
         {filteredGyms.length === 0 ? (
           <div className="text-center py-16">
             <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -548,6 +666,66 @@ export default function Gyms() {
           </div>
         )}
       </div>}
+
+      {/* Users Grid */}
+      {viewMode === "list" && searchType === "users" && <div className="max-w-7xl mx-auto px-4 py-8">
+        {filteredUsers.length === 0 ? (
+          <div className="text-center py-16">
+            <Users className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-white mb-2">Nessun cliente trovato</h3>
+            <p className="text-gray-500 text-sm mb-4">Prova a modificare i filtri</p>
+            <Button variant="outline" onClick={clearFilters} className="h-11 px-6 touch-manipulation">
+              Cancella filtri
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredUsers.map((user, index) => (
+              <motion.div
+                key={user.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Card className="overflow-hidden h-full bg-[#1a1a1a] border-white/10 touch-manipulation">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style={{ background: "#E8FF00" }}>
+                        {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-base text-white">{user.full_name || "Utente"}</h3>
+                        {user.city && (
+                          <div className="flex items-center gap-1 text-gray-400 text-sm">
+                            <MapPin className="w-3 h-3" />
+                            <span>{user.city}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-[#E8FF00]">{user.completed_workouts || 0}</div>
+                        <div className="text-xs text-gray-500">Allenamenti</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-[#E8FF00]">{user.level || 1}</div>
+                        <div className="text-xs text-gray-500">Livello</div>
+                      </div>
+                    </div>
+                    {user.subscription_type && user.subscription_type !== "none" && (
+                      <Badge className="w-full justify-center text-black font-bold text-xs px-3" style={{ background: "#E8FF00" }}>
+                        {user.subscription_type.toUpperCase()}
+                      </Badge>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
       </PullToRefresh>
     </div>
   );
