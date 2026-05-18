@@ -1,32 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Trash2, AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function DeleteAccount() {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [confirm, setConfirm] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await base44.auth.me();
+        setUser(userData);
+      } catch (err) {
+        // Utente non autenticato
+        navigate("/Onboarding");
+      }
+    };
+    loadUser();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (confirm !== "ELIMINA") return;
     setLoading(true);
+    setError(null);
+    
     try {
-      await base44.integrations.Core.SendEmail({
-        to: "supporto@fit-abb.com",
-        subject: `Richiesta eliminazione account: ${email}`,
-        body: `L'utente con email ${email} ha richiesto l'eliminazione del proprio account e di tutti i dati associati tramite il modulo in-app.\n\nData richiesta: ${new Date().toLocaleString("it-IT")}`,
+      await base44.functions.invoke("deleteAccountRequest", {
+        confirmation_text: confirm
       });
       setSubmitted(true);
-    } catch {
-      // fallback: show success anyway (email may have failed silently)
-      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || "Errore durante l'invio della richiesta");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#E8FF00] animate-spin" />
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -39,7 +63,7 @@ export default function DeleteAccount() {
           <p className="text-gray-400 leading-relaxed">
             Abbiamo ricevuto la tua richiesta di eliminazione account. Il nostro team elaborerà
             la richiesta entro <strong className="text-white">30 giorni</strong> e riceverai
-            una conferma via email all'indirizzo indicato.
+            una conferma via email a <strong className="text-white">{user.email}</strong>.
           </p>
           <p className="text-gray-500 text-sm mt-4">
             Per qualsiasi dubbio contatta:{" "}
@@ -90,21 +114,20 @@ export default function DeleteAccount() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              La tua email dell'account
-            </label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="tua@email.com"
-              required
-              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-            />
-          </div>
+        {/* Email utente (sola lettura) */}
+        <div className="mb-6 p-4 bg-white/5 border border-white/10 rounded-xl">
+          <p className="text-sm text-gray-400 mb-1">Account associato:</p>
+          <p className="text-lg font-semibold text-white">{user.email}</p>
+          <p className="text-xs text-gray-500 mt-1">Nome: {user.full_name || 'Non specificato'}</p>
+        </div>
 
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
+            <p className="text-sm text-red-300">{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Scrivi <strong className="text-red-400">ELIMINA</strong> per confermare
@@ -115,15 +138,26 @@ export default function DeleteAccount() {
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="ELIMINA"
               className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+              required
             />
+            <p className="text-xs text-gray-500 mt-2">
+              Digita esattamente "ELIMINA" (maiuscolo) per procedere
+            </p>
           </div>
 
           <Button
             type="submit"
-            disabled={confirm !== "ELIMINA" || !email || loading}
-            className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-40"
+            disabled={confirm !== "ELIMINA" || loading}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {loading ? "Invio richiesta..." : "Richiedi eliminazione account"}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Invio richiesta...
+              </span>
+            ) : (
+              "Richiedi eliminazione account"
+            )}
           </Button>
         </form>
 

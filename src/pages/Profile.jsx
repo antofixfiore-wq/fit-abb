@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy, Building2, CreditCard, X, RefreshCw } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, Calendar, Mail, Phone, Award, FileText, Trophy, Building2, CreditCard, X, RefreshCw, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import ProgressStats from "../components/gamification/ProgressStats";
 import BadgeCard from "../components/gamification/BadgeCard";
@@ -549,6 +549,35 @@ export default function Profile() {
                   </AlertDescription>
                 </Alert>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Sezione Eliminazione Account */}
+          <Card className="bg-[#1a1a1a] border-red-500/20">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <LogOut className="w-5 h-5 text-red-400" />
+                <CardTitle className="text-white text-base">Zona Pericolosa</CardTitle>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Gestione account ed eliminazione
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4">
+                <p className="text-sm text-red-300">
+                  <strong>Attenzione:</strong> L'eliminazione dell'account è permanente e irreversibile. 
+                  Tutti i tuoi dati, progressi e abbonamenti verranno eliminati.
+                </p>
+              </div>
+              <Button
+                onClick={() => window.location.href = "/delete-account"}
+                variant="destructive"
+                className="w-full"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Richiedi Eliminazione Account
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
