@@ -61,30 +61,43 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <LayoutWrapper currentPageName={mainPageKey}>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        {Object.entries(Pages).map(([path, Page]) => (
-          <Route key={path} path={`/${path}`} element={<Page />} />
-        ))}
-        <Route path="/Onboarding" element={<Onboarding />} />
-        <Route path="/Auth" element={<Auth />} />
-        <Route path="/AdminPayouts" element={<LayoutWrapper currentPageName="AdminPayouts"><AdminPayouts /></LayoutWrapper>} />
-        <Route path="/GymOnboarding" element={<GymOnboarding />} />
-        <Route path="/CheckIn" element={<LayoutWrapper currentPageName="CheckIn"><CheckIn /></LayoutWrapper>} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/delete-account" element={<DeleteAccount />} />
-        <Route path="/about" element={<AppStoreLanding />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
-        <Route path="/payment-cancel" element={<PaymentCancel />} />
-        <Route path="/send-payment-link" element={<SendPaymentLinks />} />
-        <Route path="/BillingHistory" element={<LayoutWrapper currentPageName="BillingHistory"><BillingHistory /></LayoutWrapper>} />
-        <Route path="/AdminGyms" element={<LayoutWrapper currentPageName="AdminGyms"><AdminGyms /></LayoutWrapper>} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </LayoutWrapper>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <LayoutWrapper currentPageName={mainPageKey}>
+            <MainPage />
+          </LayoutWrapper>
+        }
+      />
+      {Object.entries(Pages).map(([path, Page]) => (
+        <Route
+          key={path}
+          path={`/${path}`}
+          element={
+            <LayoutWrapper currentPageName={path}>
+              <Page />
+            </LayoutWrapper>
+          }
+        />
+      ))}
+      <Route path="/Onboarding" element={<Onboarding />} />
+      <Route path="/Auth" element={<Auth />} />
+      <Route path="/AdminPayouts" element={<LayoutWrapper currentPageName="AdminPayouts"><AdminPayouts /></LayoutWrapper>} />
+      <Route path="/GymOnboarding" element={<GymOnboarding />} />
+      <Route path="/CheckIn" element={<LayoutWrapper currentPageName="CheckIn"><CheckIn /></LayoutWrapper>} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/delete-account" element={<DeleteAccount />} />
+      <Route path="/about" element={<AppStoreLanding />} />
+      <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-cancel" element={<PaymentCancel />} />
+      <Route path="/send-payment-link" element={<SendPaymentLinks />} />
+      <Route path="/BillingHistory" element={<LayoutWrapper currentPageName="BillingHistory"><BillingHistory /></LayoutWrapper>} />
+      <Route path="/AdminGyms" element={<LayoutWrapper currentPageName="AdminGyms"><AdminGyms /></LayoutWrapper>} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   );
 };
 

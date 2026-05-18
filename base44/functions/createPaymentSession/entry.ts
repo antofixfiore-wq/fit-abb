@@ -22,8 +22,13 @@ const PLANS = {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    
+    // Leggi il body una sola volta
+    const body = await req.json().catch(() => null);
+    
+    // Prendi il token dal payload o dall'URL
     const url = new URL(req.url);
-    const token = url.searchParams.get('token');
+    let token = body?.token || url.searchParams.get('token');
 
     if (!token) {
       return Response.json({ error: 'Token non fornito' }, { status: 400 });
@@ -48,8 +53,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Token già utilizzato' }, { status: 400 });
     }
 
-    const body = await req.json();
-    const { action } = body;
+    const { action } = body || {};
+
+    // === VALIDA TOKEN ===
+    if (action === 'validate_token' || !action) {
+      // Ritorna i dati del token per la UI
+      return Response.json({ 
+        email: tokenData.email,
+        plan_type: tokenData.plan_type,
+        expires_at: tokenData.expires_at
+      });
+    }
 
     // === CREA CHECKOUT SESSION ===
     if (action === 'create_checkout') {

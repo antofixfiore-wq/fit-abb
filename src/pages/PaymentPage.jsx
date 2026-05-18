@@ -62,13 +62,17 @@ export default function PaymentPage() {
   const validateToken = async () => {
     try {
       setValidating(true);
-      const response = await base44.functions.invoke('createPaymentSession', {});
+      // Chiamo la funzione passando il token nel payload
+      const response = await base44.functions.invoke('createPaymentSession', {
+        action: 'validate_token',
+        token: token
+      });
       
       if (response.data?.error) {
         setError(response.data.error);
       } else {
         // Token valido, mostra i piani
-        setTokenData({ email: 'utente' }); // Placeholder
+        setTokenData(response.data);
       }
     } catch (err) {
       setError('Errore di connessione. Riprova più tardi.');
