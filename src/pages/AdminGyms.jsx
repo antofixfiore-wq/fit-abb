@@ -95,7 +95,7 @@ export default function AdminGyms() {
           await base44.integrations.Core.SendEmail({
             to: form.manager_email,
             subject: "Benvenuto nel circuito Fit ABB! 🏋️",
-            body: `Ciao,\n\nLa palestra "${form.name}" è stata aggiunta al circuito Fit ABB.\n\nAccedi alla tua dashboard su https://fitabb.com/GymDashboard per completare il profilo con foto, orari e documenti.\n\nSe non hai ancora un account, registrati con questa email: ${form.manager_email}\n\nBenvenuto a bordo!\nIl team Fit ABB`
+            body: `Ciao,\n\nLa palestra "${form.name}" è stata aggiunta al circuito Fit ABB.\n\nAccedi alla tua dashboard su https://fitabb.com/GymDashboard per completare il profilo con foto, orari e documenti.\n\nSe non hai ancora un account, registrati con questa email: ${form.manager_email}\n\nPer qualsiasi domanda scrivici a partner@fit-abb.com\n\nBenvenuto a bordo!\nIl team Fit ABB`
           });
         }
       }

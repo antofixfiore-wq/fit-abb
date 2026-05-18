@@ -16,7 +16,7 @@ export default function DeleteAccount() {
     setLoading(true);
     try {
       await base44.integrations.Core.SendEmail({
-        to: "support@fitabb.com",
+        to: "supporto@fit-abb.com",
         subject: `Richiesta eliminazione account: ${email}`,
         body: `L'utente con email ${email} ha richiesto l'eliminazione del proprio account e di tutti i dati associati tramite il modulo in-app.\n\nData richiesta: ${new Date().toLocaleString("it-IT")}`,
       });
@@ -43,8 +43,8 @@ export default function DeleteAccount() {
           </p>
           <p className="text-gray-500 text-sm mt-4">
             Per qualsiasi dubbio contatta:{" "}
-            <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">
-              support@fitabb.com
+            <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">
+              supporto@fit-abb.com
             </a>
           </p>
         </div>
@@ -133,8 +133,8 @@ export default function DeleteAccount() {
             Torna all'app
           </a>
           {" "}oppure scrivi a{" "}
-          <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">
-            support@fitabb.com
+          <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">
+            supporto@fit-abb.com
           </a>
         </p>
       </div>

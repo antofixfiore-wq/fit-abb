@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-xl font-semibold text-white mb-3">1. Titolare del trattamento</h2>
             <p>
               Il titolare del trattamento dei dati personali è <strong className="text-white">Fit ABB</strong>,
-              raggiungibile all'indirizzo email: <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">support@fitabb.com</a>.
+              raggiungibile all'indirizzo email: <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">supporto@fit-abb.com</a>.
             </p>
           </section>
 
@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
             </ul>
             <p className="mt-3">
               Per esercitare questi diritti scrivi a{" "}
-              <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">support@fitabb.com</a>.
+              <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">supporto@fit-abb.com</a>.
             </p>
           </section>
 
@@ -115,7 +115,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-xl font-semibold text-white mb-3">10. Contatti</h2>
             <p>
               Per qualsiasi domanda relativa alla privacy:{" "}
-              <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">support@fitabb.com</a>
+              <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">supporto@fit-abb.com</a>
             </p>
           </section>
         </div>

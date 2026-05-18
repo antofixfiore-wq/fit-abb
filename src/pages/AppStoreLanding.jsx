@@ -70,7 +70,7 @@ export default function AppStoreLanding() {
         <div className="flex items-center gap-6 text-sm text-gray-400">
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Termini</Link>
-          <a href="mailto:support@fitabb.com" className="hover:text-white transition-colors">Supporto</a>
+          <a href="mailto:supporto@fit-abb.com" className="hover:text-white transition-colors">Supporto</a>
         </div>
       </nav>
 
@@ -157,7 +157,7 @@ export default function AppStoreLanding() {
           <div className="flex justify-between"><span className="text-gray-500">Classificazione età</span><span>4+ (nessun contenuto inappropriato)</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Categoria</span><span>Salute e Fitness</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Lingua</span><span>Italiano</span></div>
-          <div className="flex justify-between"><span className="text-gray-500">Supporto</span><span><a href="mailto:support@fitabb.com" className="text-[#E8FF00]">support@fitabb.com</a></span></div>
+          <div className="flex justify-between"><span className="text-gray-500">Supporto</span><span><a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00]">supporto@fit-abb.com</a></span></div>
           <div className="flex justify-between"><span className="text-gray-500">Privacy Policy</span><span><Link to="/privacy" className="text-[#E8FF00]">Leggi qui</Link></span></div>
           <div className="flex justify-between"><span className="text-gray-500">Termini</span><span><Link to="/terms" className="text-[#E8FF00]">Leggi qui</Link></span></div>
           <div className="flex justify-between"><span className="text-gray-500">Eliminazione account</span><span><Link to="/delete-account" className="text-[#E8FF00]">Richiedi qui</Link></span></div>
@@ -170,7 +170,7 @@ export default function AppStoreLanding() {
           <Link to="/privacy" className="hover:text-white mx-3">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white mx-3">Termini e Condizioni</Link>
           <Link to="/delete-account" className="hover:text-white mx-3">Elimina Account</Link>
-          <a href="mailto:support@fitabb.com" className="hover:text-white mx-3">Supporto</a>
+          <a href="mailto:supporto@fit-abb.com" className="hover:text-white mx-3">Supporto</a>
         </p>
         <p>© {new Date().getFullYear()} Fit ABB. Tutti i diritti riservati.</p>
       </footer>

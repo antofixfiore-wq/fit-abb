@@ -102,7 +102,7 @@ export default function TermsOfService() {
             <h2 className="text-xl font-semibold text-white mb-3">10. Contatti</h2>
             <p>
               Per informazioni:{" "}
-              <a href="mailto:support@fitabb.com" className="text-[#E8FF00] hover:underline">support@fitabb.com</a>
+              <a href="mailto:supporto@fit-abb.com" className="text-[#E8FF00] hover:underline">supporto@fit-abb.com</a>
             </p>
           </section>
         </div>
