@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -61,8 +60,19 @@ export default function Community() {
       ? user.followed_gyms.filter(id => id !== gymId)
       : [...(user.followed_gyms || []), gymId];
     
-    await base44.auth.updateMe({ followed_gyms: updatedFollowed });
-    await loadData();
+    // Optimistic UI update
+    setUser(prevUser => ({
+      ...prevUser,
+      followed_gyms: updatedFollowed
+    }));
+    
+    try {
+      await base44.auth.updateMe({ followed_gyms: updatedFollowed });
+    } catch (error) {
+      console.error("Error following gym:", error);
+      // Revert on error
+      await loadData();
+    }
   };
 
   const handleLikePost = async (post) => {

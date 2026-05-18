@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Phone, MapPin, Send, CheckCircle, Building2, Users } from "lucide-react";
 import { motion } from "framer-motion";
@@ -207,19 +208,18 @@ export default function Contact() {
                       </div>
                       <div>
                         <Label htmlFor="subject">Oggetto *</Label>
-                        <select
-                          id="subject"
-                          required
-                          value={formData.subject}
-                          onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        >
-                          <option value="general">Informazioni Generali</option>
-                          <option value="support">Supporto Tecnico</option>
-                          <option value="partnership">Diventa Partner</option>
-                          <option value="feedback">Feedback</option>
-                          <option value="other">Altro</option>
-                        </select>
+                        <Select value={formData.subject} onValueChange={(value) => setFormData({ ...formData, subject: value })}>
+                          <SelectTrigger id="subject">
+                            <SelectValue placeholder="Seleziona oggetto" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="general">Informazioni Generali</SelectItem>
+                            <SelectItem value="support">Supporto Tecnico</SelectItem>
+                            <SelectItem value="partnership">Diventa Partner</SelectItem>
+                            <SelectItem value="feedback">Feedback</SelectItem>
+                            <SelectItem value="other">Altro</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -845,17 +846,17 @@ export default function GymDashboard() {
                   <form onSubmit={handleCreatePost} className="space-y-4">
                     <div>
                       <Label htmlFor="post-type">Tipo di Post</Label>
-                      <select
-                        id="post-type"
-                        className="w-full border rounded-lg p-2"
-                        value={newPost.type}
-                        onChange={(e) => setNewPost({ ...newPost, type: e.target.value, valid_until: "" })}
-                      >
-                        <option value="update">Aggiornamento</option>
-                        <option value="promotion">Promozione</option>
-                        <option value="schedule">Orario Speciale</option>
-                        <option value="announcement">Comunicazione</option>
-                      </select>
+                      <Select value={newPost.type} onValueChange={(value) => setNewPost({ ...newPost, type: value, valid_until: "" })}>
+                        <SelectTrigger id="post-type">
+                          <SelectValue placeholder="Seleziona tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="update">Aggiornamento</SelectItem>
+                          <SelectItem value="promotion">Promozione</SelectItem>
+                          <SelectItem value="schedule">Orario Speciale</SelectItem>
+                          <SelectItem value="announcement">Comunicazione</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>

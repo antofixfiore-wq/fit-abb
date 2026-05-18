@@ -176,3 +176,17 @@ html {
 /* Hide scrollbar for horizontal scroll on mobile */
 .overflow-x-auto::-webkit-scrollbar { display: none; }
 .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Prevent text selection on buttons, icons, and nav tabs for native app feel */
+button, .btn, [role="button"], .lucide, svg.icon, nav a, .nav-item, .tabs-trigger, .tab-button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Pull-to-refresh support for scrollable content */
+.pull-to-refresh {
+  overscroll-behavior-y: contain;
+}

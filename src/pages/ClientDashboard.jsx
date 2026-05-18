@@ -319,20 +319,26 @@ export default function ClientDashboard() {
 
   const handleLike = async (post) => {
     const hasLiked = post.liked_by?.includes(user.email);
+    const updatedLikedBy = hasLiked
+      ? post.liked_by.filter(email => email !== user.email)
+      : [...(post.liked_by || []), user.email];
+    
+    // Optimistic UI update
+    setFeedPosts(prevPosts => prevPosts.map(p => 
+      p.id === post.id 
+        ? { ...p, likes: updatedLikedBy.length, liked_by: updatedLikedBy }
+        : p
+    ));
     
     try {
-      const updatedLikedBy = hasLiked
-        ? post.liked_by.filter(email => email !== user.email)
-        : [...(post.liked_by || []), user.email];
-      
       await base44.entities.FeedPost.update(post.id, {
         likes: updatedLikedBy.length,
         liked_by: updatedLikedBy
       });
-      
-      await loadData();
     } catch (error) {
       console.error("Error liking post:", error);
+      // Revert on error
+      await loadData();
     }
   };
 

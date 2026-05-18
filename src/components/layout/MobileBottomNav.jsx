@@ -14,6 +14,16 @@ const navItems = [
 export default function MobileBottomNav() {
   const location = useLocation();
 
+  const handleNavClick = (url, e) => {
+    // If clicking already active tab, scroll to top
+    const isActive = location.pathname === url || 
+      (url === "/CheckIn" && location.pathname.startsWith("/CheckIn"));
+    
+    if (isActive) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10"
@@ -27,7 +37,12 @@ export default function MobileBottomNav() {
 
           if (item.highlight) {
             return (
-              <Link key={item.title} to={item.url} className="flex flex-col items-center -mt-5">
+              <Link 
+                key={item.title} 
+                to={item.url} 
+                onClick={(e) => handleNavClick(item.url, e)}
+                className="flex flex-col items-center -mt-5"
+              >
                 <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all ${
                   isActive ? "scale-110" : ""
                 }`} style={{ background: "#E8FF00" }}>
@@ -44,6 +59,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.title}
               to={item.url}
+              onClick={(e) => handleNavClick(item.url, e)}
               className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all ${
                 isActive ? "opacity-100" : "opacity-50 hover:opacity-70"
               }`}
