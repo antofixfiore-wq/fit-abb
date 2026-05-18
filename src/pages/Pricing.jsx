@@ -10,56 +10,54 @@ import { motion } from "framer-motion";
 export default function Pricing() {
   const plans = [
     {
-      type: "silver",
-      name: "Silver",
-      price: 29.99,
-      color: "from-gray-400 to-gray-600",
-      bgColor: "bg-gray-50",
-      features: [
-        { text: "Accesso a palestre basic", included: true },
-        { text: "Tracking allenamenti", included: true },
-        { text: "Community e feed sociale", included: true },
-        { text: "Badge e gamification", included: true },
-        { text: "Supporto email", included: true },
-        { text: "AI Workout Planner", included: false },
-        { text: "Palestre premium", included: false },
-        { text: "Eventi esclusivi", included: false },
-        { text: "Coaching personalizzato", included: false }
-      ]
-    },
-    {
       type: "gold",
       name: "Gold",
       price: 39.99,
       color: "from-yellow-400 to-yellow-600",
       bgColor: "bg-yellow-50",
-      popular: true,
       features: [
-        { text: "Accesso a palestre basic", included: true },
+        { text: "Accesso a palestre Gold", included: true },
         { text: "Tracking allenamenti", included: true },
         { text: "Community e feed sociale", included: true },
         { text: "Badge e gamification", included: true },
         { text: "Supporto email", included: true },
         { text: "AI Workout Planner", included: true },
-        { text: "Palestre premium", included: true },
+        { text: "Eventi esclusivi", included: true },
+        { text: "Palestre Platinum", included: false },
+        { text: "Coaching personalizzato", included: false }
+      ]
+    },
+    {
+      type: "plus",
+      name: "Plus",
+      price: 70,
+      color: "from-[#E8FF00] to-yellow-400",
+      bgColor: "bg-[#E8FF00]/10",
+      popular: true,
+      features: [
+        { text: "Palestre Gold + Platinum", included: true },
+        { text: "Tracking allenamenti", included: true },
+        { text: "Community e feed sociale", included: true },
+        { text: "Badge e gamification", included: true },
+        { text: "Supporto email", included: true },
+        { text: "AI Workout Planner", included: true },
         { text: "Eventi esclusivi", included: true },
         { text: "Coaching personalizzato", included: false }
       ]
     },
     {
       type: "premium",
-      name: "Premium",
+      name: "Platinum",
       price: 99.99,
       color: "from-blue-500 to-orange-500",
       bgColor: "bg-gradient-to-br from-blue-50 to-orange-50",
       features: [
-        { text: "Accesso a palestre basic", included: true },
+        { text: "Tutte le palestre partner", included: true },
         { text: "Tracking allenamenti", included: true },
         { text: "Community e feed sociale", included: true },
         { text: "Badge e gamification", included: true },
         { text: "Supporto prioritario 24/7", included: true },
         { text: "AI Workout Planner avanzato", included: true },
-        { text: "Tutte le palestre partner", included: true },
         { text: "Eventi esclusivi VIP", included: true },
         { text: "Coaching personalizzato 1-1", included: true }
       ]

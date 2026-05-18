@@ -37,23 +37,20 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "Silver",
-    color: "from-gray-400 to-gray-600",
-    badge: "bg-gray-200 text-gray-800",
-    features: ["1 palestra al giorno", "Tracking fitness base", "Community"],
+    name: "Gold",
+    badge: "bg-yellow-300 text-black",
+    features: ["Palestre Gold", "AI Workout planner", "Badge & rewards", "Community"],
   },
   {
-    name: "Gold",
-    color: "from-yellow-400 to-yellow-600",
-    badge: "bg-yellow-300 text-black",
-    features: ["Palestre illimitate", "AI Workout planner", "Personal Trainer marketplace", "Badge & rewards"],
+    name: "Plus",
+    badge: "bg-[#E8FF00] text-black",
+    features: ["Palestre Gold + Platinum", "AI Workout planner", "Badge & rewards", "Community"],
     highlight: true,
   },
   {
-    name: "Premium",
-    color: "from-[#E8FF00] to-yellow-400",
-    badge: "bg-[#E8FF00] text-black",
-    features: ["Tutto di Gold", "Priorità supporto", "Report avanzati", "Accesso anticipato"],
+    name: "Platinum",
+    badge: "bg-blue-200 text-blue-900",
+    features: ["Tutte le palestre", "Supporto prioritario", "Coaching 1-1", "VIP eventi"],
   },
 ];
 

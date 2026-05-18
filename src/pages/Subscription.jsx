@@ -10,40 +10,41 @@ import { CheckCircle, AlertCircle, ArrowLeft, Dumbbell, Check } from "lucide-rea
 import { motion } from "framer-motion";
 
 const subscriptionDetails = {
-  silver: {
-    name: "Silver",
-    price: 29.99,
-    color: "from-gray-400 to-gray-600",
-    benefits: [
-      "Accesso a palestre selezionate",
-      "Orari limitati (6:00-14:00)",
-      "Sala pesi e cardio",
-      "App mobile"
-    ]
-  },
   gold: {
     name: "Gold",
     price: 39.99,
     color: "from-yellow-400 to-yellow-600",
     benefits: [
-      "Accesso a tutte le palestre partner",
-      "Orari estesi (6:00-22:00)",
-      "Tutti i corsi di gruppo",
-      "Sala pesi, cardio e funzionale",
-      "1 sessione PT al mese"
+      "Accesso a palestre Gold",
+      "Tracking allenamenti e progressi",
+      "AI Workout Planner",
+      "Community e badge",
+      "Eventi esclusivi"
+    ]
+  },
+  plus: {
+    name: "Plus",
+    price: 70,
+    color: "from-[#E8FF00] to-yellow-400",
+    benefits: [
+      "Accesso a palestre Gold e Platinum",
+      "Tracking allenamenti e progressi",
+      "AI Workout Planner",
+      "Community e badge",
+      "Eventi esclusivi"
     ]
   },
   premium: {
-    name: "Premium",
+    name: "Platinum",
     price: 99.99,
     color: "from-blue-500 to-orange-500",
     benefits: [
-      "Accesso illimitato 24/7",
-      "Tutte le palestre premium",
-      "Tutti i corsi e classi esclusive",
-      "4 sessioni PT al mese",
-      "Spa e piscina incluse",
-      "Programma nutrizionale personalizzato"
+      "Accesso a tutte le palestre partner",
+      "Tracking avanzato",
+      "AI Workout Planner avanzato",
+      "Supporto prioritario 24/7",
+      "Coaching personalizzato 1-1",
+      "Eventi esclusivi VIP"
     ]
   }
 };
