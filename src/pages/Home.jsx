@@ -230,6 +230,43 @@ export default function Home() {
             </Button>
           </motion.div>
 
+          {/* App Store badges */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-3 mt-6 md:mt-10 justify-center w-full max-w-md"
+          >
+            <a
+              href="https://apps.apple.com/it/app/fit-abb/id123456789"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl hover:bg-gray-900 transition-colors"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.21-1.96 1.07-3.11-1.05.05-2.31.72-3.06 1.64-.68.82-1.27 2.15-1.11 3.21 1.17.09 2.35-.91 3.1-1.74"/>
+              </svg>
+              <div className="text-left">
+                <div className="text-[10px] leading-none">Scarica su</div>
+                <div className="text-sm font-semibold leading-tight">App Store</div>
+              </div>
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.fitabb.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl hover:bg-gray-900 transition-colors"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3.609 1.814L13.792 12l-10.18 10.185c-.541.544-1.273.846-2.035.846-.882 0-1.577-.722-1.577-1.62V2.62c0-.899.695-1.62 1.577-1.62.762 0 1.494.301 2.035.845zm11.07 10.886l5.445-5.445c.384-.384.902-.597 1.442-.597.89 0 1.615.725 1.615 1.615v7.454c0 .89-.725 1.615-1.615 1.615-.54 0-1.058-.213-1.442-.597l-5.445-5.445zm-1.378-.609L3.096 1.885C3.632 1.35 4.366 1.05 5.128 1.05c.882 0 1.577.722 1.577 1.62v18.66c0 .899-.695 1.62-1.577 1.62-.762 0-1.496-.3-2.032-.835l10.213-10.214z"/>
+              </svg>
+              <div className="text-left">
+                <div className="text-[10px] leading-none">Scarica su</div>
+                <div className="text-sm font-semibold leading-tight">Google Play</div>
+              </div>
+            </a>
+          </motion.div>
+
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0 }}
