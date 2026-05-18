@@ -103,6 +103,9 @@ export default function GymDashboard() {
       setGymInfo({
         description: userGym.description || "",
         opening_hours: userGym.opening_hours || {},
+        available_for_gold: userGym.available_for_gold !== false,
+        available_for_plus: userGym.available_for_plus === true,
+        available_for_premium: userGym.available_for_premium === true,
       });
 
       const membershipsData = await base44.entities.GymMembership.filter({ gym_id: userGym.id });
@@ -233,6 +236,9 @@ export default function GymDashboard() {
       await base44.entities.Gym.update(gym.id, {
         description: gymInfo.description,
         opening_hours: gymInfo.opening_hours,
+        available_for_gold: gymInfo.available_for_gold,
+        available_for_plus: gymInfo.available_for_plus,
+        available_for_premium: gymInfo.available_for_premium,
       });
       await loadData();
       setSuccess("Informazioni aggiornate!");
@@ -504,6 +510,35 @@ export default function GymDashboard() {
                       );
                     })}
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Piani accettati */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Piani abbonamento accettati</CardTitle>
+                  <p className="text-sm text-gray-500">Scegli quali piani Fit ABB possono accedere alla tua struttura</p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {[
+                    { key: "available_for_gold", label: "Gold", desc: "€40/mese", color: "text-yellow-600" },
+                    { key: "available_for_plus", label: "Plus", desc: "€70/mese", color: "text-lime-600" },
+                    { key: "available_for_premium", label: "Platinum", desc: "€99.99/mese", color: "text-blue-600" },
+                  ].map(({ key, label, desc, color }) => (
+                    <div key={key} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <span className={`font-semibold ${color}`}>{label}</span>
+                        <span className="text-gray-500 text-sm ml-2">{desc}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setGymInfo(prev => ({ ...prev, [key]: !prev[key] }))}
+                        className={`w-12 h-6 rounded-full transition-colors relative ${gymInfo[key] ? "bg-green-500" : "bg-gray-300"}`}
+                      >
+                        <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${gymInfo[key] ? "translate-x-6" : "translate-x-0.5"}`} />
+                      </button>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 

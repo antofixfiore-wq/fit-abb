@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 const subscriptionDetails = {
   gold: {
     name: "Gold",
-    price: 39.99,
+    price: 40,
     color: "from-yellow-400 to-yellow-600",
     benefits: [
       "Accesso a palestre Gold",

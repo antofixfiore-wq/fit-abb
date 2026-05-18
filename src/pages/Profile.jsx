@@ -174,12 +174,13 @@ export default function Profile() {
     }
 
     const colors = {
-      silver: { bg: "bg-gray-100", text: "text-gray-800", gradient: "from-gray-400 to-gray-600" },
       gold: { bg: "bg-yellow-50", text: "text-yellow-800", gradient: "from-yellow-400 to-yellow-600" },
+      plus: { bg: "bg-lime-50", text: "text-lime-800", gradient: "from-[#E8FF00] to-yellow-400" },
       premium: { bg: "bg-blue-50", text: "text-blue-800", gradient: "from-blue-500 to-orange-500" }
     };
 
-    const prices = { silver: 29.99, gold: 39.99, premium: 99.99 };
+    const prices = { gold: 40, plus: 70, premium: 99.99 };
+    const names = { gold: "Gold", plus: "Plus", premium: "Platinum" };
     const style = colors[user.subscription_type];
 
     return (
@@ -199,7 +200,7 @@ export default function Profile() {
         <CardContent className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Piano:</span>
-            <span className="font-semibold text-lg">{user.subscription_type.toUpperCase()}</span>
+            <span className="font-semibold text-lg">{names[user.subscription_type] || user.subscription_type.toUpperCase()}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Prezzo:</span>

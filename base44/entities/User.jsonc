@@ -1,0 +1,85 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "gold",
+        "plus",
+        "premium"
+      ],
+      "default": "none"
+    },
+    "subscription_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "subscription_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "id_document_url": {
+      "type": "string"
+    },
+    "medical_certificate_url": {
+      "type": "string"
+    },
+    "documents_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "phone": {
+      "type": "string"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "profile_image_url": {
+      "type": "string"
+    },
+    "banner_image_url": {
+      "type": "string"
+    },
+    "followed_gyms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "total_points": {
+      "type": "number",
+      "default": 0
+    },
+    "level": {
+      "type": "number",
+      "default": 1
+    },
+    "current_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "completed_workouts": {
+      "type": "number",
+      "default": 0
+    },
+    "last_workout_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "subscription_start_date",
+    "subscription_end_date",
+    "id_document_url",
+    "medical_certificate_url",
+    "phone",
+    "birth_date",
+    "profile_image_url",
+    "banner_image_url",
+    "last_workout_date"
+  ]
+}

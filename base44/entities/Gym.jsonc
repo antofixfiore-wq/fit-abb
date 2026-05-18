@@ -60,17 +60,20 @@
       "type": "number",
       "description": "Longitudine GPS"
     },
-    "available_for_silver": {
-      "type": "boolean",
-      "default": true
-    },
     "available_for_gold": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "description": "Accettato per piano Gold"
+    },
+    "available_for_plus": {
+      "type": "boolean",
+      "default": false,
+      "description": "Accettato per piano Plus"
     },
     "available_for_premium": {
       "type": "boolean",
-      "default": true
+      "default": false,
+      "description": "Accettato per piano Platinum"
     },
     "manager_email": {
       "type": "string",
