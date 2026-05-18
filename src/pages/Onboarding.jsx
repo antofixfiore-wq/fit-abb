@@ -45,7 +45,8 @@ export default function Onboarding() {
         setShowPromo(true);
       }
     }).catch(() => {
-      setShowPromo(true);
+      // Utente non loggato (guest) - vai direttamente alla Home
+      navigate(createPageUrl("Home"));
     });
   };
 
