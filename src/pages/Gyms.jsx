@@ -67,11 +67,14 @@ export default function Gyms() {
         base44.entities.Gym.list(),
         base44.entities.GymMembership.list()
       ]);
-      setGyms(gymsData);
-      setMemberships(membershipsData);
-      setFilteredGyms(gymsData);
+      setGyms(gymsData || []);
+      setMemberships(membershipsData || []);
+      setFilteredGyms(gymsData || []);
     } catch (error) {
       console.error("Error loading data:", error);
+      setGyms([]);
+      setMemberships([]);
+      setFilteredGyms([]);
     }
     setLoading(false);
   };
