@@ -110,10 +110,18 @@ export default function CheckIn() {
                   <p className="text-sm text-gray-600 mb-1">Accesso come</p>
                   <p className="font-semibold text-gray-900">{user.full_name}</p>
                   <p className="text-sm text-gray-600 mt-2">
-                    Piano: <span className="font-semibold text-blue-600">
-                      {user.subscription_type?.toUpperCase() || 'Non attivo'}
+                    Piano: <span className={`font-semibold ${(!user.subscription_type || user.subscription_type === 'none') ? 'text-red-500' : 'text-green-600'}`}>
+                      {user.subscription_type && user.subscription_type !== 'none' ? user.subscription_type.toUpperCase() : 'Non attivo'}
                     </span>
                   </p>
+                  {user.subscription_end_date && user.subscription_type && user.subscription_type !== 'none' && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Valido fino al: {new Date(user.subscription_end_date).toLocaleDateString('it-IT')}
+                      {new Date(user.subscription_end_date) < new Date() && (
+                        <span className="text-red-500 ml-1">(SCADUTO)</span>
+                      )}
+                    </p>
+                  )}
                 </div>
               )}
 

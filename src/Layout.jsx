@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Building2, User, LogOut, LayoutDashboard, Menu, Sparkles, Users, QrCode, Activity, Euro, Receipt } from "lucide-react";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -95,8 +96,8 @@ export default function Layout({ children, currentPageName }) {
       icon: Activity,
     },
     {
-      title: "Scanner QR",
-      url: createPageUrl("QRScanner"),
+      title: "Check-in",
+      url: "/CheckIn",
       icon: QrCode,
     },
     {
@@ -114,6 +115,11 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("BillingHistory"),
       icon: Receipt,
     },
+    ...(user?.role === "admin" ? [{
+      title: "Palestre (Admin)",
+      url: "/AdminGyms",
+      icon: Building2,
+    }] : []),
     {
       title: "Profilo",
       url: createPageUrl("Profile"),
@@ -291,9 +297,12 @@ export default function Layout({ children, currentPageName }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto pb-20 md:pb-0">
           {children}
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
       </div>
     </div>
   );

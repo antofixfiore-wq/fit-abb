@@ -1,10 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Base44 APP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Fit ABB — Allena Italia</title>
+
+    <!-- PWA / App Meta -->
+    <meta name="description" content="Fit ABB — Un abbonamento, centinaia di palestre. Accedi ovunque, allenat quando vuoi." />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Fit ABB" />
+
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/png" href="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png" />
+    <link rel="apple-touch-icon" href="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fit ABB — Allena Italia" />
+    <meta property="og:description" content="Un abbonamento, centinaia di palestre. Accedi ovunque, allenati quando vuoi." />
+    <meta property="og:image" content="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Safe area padding for iOS notch/home bar -->
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+        --sar: env(safe-area-inset-right);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

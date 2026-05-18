@@ -25,8 +25,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'gym_id required' }, { status: 400 });
     }
 
-    // Verifica che il cliente abbia un abbonamento attivo
-    const userSubscription = await base44.auth.me();
+    // Verifica che il cliente abbia un abbonamento attivo (riusa user già caricato)
+    const userSubscription = user;
     if (!userSubscription.subscription_type || userSubscription.subscription_type === 'none') {
       return Response.json({
         error: 'Abbonamento non attivo',
