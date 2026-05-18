@@ -12,6 +12,10 @@ import Onboarding from './pages/Onboarding';
 import AdminPayouts from './pages/AdminPayouts';
 import GymOnboarding from './pages/GymOnboarding';
 import CheckIn from './pages/CheckIn';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import DeleteAccount from './pages/DeleteAccount';
+import AppStoreLanding from './pages/AppStoreLanding';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -60,6 +64,10 @@ const AuthenticatedApp = () => {
         <Route path="/AdminPayouts" element={<LayoutWrapper currentPageName="AdminPayouts"><AdminPayouts /></LayoutWrapper>} />
         <Route path="/GymOnboarding" element={<GymOnboarding />} />
         <Route path="/CheckIn" element={<LayoutWrapper currentPageName="CheckIn"><CheckIn /></LayoutWrapper>} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
+        <Route path="/about" element={<AppStoreLanding />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
