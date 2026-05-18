@@ -17,7 +17,6 @@ import {
   Upload,
   Send,
   Users,
-  UserPlus,
   Edit
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,8 +29,7 @@ export default function ClientDashboard() {
   const [newComment, setNewComment] = useState({});
   const [stats, setStats] = useState({
     totalPosts: 0,
-    followers: 0,
-    following: 0
+    followers: 0
   });
   const [loading, setLoading] = useState(true);
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -48,7 +46,6 @@ export default function ClientDashboard() {
   });
   const [showFollowers, setShowFollowers] = useState(false);
   const [followersList, setFollowersList] = useState([]);
-  const [followingList, setFollowingList] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -74,17 +71,14 @@ export default function ClientDashboard() {
       });
       setComments(commentsByPost);
       
-      // Carica follower e following
+      // Carica gym friend (follower)
       const followers = await base44.entities.UserFollow.filter({ following_email: userData.email });
-      const following = await base44.entities.UserFollow.filter({ follower_email: userData.email });
       
       setFollowersList(followers);
-      setFollowingList(following);
       
       setStats({
         totalPosts: posts.filter(p => p.user_email === userData.email).length,
-        followers: followers.length,
-        following: following.length
+        followers: followers.length
       });
     } catch (error) {
       console.error("Error loading data:", error);
@@ -204,14 +198,7 @@ export default function ClientDashboard() {
     }
   };
 
-  const handleUnfollow = async (targetEmail) => {
-    try {
-      await base44.functions.invoke("unfollowUser", { targetUserEmail: targetEmail });
-      await loadData();
-    } catch (error) {
-      console.error("Error unfollowing user:", error);
-    }
-  };
+
 
   if (loading) {
     return (
@@ -303,11 +290,10 @@ export default function ClientDashboard() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-4 gap-3 mt-5">
+              <div className="grid grid-cols-3 gap-3 mt-5">
                 {[
                   { val: stats.totalPosts, label: "Post" },
-                  { val: stats.followers, label: "Follower", clickable: true },
-                  { val: stats.following, label: "Following", clickable: true },
+                  { val: stats.followers, label: "GymFriend", clickable: true },
                   { val: user?.total_boosts_received || 0, label: "Boost" },
                 ].map((s) => (
                   <div 
@@ -584,13 +570,13 @@ export default function ClientDashboard() {
                 </Button>
               </div>
               <div className="p-4 overflow-y-auto max-h-[50vh]">
-                <div className="mb-4">
+                <div>
                   <h4 className="font-semibold text-white text-sm mb-2 flex items-center gap-2">
                     <Users className="w-4 h-4 text-[#E8FF00]" />
-                    Follower ({followersList.length})
+                    GymFriend ({followersList.length})
                   </h4>
                   {followersList.length === 0 ? (
-                    <p className="text-gray-500 text-sm">Nessun follower ancora</p>
+                    <p className="text-gray-500 text-sm">Nessun gym friend ancora</p>
                   ) : (
                     <div className="space-y-2">
                       {followersList.map((follow) => (
@@ -605,41 +591,6 @@ export default function ClientDashboard() {
                               <p className="font-semibold text-white text-sm">{follow.follower_email}</p>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-white text-sm mb-2 flex items-center gap-2">
-                    <UserPlus className="w-4 h-4 text-[#E8FF00]" />
-                    Following ({followingList.length})
-                  </h4>
-                  {followingList.length === 0 ? (
-                    <p className="text-gray-500 text-sm">Non stai seguendo nessuno</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {followingList.map((follow) => (
-                        <div key={follow.id} className="flex items-center justify-between bg-white/5 rounded-xl p-3">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback className="text-xs font-bold text-black" style={{ background: "#E8FF00" }}>
-                                {follow.following_email?.charAt(0).toUpperCase() || 'U'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-semibold text-white text-sm">{follow.following_email}</p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleUnfollow(follow.following_email)}
-                            className="border-white/20 text-white hover:bg-white/10"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
                         </div>
                       ))}
                     </div>
