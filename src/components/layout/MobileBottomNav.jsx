@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Building2, User, QrCode, LayoutDashboard } from "lucide-react";
@@ -15,6 +15,7 @@ const navItems = [
 export default function MobileBottomNav() {
   const location = useLocation();
   const { navState, restoreState } = useNavigationState();
+  const previousPathRef = useRef(location.pathname);
 
   const handleNavClick = (url, e) => {
     const isActive = location.pathname === url || 
@@ -23,15 +24,31 @@ export default function MobileBottomNav() {
     if (isActive) {
       // Scroll to top if already on this tab
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      // Restore previous state for the target tab
-      setTimeout(() => restoreState(url), 100);
     }
+    // State restoration happens in useEffect only when switching tabs
   };
 
-  // Restore state when navigating to a tab
+  // Restore state only when switching between tabs (not on initial load or nested routes)
   useEffect(() => {
-    restoreState(location.pathname);
+    const currentPath = location.pathname;
+    const prevPath = previousPathRef.current;
+    
+    // Check if we're switching between main tabs
+    const currentTab = navItems.find(item => 
+      currentPath === item.url || 
+      (item.url === "/CheckIn" && currentPath.startsWith("/CheckIn"))
+    );
+    const prevTab = navItems.find(item => 
+      prevPath === item.url || 
+      (item.url === "/CheckIn" && prevPath.startsWith("/CheckIn"))
+    );
+    
+    // Only restore if switching between different main tabs
+    if (currentTab && prevTab && currentTab.url !== prevTab.url) {
+      restoreState(currentTab.url);
+    }
+    
+    previousPathRef.current = currentPath;
   }, [location.pathname]);
 
   return (
