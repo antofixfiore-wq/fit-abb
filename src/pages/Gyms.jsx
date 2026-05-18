@@ -579,7 +579,8 @@ export default function Gyms() {
       )}
 
       {/* Gyms Grid - Mobile optimized */}
-      {viewMode === "list" && searchType === "gyms" && <div className="max-w-7xl mx-auto px-4 py-8">
+      {viewMode === "list" && searchType === "gyms" && (
+        <div className="max-w-7xl mx-auto px-4 py-8">
         {filteredGyms.length === 0 ? (
           <div className="text-center py-16">
             <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -665,7 +666,8 @@ export default function Gyms() {
             })}
           </div>
         )}
-      </div>
+        </div>
+      )}
 
       {/* Users Grid */}
       {viewMode === "list" && searchType === "users" && (
@@ -726,9 +728,9 @@ export default function Gyms() {
             ))}
           </div>
         )}
-      </div>
+        </div>
       )}
-      </PullToRefresh>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
