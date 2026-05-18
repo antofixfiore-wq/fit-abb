@@ -10,43 +10,6 @@ import { motion } from "framer-motion";
 
 const subscriptionPlans = [
   {
-    id: "plus",
-    name: "Plus",
-    price: 70,
-    period: "mese",
-    highlight: false,
-    tag: null,
-    description: "Accesso a palestre Gold e Platinum del network Fit Abb",
-    benefits: [
-      "Palestre Gold + Platinum",
-      "AI Workout Planner",
-      "Tracking allenamenti",
-      "Community e badge",
-    ],
-    icon: Zap,
-    gradient: "from-[#1a1a1a] to-[#222]",
-    accentColor: "text-gray-300",
-  },
-  {
-    id: "annuale",
-    name: "Piano Annuale",
-    price: 365,
-    period: "anno",
-    priceNote: "= 1€ al giorno",
-    highlight: true,
-    tag: "⭐ La più venduta",
-    description: "1€ al giorno per allenarti quando e come vuoi in tutte le strutture Fit Abb. Accessi illimitati, massima libertà, un solo abbonamento.",
-    benefits: [
-      "Ingressi illimitati H24",
-      "Accesso a tutte le palestre convenzionate",
-      "Massima flessibilità di orario",
-      "Il miglior rapporto qualità/prezzo",
-    ],
-    icon: Infinity,
-    gradient: "from-[#E8FF00] to-[#c8e000]",
-    accentColor: "text-black",
-  },
-  {
     id: "gold",
     name: "Gold",
     price: 40,
@@ -61,8 +24,60 @@ const subscriptionPlans = [
       "Community e badge",
     ],
     icon: Clock,
-    gradient: "from-[#1a1a1a] to-[#222]",
-    accentColor: "text-gray-300",
+  },
+  {
+    id: "annuale_gold",
+    name: "Gold Annuale",
+    price: 365,
+    period: "anno",
+    priceNote: "= 1€ al giorno",
+    highlight: true,
+    tag: "⭐ Più venduto",
+    description: "1€ al giorno per accedere a tutte le palestre Gold. Il miglior rapporto qualità/prezzo.",
+    benefits: [
+      "Accesso a tutte le palestre Gold",
+      "Ingressi illimitati H24",
+      "AI Workout Planner",
+      "Tracking allenamenti",
+      "Community e badge",
+    ],
+    icon: Infinity,
+    highlightColor: "#E8FF00",
+  },
+  {
+    id: "annuale_plus",
+    name: "Plus Annuale",
+    price: 650,
+    period: "anno",
+    priceNote: "= 1,78€ al giorno",
+    highlight: true,
+    tag: "⭐ Più venduto",
+    description: "Accesso a tutte le palestre convenzionate, incluse le Platinum. La massima libertà.",
+    benefits: [
+      "Ingressi illimitati H24",
+      "Accesso a tutte le palestre convenzionate",
+      "Palestre Gold + Platinum",
+      "AI Workout Planner",
+      "Community e badge",
+    ],
+    icon: Zap,
+    highlightColor: "#fff",
+  },
+  {
+    id: "plus",
+    name: "Plus",
+    price: 70,
+    period: "mese",
+    highlight: false,
+    tag: null,
+    description: "Accesso a palestre Gold e Platinum del network Fit Abb",
+    benefits: [
+      "Palestre Gold + Platinum",
+      "AI Workout Planner",
+      "Tracking allenamenti",
+      "Community e badge",
+    ],
+    icon: Zap,
   },
 ];
 
@@ -266,10 +281,12 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Cards — annuale al centro e più grande */}
-          <div className="grid md:grid-cols-3 gap-6 items-center">
+          {/* 4 card: laterali normali, centrali highlight */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
             {subscriptionPlans.map((plan, i) => {
               const Icon = plan.icon;
+              const isGoldAnnuale = plan.id === "annuale_gold";
+              const isPlusAnnuale = plan.id === "annuale_plus";
               return (
                 <motion.div
                   key={plan.id}
@@ -277,105 +294,118 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className={plan.highlight ? "md:-mt-8 md:mb-0 z-10" : ""}
+                  className={plan.highlight ? "lg:-mt-6 z-10" : ""}
                 >
                   <Card
                     className={`relative overflow-hidden border-0 transition-all duration-300 hover:scale-[1.02] ${
-                      plan.highlight
+                      isGoldAnnuale
                         ? "shadow-2xl ring-4 ring-[#E8FF00]/60"
+                        : isPlusAnnuale
+                        ? "shadow-2xl ring-4 ring-white/40"
                         : "bg-[#141414] hover:bg-[#1a1a1a]"
                     }`}
                     style={
-                      plan.highlight
+                      isGoldAnnuale
                         ? { background: "#E8FF00" }
+                        : isPlusAnnuale
+                        ? { background: "#1a1a1a" }
                         : {}
                     }
                   >
                     {plan.tag && (
-                      <div className="bg-black text-[#E8FF00] text-xs font-bold tracking-wider px-4 py-2 text-center">
+                      <div
+                        className="text-xs font-bold tracking-wider px-4 py-2 text-center"
+                        style={
+                          isGoldAnnuale
+                            ? { background: "#000", color: "#E8FF00" }
+                            : { background: "#E8FF00", color: "#000" }
+                        }
+                      >
                         {plan.tag}
                       </div>
                     )}
 
-                    <CardContent className={`p-8 ${plan.highlight ? "pt-6" : "pt-8"}`}>
+                    <CardContent className={`p-7 ${plan.highlight ? "pt-5" : "pt-7"}`}>
                       {/* Icon */}
                       <div
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${
-                          plan.highlight ? "bg-black/15" : "bg-white/5"
+                        className={`w-11 h-11 rounded-xl flex items-center justify-center mb-5 ${
+                          isGoldAnnuale ? "bg-black/15" : "bg-white/5"
                         }`}
                       >
-                        <Icon className={`w-6 h-6 ${plan.highlight ? "text-black" : "text-[#E8FF00]"}`} />
+                        <Icon className={`w-5 h-5 ${isGoldAnnuale ? "text-black" : "text-[#E8FF00]"}`} />
                       </div>
 
                       {/* Name */}
-                      <h3 className={`text-xl font-bold mb-1 ${plan.highlight ? "text-black" : "text-white"}`}>
+                      <h3 className={`text-lg font-bold mb-1 ${isGoldAnnuale ? "text-black" : "text-white"}`}>
                         {plan.name}
                       </h3>
 
-                      {/* Price — nascosto su iOS nativo (App Store guidelines) */}
+                      {/* Price */}
                       {!iosNative && (
                         <>
-                          <div className="mb-2">
-                            <span className={`text-6xl font-black ${plan.highlight ? "text-black" : "text-white"}`}>
+                          <div className="mb-1">
+                            <span className={`text-5xl font-black ${isGoldAnnuale ? "text-black" : "text-white"}`}>
                               €{plan.price}
                             </span>
-                            <span className={`text-lg ml-2 ${plan.highlight ? "text-black/60" : "text-gray-500"}`}>
+                            <span className={`text-base ml-2 ${isGoldAnnuale ? "text-black/60" : "text-gray-500"}`}>
                               /{plan.period}
                             </span>
                           </div>
                           {plan.priceNote && (
-                            <div className="text-black font-bold text-sm mb-4">{plan.priceNote}</div>
+                            <div className={`font-bold text-xs mb-3 ${isGoldAnnuale ? "text-black" : "text-[#E8FF00]"}`}>
+                              {plan.priceNote}
+                            </div>
                           )}
                         </>
                       )}
 
                       {/* Description */}
-                      <p className={`text-sm mb-6 leading-relaxed ${plan.highlight ? "text-black/80" : "text-gray-400"}`}>
+                      <p className={`text-xs mb-5 leading-relaxed ${isGoldAnnuale ? "text-black/80" : "text-gray-400"}`}>
                         {plan.description}
                       </p>
 
                       {/* Benefits */}
-                      <ul className="space-y-3 mb-8">
+                      <ul className="space-y-2 mb-7">
                         {plan.benefits.map((b, idx) => (
-                          <li key={idx} className="flex items-center gap-3">
+                          <li key={idx} className="flex items-center gap-2">
                             <div
-                              className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                plan.highlight ? "bg-black/20" : "bg-[#E8FF00]/10"
+                              className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                isGoldAnnuale ? "bg-black/20" : "bg-[#E8FF00]/10"
                               }`}
                             >
-                              <Check className={`w-3 h-3 ${plan.highlight ? "text-black" : "text-[#E8FF00]"}`} />
+                              <Check className={`w-2.5 h-2.5 ${isGoldAnnuale ? "text-black" : "text-[#E8FF00]"}`} />
                             </div>
-                            <span className={`text-sm ${plan.highlight ? "text-black" : "text-gray-300"}`}>{b}</span>
+                            <span className={`text-xs ${isGoldAnnuale ? "text-black" : "text-gray-300"}`}>{b}</span>
                           </li>
                         ))}
                       </ul>
 
-                      {/* CTA — su iOS nativo rimanda al sito web (App Store guidelines) */}
+                      {/* CTA */}
                       {iosNative ? (
                         <Button
-                          size="lg"
-                          className={`w-full rounded-full font-bold py-6 text-base transition-all ${
-                            plan.highlight
+                          size="sm"
+                          className={`w-full rounded-full font-bold py-5 text-sm transition-all ${
+                            isGoldAnnuale
                               ? "bg-black text-[#E8FF00] hover:bg-gray-900"
                               : "bg-[#E8FF00] text-black hover:opacity-90"
                           }`}
                           onClick={() => window.open("https://fitabb.com", "_blank")}
                         >
-                          Scopri di più su fitabb.com
-                          <ArrowRight className="w-4 h-4 ml-2" />
+                          Scopri su fitabb.com
+                          <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       ) : (
                         <Button
-                          size="lg"
-                          className={`w-full rounded-full font-bold py-6 text-base transition-all ${
-                            plan.highlight
+                          size="sm"
+                          className={`w-full rounded-full font-bold py-5 text-sm transition-all ${
+                            isGoldAnnuale
                               ? "bg-black text-[#E8FF00] hover:bg-gray-900"
                               : "bg-[#E8FF00] text-black hover:opacity-90"
                           }`}
                           onClick={handleCTAClick}
                         >
                           Scegli questo piano
-                          <ArrowRight className="w-4 h-4 ml-2" />
+                          <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       )}
                     </CardContent>

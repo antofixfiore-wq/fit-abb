@@ -13,6 +13,7 @@ const subscriptionDetails = {
   gold: {
     name: "Gold",
     price: 40,
+    period: "mese",
     color: "from-yellow-400 to-yellow-600",
     benefits: [
       "Accesso a palestre Gold",
@@ -22,9 +23,38 @@ const subscriptionDetails = {
       "Eventi esclusivi"
     ]
   },
+  annuale_gold: {
+    name: "Gold Annuale",
+    price: 365,
+    period: "anno",
+    priceNote: "= 1€ al giorno",
+    color: "from-yellow-400 to-yellow-600",
+    benefits: [
+      "Accesso a tutte le palestre Gold",
+      "Ingressi illimitati H24",
+      "AI Workout Planner",
+      "Tracking allenamenti e progressi",
+      "Community e badge"
+    ]
+  },
+  annuale_plus: {
+    name: "Plus Annuale",
+    price: 650,
+    period: "anno",
+    priceNote: "= 1,78€ al giorno",
+    color: "from-[#E8FF00] to-yellow-400",
+    benefits: [
+      "Ingressi illimitati H24",
+      "Accesso a tutte le palestre convenzionate",
+      "Palestre Gold + Platinum",
+      "AI Workout Planner",
+      "Community e badge"
+    ]
+  },
   plus: {
     name: "Plus",
     price: 70,
+    period: "mese",
     color: "from-[#E8FF00] to-yellow-400",
     benefits: [
       "Accesso a palestre Gold e Platinum",
@@ -37,6 +67,7 @@ const subscriptionDetails = {
   premium: {
     name: "Platinum",
     price: 99.99,
+    period: "mese",
     color: "from-blue-500 to-orange-500",
     benefits: [
       "Accesso a tutte le palestre partner",
@@ -221,12 +252,15 @@ export default function Subscription() {
               )}
 
               <div className="border-t pt-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">Totale mensile:</span>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-gray-600">Totale {selectedPlan.period === "anno" ? "annuale" : "mensile"}:</span>
                   <span className="text-2xl font-bold">€{selectedPlan.price}</span>
                 </div>
+                {selectedPlan.priceNote && (
+                  <p className="text-sm text-green-600 font-medium mb-2">{selectedPlan.priceNote}</p>
+                )}
                 <p className="text-sm text-gray-500">
-                  L'abbonamento si rinnova automaticamente ogni mese
+                  L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}
                 </p>
               </div>
 
