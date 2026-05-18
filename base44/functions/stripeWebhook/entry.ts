@@ -19,6 +19,14 @@ const PLAN_TO_SUB_TYPE = {
   annuale_plus: 'plus'
 };
 
+// Mappa plan -> nomi leggibili per email
+const PLANS = {
+  gold: { name: 'Gold' },
+  plus: { name: 'Plus' },
+  annuale_gold: { name: 'Gold Annuale' },
+  annuale_plus: { name: 'Plus Annuale' }
+};
+
 Deno.serve(async (req) => {
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
@@ -79,18 +87,27 @@ Deno.serve(async (req) => {
           const endDate = new Date(subscription.current_period_end * 1000).toISOString().split('T')[0];
           const startDate = new Date(subscription.current_period_start * 1000).toISOString().split('T')[0];
 
-          // Aggiorna utente
+          // Aggiorna utente - controlla che non sia stato cancellato
           const users = await base44.asServiceRole.entities.User.filter({ email: userEmail });
           if (users[0]) {
-            await base44.asServiceRole.entities.User.update(users[0].id, {
+            const updateData = {
               subscription_type: subType,
               subscription_plan: planType,
               stripe_subscription_id: subscription.id,
               subscription_start_date: startDate,
               subscription_end_date: endDate,
-              subscription_cancel_at_period_end: false,
-              subscription_status: 'active'
-            });
+              subscription_cancel_at_period_end: false
+            };
+            // Imposta active solo se non era cancellato
+            if (users[0].subscription_status !== 'cancelled') {
+              updateData.subscription_status = 'active';
+            }
+            // Imposta subscription_plan solo se non esiste già (previene race condition)
+            if (!users[0].subscription_plan) {
+              updateData.subscription_plan = planType;
+              updateData.subscription_type = PLAN_TO_SUB_TYPE[planType] || planType;
+            }
+            await base44.asServiceRole.entities.User.update(users[0].id, updateData);
           }
 
           // Marca il token come usato
@@ -106,6 +123,18 @@ Deno.serve(async (req) => {
           }
 
           console.log(`Abbonamento attivato/rinnovato per ${userEmail}: ${planType} fino al ${endDate}`);
+          
+          // Invia email di conferma
+          try {
+            await base44.integrations.Core.SendEmail({
+              to: userEmail,
+              subject: 'Abbonamento Fit ABB Attivato',
+              body: `Ciao! Il tuo abbonamento ${PLANS[planType]?.name || planType} è stato attivato con successo. Scadenza: ${endDate}. Grazie per aver scelto Fit ABB!`
+            });
+            console.log(`Email di conferma inviata a ${userEmail}`);
+          } catch (emailErr) {
+            console.error('Errore invio email:', emailErr);
+          }
         }
         break;
       }
@@ -124,6 +153,18 @@ Deno.serve(async (req) => {
             });
           }
           console.log(`Pagamento fallito per ${userEmail}`);
+          
+          // Invia email di notifica pagamento fallito
+          try {
+            await base44.integrations.Core.SendEmail({
+              to: userEmail,
+              subject: 'Pagamento Fallito - Fit ABB',
+              body: `Ciao! Il pagamento del tuo abbonamento Fit ABB è fallito. Aggiorna il tuo metodo di pagamento per evitare l'interruzione del servizio. Contatta supporto@fit-abb.com per assistenza.`
+            });
+            console.log(`Email di pagamento fallito inviata a ${userEmail}`);
+          } catch (emailErr) {
+            console.error('Errore invio email fallimento:', emailErr);
+          }
         }
         break;
       }

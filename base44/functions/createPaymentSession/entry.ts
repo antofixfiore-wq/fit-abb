@@ -41,22 +41,26 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Token non valido o scaduto' }, { status: 404 });
     }
 
-    const tokenData = paymentTokens[0];
+    const paymentToken = paymentTokens[0];
     
-    // Verifica scadenza
-    if (new Date(tokenData.expires_at) < new Date()) {
+    // Verifica scadenza (7 giorni dalla creazione)
+    const now = new Date();
+    const expiresAt = new Date(paymentToken.expires_at);
+    if (expiresAt < now) {
+      console.log(`Token scaduto: ${token}, scadenza: ${expiresAt}`);
       return Response.json({ error: 'Token scaduto' }, { status: 400 });
     }
 
     // Verifica se già usato
-    if (tokenData.used) {
+    if (paymentToken.used) {
+      console.log(`Token già usato: ${token}`);
       return Response.json({ error: 'Token già utilizzato' }, { status: 400 });
     }
 
     // Verifica che l'email esista nell'entity User
-    const users = await base44.asServiceRole.entities.User.filter({ email: tokenData.email });
+    const users = await base44.asServiceRole.entities.User.filter({ email: paymentToken.email });
     if (users.length === 0) {
-      console.error(`Email nel token non trovata: ${tokenData.email}`);
+      console.error(`Email nel token non trovata: ${paymentToken.email}`);
       return Response.json({ error: 'Email non valida' }, { status: 400 });
     }
 
@@ -66,9 +70,9 @@ Deno.serve(async (req) => {
     if (action === 'validate_token' || !action) {
       // Ritorna i dati del token per la UI
       return Response.json({ 
-        email: tokenData.email,
-        plan_type: tokenData.plan_type,
-        expires_at: tokenData.expires_at
+        email: paymentToken.email,
+        plan_type: paymentToken.plan_type,
+        expires_at: paymentToken.expires_at
       });
     }
 
@@ -78,6 +82,12 @@ Deno.serve(async (req) => {
 
       if (!PRICE_IDS[plan_type]) {
         return Response.json({ error: 'Piano non valido' }, { status: 400 });
+      }
+
+      // Impedisce checkout se token sta per scadere (meno di 24 ore)
+      const hoursUntilExpiry = (new Date(paymentToken.expires_at) - now) / (1000 * 60 * 60);
+      if (hoursUntilExpiry < 24) {
+        return Response.json({ error: 'Token in scadenza. Richiedi un nuovo link.' }, { status: 400 });
       }
 
       const origin = req.headers.get('origin') || 'https://app.fit-abb.com';
@@ -90,20 +100,25 @@ Deno.serve(async (req) => {
         line_items: [{ price: PRICE_IDS[plan_type], quantity: 1 }],
         success_url: successUrl,
         cancel_url: cancelUrl,
-        customer_email: tokenData.email,
+        customer_email: paymentToken.email,
         metadata: {
           base44_app_id: Deno.env.get('BASE44_APP_ID'),
           plan_type,
           payment_token: token,
-          user_email: tokenData.email
+          user_email: paymentToken.email
         },
         subscription_data: {
           metadata: {
             plan_type,
             payment_token: token,
-            user_email: tokenData.email
+            user_email: paymentToken.email
           }
         }
+      });
+
+      // Salva session_id nel token per tracking
+      await base44.asServiceRole.entities.PaymentToken.update(paymentToken.id, {
+        subscription_id: session.id
       });
 
       return Response.json({ checkout_url: session.url, session_id: session.id });
