@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Building2, User, QrCode, LayoutDashboard } from "lucide-react";
+import { useNavigationState } from "@/hooks/useNavigationState";
 
 const navItems = [
   { title: "Home", url: createPageUrl("Home"), icon: Home },
@@ -13,16 +14,25 @@ const navItems = [
 
 export default function MobileBottomNav() {
   const location = useLocation();
+  const { navState, restoreState } = useNavigationState();
 
   const handleNavClick = (url, e) => {
-    // If clicking already active tab, scroll to top
     const isActive = location.pathname === url || 
       (url === "/CheckIn" && location.pathname.startsWith("/CheckIn"));
     
     if (isActive) {
+      // Scroll to top if already on this tab
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Restore previous state for the target tab
+      setTimeout(() => restoreState(url), 100);
     }
   };
+
+  // Restore state when navigating to a tab
+  useEffect(() => {
+    restoreState(location.pathname);
+  }, [location.pathname]);
 
   return (
     <nav

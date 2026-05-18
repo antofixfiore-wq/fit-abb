@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import PullToRefresh from "@/components/mobile/PullToRefresh";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -515,6 +516,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <PullToRefresh onRefresh={loadData}>
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header Profile Card */}
         <motion.div
@@ -901,6 +903,7 @@ export default function ClientDashboard() {
           </Card>
         )}
       </div>
+      </PullToRefresh>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import PullToRefresh from "@/components/mobile/PullToRefresh";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
@@ -221,6 +222,7 @@ export default function Gyms() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <PullToRefresh onRefresh={loadData}>
       {/* Header */}
       <div className="bg-black text-white py-16 px-6 border-b border-white/10">
         <div className="max-w-7xl mx-auto">
@@ -555,6 +557,7 @@ export default function Gyms() {
           </div>
         )}
       </div>}
+      </PullToRefresh>
     </div>
   );
 }
