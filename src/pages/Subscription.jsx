@@ -162,24 +162,30 @@ export default function Subscription() {
   const documentsComplete = user.id_document_url && user.medical_certificate_url;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* Sticky header mobile */}
+      <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center gap-3">
         <Button
-          variant="outline"
+          variant="ghost"
+          size="icon"
           onClick={() => navigate(createPageUrl("Home"))}
-          className="mb-6"
+          className="text-white hover:bg-white/10 shrink-0"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Torna Indietro
+          <ArrowLeft className="w-5 h-5" />
         </Button>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-base font-bold text-white truncate">Conferma Abbonamento</h1>
+          <p className="text-xs text-gray-400">Rivedi i dettagli prima di procedere</p>
+        </div>
+      </div>
 
+      <div className="max-w-2xl mx-auto px-4 pb-32 pt-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Conferma Abbonamento</h1>
-          <p className="text-gray-600 mb-8">Rivedi i dettagli prima di procedere</p>
+          <div className="hidden">{/* spacer */}</div>
 
           {error && (
             <Alert variant="destructive" className="mb-6">
@@ -188,135 +194,114 @@ export default function Subscription() {
             </Alert>
           )}
 
-          <Card className="mb-6">
-            <div className={`h-2 bg-gradient-to-r ${selectedPlan.color}`}></div>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${selectedPlan.color} flex items-center justify-center`}>
-                    <Dumbbell className="w-6 h-6 text-white" />
+          <Card className="mb-6 bg-[#141414] border-white/10">
+            <div className={`h-1.5 bg-gradient-to-r ${selectedPlan.color} rounded-t-lg`}></div>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedPlan.color} flex items-center justify-center shrink-0`}>
+                    <Dumbbell className="w-5 h-5 text-white" />
                   </div>
-                  Piano {selectedPlan.name}
-                </CardTitle>
-                <div>
-                  <div className="text-3xl font-bold">€{selectedPlan.price}</div>
-                  <div className="text-sm text-gray-500 text-right">/mese</div>
+                  <CardTitle className="text-lg text-white">Piano {selectedPlan.name}</CardTitle>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-2xl font-black text-white">€{selectedPlan.price}</div>
+                  <div className="text-xs text-gray-500">/{selectedPlan.period}</div>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-5">
+              {/* Benefici */}
               <div>
-                <h3 className="font-semibold mb-3 text-lg">Cosa include:</h3>
-                <ul className="space-y-3">
+                <h3 className="font-semibold mb-3 text-sm text-gray-300 uppercase tracking-wider">Cosa include</h3>
+                <ul className="space-y-2">
                   {selectedPlan.benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${selectedPlan.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                    <li key={i} className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${selectedPlan.color} flex items-center justify-center flex-shrink-0`}>
                         <Check className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-gray-700">{benefit}</span>
+                      <span className="text-gray-200 text-sm">{benefit}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="border-t pt-6">
-                <h3 className="font-semibold mb-3 text-lg">Stato Documenti</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-                    <span>Documento d'identità</span>
-                    {user.id_document_url ? (
-                      <Badge className="bg-green-100 text-green-800">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Caricato
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">Mancante</Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-                    <span>Certificato medico</span>
-                    {user.medical_certificate_url ? (
-                      <Badge className="bg-green-100 text-green-800">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Caricato
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">Mancante</Badge>
-                    )}
-                  </div>
+              {/* Documenti */}
+              <div className="border-t border-white/10 pt-4">
+                <h3 className="font-semibold mb-3 text-sm text-gray-300 uppercase tracking-wider">Documenti richiesti</h3>
+                <div className="space-y-2">
+                  {[
+                    { label: "Documento d'identità", ok: !!user.id_document_url },
+                    { label: "Certificato medico", ok: !!user.medical_certificate_url },
+                  ].map(({ label, ok }) => (
+                    <div key={label} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                      <span className="text-gray-300 text-sm">{label}</span>
+                      {ok ? (
+                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">✓ OK</Badge>
+                      ) : (
+                        <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">Mancante</Badge>
+                      )}
+                    </div>
+                  ))}
                 </div>
+                {!documentsComplete && (
+                  <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/30 rounded-xl">
+                    <p className="text-orange-300 text-xs">Carica i documenti nel profilo per procedere.</p>
+                    <Button variant="link" className="p-0 h-auto text-[#E8FF00] text-xs mt-1" onClick={() => navigate(createPageUrl("Profile"))}>
+                      Vai al profilo →
+                    </Button>
+                  </div>
+                )}
               </div>
 
-              {!documentsComplete && (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Devi caricare tutti i documenti richiesti prima di attivare l'abbonamento.
-                    <Button
-                      variant="link"
-                      className="p-0 h-auto ml-1"
-                      onClick={() => navigate(createPageUrl("Profile"))}
-                    >
-                      Vai al profilo
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="border-t pt-6">
-                <h3 className="font-semibold mb-4 text-lg">Riepilogo costi</h3>
-                <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+              {/* Riepilogo costi */}
+              <div className="border-t border-white/10 pt-4">
+                <h3 className="font-semibold mb-3 text-sm text-gray-300 uppercase tracking-wider">Riepilogo costi</h3>
+                <div className="bg-white/5 rounded-xl p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Abbonamento {selectedPlan.period === "anno" ? "annuale" : "mensile"}</span>
+                    <span className="text-gray-400 text-sm">Abbonamento {selectedPlan.period === "anno" ? "annuale" : "mensile"}</span>
                     <div className="text-right">
-                      <span className="font-bold text-gray-900">€{selectedPlan.price}</span>
-                      <span className="text-xs text-gray-400 ml-1">/{selectedPlan.period}</span>
+                      <span className="font-black text-white text-lg">€{selectedPlan.price}</span>
+                      <span className="text-xs text-gray-500 ml-1">/{selectedPlan.period}</span>
                     </div>
                   </div>
                   {selectedPlan.priceNote && (
-                    <p className="text-sm text-green-600 font-medium">{selectedPlan.priceNote}</p>
+                    <p className="text-xs text-[#E8FF00] font-semibold">{selectedPlan.priceNote}</p>
                   )}
                   {selectedPlan.serviceFee && (
-                    <>
-                      <div className="border-t border-gray-200 pt-3 flex justify-between items-start">
-                        <div>
-                          <span className="text-gray-600 text-sm">Costo di servizio per accesso</span>
-                          <p className="text-xs text-gray-400 mt-0.5">Addebitato ad ogni ingresso in palestra</p>
-                        </div>
-                        <span className="font-semibold text-gray-900">€{selectedPlan.serviceFee.toFixed(2)}</span>
+                    <div className="border-t border-white/10 pt-3 flex justify-between items-start">
+                      <div>
+                        <span className="text-gray-400 text-sm">Costo per ingresso</span>
+                        <p className="text-xs text-gray-600 mt-0.5">Solo quando accedi in palestra</p>
                       </div>
-                      <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700">
-                        💡 Il costo di servizio è separato dall'abbonamento e viene applicato solo quando accedi fisicamente a una palestra.
-                      </div>
-                    </>
+                      <span className="font-bold text-white text-sm">€{selectedPlan.serviceFee.toFixed(2)}</span>
+                    </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-400 mt-3">
-                  L'abbonamento si rinnova automaticamente ogni {selectedPlan.period === "anno" ? "anno" : "mese"}. Puoi disdire in qualsiasi momento.
+                <p className="text-xs text-gray-600 mt-2">
+                  Rinnovo automatico ogni {selectedPlan.period === "anno" ? "anno" : "mese"}. Disdici quando vuoi.
                 </p>
               </div>
-
-              <Button
-                className={`w-full ${documentsComplete ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold' : ''}`}
-                size="lg"
-                onClick={handleConfirmSubscription}
-                disabled={!documentsComplete || processing}
-              >
-                {processing ? (
-                  "Reindirizzamento al pagamento..."
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5" />
-                    Procedi al Pagamento
-                  </span>
-                )}
-              </Button>
-              <p className="text-xs text-center text-gray-400">
-                Pagamento sicuro tramite Stripe · SSL encrypted
-              </p>
             </CardContent>
           </Card>
         </motion.div>
+      </div>
+
+      {/* Sticky bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-[#0a0a0a]/98 backdrop-blur-xl border-t border-white/10 p-4 safe-bottom">
+        <Button
+          className={`w-full h-14 text-base font-black rounded-2xl ${documentsComplete ? '' : 'opacity-50'}`}
+          style={documentsComplete ? { background: "#E8FF00", color: "#000" } : {}}
+          onClick={handleConfirmSubscription}
+          disabled={!documentsComplete || processing}
+        >
+          {processing ? (
+            <span className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-black/40 border-t-black rounded-full animate-spin" /> Reindirizzamento...</span>
+          ) : (
+            <span className="flex items-center gap-2"><CreditCard className="w-5 h-5" /> Procedi al Pagamento</span>
+          )}
+        </Button>
+        <p className="text-xs text-center text-gray-600 mt-2">Pagamento sicuro via Stripe · SSL</p>
       </div>
     </div>
   );

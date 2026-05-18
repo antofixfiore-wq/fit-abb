@@ -74,85 +74,90 @@ export default function CheckIn() {
   // Se non c'è ancora il pass, mostra bottone per generare
   if (!accessPass) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/Gyms')}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Indietro
-            </Button>
-          </div>
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+        {/* Sticky header */}
+        <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/Gyms')} className="text-white hover:bg-white/10">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <span className="text-white font-semibold">Check-in Palestra</span>
+        </div>
 
-          {/* Card */}
-          <Card className="p-8">
-            <div className="space-y-6 text-center">
-              <h1 className="text-3xl font-bold text-gray-900">Allenati</h1>
-              {gym && (
-                <div className="space-y-2">
-                  <p className="text-lg font-semibold text-gray-800">{gym.name}</p>
-                  {gym.photos?.[0] && (
-                    <img
-                      src={gym.photos[0]}
-                      alt={gym.name}
-                      className="w-32 h-32 rounded-lg object-cover mx-auto"
-                    />
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
+          {/* Gym info */}
+          {gym && (
+            <div className="w-full max-w-sm text-center">
+              {gym.photos?.[0] && (
+                <img src={gym.photos[0]} alt={gym.name} className="w-24 h-24 rounded-2xl object-cover mx-auto mb-3 border-2 border-white/10" />
+              )}
+              <h2 className="text-xl font-bold text-white">{gym.name}</h2>
+              {gym.city && <p className="text-gray-400 text-sm mt-1">{gym.city}</p>}
+            </div>
+          )}
+
+          {/* User info */}
+          {user && (
+            <div className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-5">
+              <p className="text-xs text-gray-500 mb-1 uppercase tracking-wider">Accesso come</p>
+              <p className="font-bold text-white text-lg">{user.full_name}</p>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+                <span className="text-gray-400 text-sm">Piano attivo</span>
+                <span className={`font-bold text-sm px-3 py-1 rounded-full ${
+                  (!user.subscription_type || user.subscription_type === 'none')
+                    ? 'bg-red-500/20 text-red-400'
+                    : 'bg-[#E8FF00]/20 text-[#E8FF00]'
+                }`}>
+                  {user.subscription_type && user.subscription_type !== 'none'
+                    ? user.subscription_type.toUpperCase()
+                    : 'Non attivo'}
+                </span>
+              </div>
+              {user.subscription_end_date && user.subscription_type && user.subscription_type !== 'none' && (
+                <p className="text-xs text-gray-500 mt-2">
+                  Valido fino al: {new Date(user.subscription_end_date).toLocaleDateString('it-IT')}
+                  {new Date(user.subscription_end_date) < new Date() && (
+                    <span className="text-red-400 ml-1 font-semibold">(SCADUTO)</span>
                   )}
-                </div>
-              )}
-
-              {user && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Accesso come</p>
-                  <p className="font-semibold text-gray-900">{user.full_name}</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Piano: <span className={`font-semibold ${(!user.subscription_type || user.subscription_type === 'none') ? 'text-red-500' : 'text-green-600'}`}>
-                      {user.subscription_type && user.subscription_type !== 'none' ? user.subscription_type.toUpperCase() : 'Non attivo'}
-                    </span>
-                  </p>
-                  {user.subscription_end_date && user.subscription_type && user.subscription_type !== 'none' && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Valido fino al: {new Date(user.subscription_end_date).toLocaleDateString('it-IT')}
-                      {new Date(user.subscription_end_date) < new Date() && (
-                        <span className="text-red-500 ml-1">(SCADUTO)</span>
-                      )}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-                  <div className="text-left">
-                    <p className="font-semibold text-red-900">Accesso non consentito</p>
-                    <p className="text-sm text-red-800 mt-1">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              {!error && (
-                <Button
-                  onClick={generateAccessPass}
-                  disabled={isLoading || !user?.subscription_type || user.subscription_type === 'none'}
-                  size="lg"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                >
-                  {isLoading ? 'Generazione in corso...' : 'Genera QR e Codice'}
-                </Button>
-              )}
-
-              {!user?.subscription_type || user.subscription_type === 'none' && !error && (
-                <p className="text-sm text-orange-600">
-                  ⚠️ Devi attivare un abbonamento per accedere
                 </p>
               )}
             </div>
-          </Card>
+          )}
+
+          {/* Error */}
+          {error && (
+            <div className="w-full max-w-sm bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex gap-3">
+              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-red-300 text-sm">Accesso non consentito</p>
+                <p className="text-sm text-red-400/80 mt-0.5">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* CTA */}
+          <div className="w-full max-w-sm space-y-3">
+            {!error && (
+              <Button
+                onClick={generateAccessPass}
+                disabled={isLoading || !user?.subscription_type || user.subscription_type === 'none'}
+                size="lg"
+                className="w-full h-14 text-base font-bold rounded-2xl"
+                style={{ background: "#E8FF00", color: "#000" }}
+              >
+                {isLoading ? 'Generazione in corso...' : '⚡ Genera QR e Codice'}
+              </Button>
+            )}
+            {(!user?.subscription_type || user.subscription_type === 'none') && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full h-12 border-[#E8FF00]/40 text-[#E8FF00] hover:bg-[#E8FF00]/10 rounded-2xl"
+                onClick={() => navigate('/')}
+              >
+                Attiva un abbonamento
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -160,21 +165,14 @@ export default function CheckIn() {
 
   // Se il pass è generato, mostra CheckInCard
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/Gyms')}
-            className="gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Indietro
-          </Button>
-        </div>
-
-        {/* CheckIn Card */}
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+      <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/Gyms')} className="text-white hover:bg-white/10">
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <span className="text-white font-semibold">Il tuo pass</span>
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6">
         <CheckInCard
           accessPass={accessPass}
           onRegenerate={() => {

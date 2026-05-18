@@ -304,15 +304,21 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-[#0a0a0a]">
+      {/* Sticky mobile header */}
+      <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 px-4 py-3 md:hidden">
+        <h1 className="text-base font-bold text-white">Il Mio Profilo</h1>
+        <p className="text-xs text-gray-400">Abbonamento, documenti e impostazioni</p>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 pb-28 pt-4 md:px-6 md:pt-8">
+        <h1 className="hidden md:block text-3xl font-bold text-white mb-2">Il Mio Profilo</h1>
+        <p className="hidden md:block text-gray-400 mb-8">Gestisci le tue informazioni e documenti</p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
-          <h1 className="text-3xl font-bold text-white mb-2">Il Mio Profilo</h1>
-          <p className="text-gray-400 mb-8">Gestisci le tue informazioni e documenti</p>
 
           {success && (
             <Alert className="mb-6 bg-green-50 border-green-200">
@@ -328,29 +334,26 @@ export default function Profile() {
             </Alert>
           )}
 
-          <div className="mb-6">
+          <div className="mb-5">
             <ProgressStats user={user} />
           </div>
 
-          <Card className="mb-6 bg-[#1a1a1a] border-white/10">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Trophy className="w-6 h-6 text-yellow-500" />
-              <CardTitle className="text-white">I Miei Risultati</CardTitle>
+          <Card className="mb-5 bg-[#1a1a1a] border-white/10">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-yellow-500" />
+                <CardTitle className="text-white text-base">I Miei Risultati</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
               {achievements.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {achievements.map((achievement) => (
-                    <BadgeCard 
-                      key={achievement.id}
-                      achievement={achievement}
-                    />
+                    <BadgeCard key={achievement.id} achievement={achievement} />
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-8">
+                <p className="text-center text-gray-500 py-6 text-sm">
                   Inizia ad allenarti per sbloccare i tuoi primi badge!
                 </p>
               )}
@@ -438,46 +441,40 @@ export default function Profile() {
             </div>
           )}
 
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid lg:grid-cols-2 gap-5 mb-5">
             {getSubscriptionInfo()}
 
             <Card className="bg-[#1a1a1a] border-white/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white">
-                  <Mail className="w-6 h-6" />
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-white text-base">
+                  <Mail className="w-5 h-5" />
                   Informazioni Personali
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleUpdateProfile} className="space-y-4">
+                <form onSubmit={handleUpdateProfile} className="space-y-3">
                   <div>
-                    <Label>Nome Completo</Label>
-                    <Input value={user?.full_name || ""} disabled className="bg-gray-50" />
+                    <Label className="text-gray-400 text-xs">Nome Completo</Label>
+                    <Input value={user?.full_name || ""} disabled className="bg-white/5 border-white/10 text-gray-400 h-10" />
                   </div>
                   <div>
-                    <Label>Email</Label>
-                    <Input value={user?.email || ""} disabled className="bg-gray-50" />
+                    <Label className="text-gray-400 text-xs">Email</Label>
+                    <Input value={user?.email || ""} disabled className="bg-white/5 border-white/10 text-gray-400 h-10" />
                   </div>
                   <div>
-                    <Label htmlFor="phone">Telefono</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
+                    <Label htmlFor="phone" className="text-gray-300 text-xs">Telefono</Label>
+                    <Input id="phone" type="tel" value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+39 123 456 7890"
-                    />
+                      className="bg-white/5 border-white/10 text-white h-10" />
                   </div>
                   <div>
-                    <Label htmlFor="birth_date">Data di Nascita</Label>
-                    <Input
-                      id="birth_date"
-                      type="date"
-                      value={formData.birth_date}
+                    <Label htmlFor="birth_date" className="text-gray-300 text-xs">Data di Nascita</Label>
+                    <Input id="birth_date" type="date" value={formData.birth_date}
                       onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
-                    />
+                      className="bg-white/5 border-white/10 text-white h-10" />
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700">
+                  <Button type="submit" className="w-full h-11 font-bold" style={{ background: "#E8FF00", color: "#000" }}>
                     Aggiorna Profilo
                   </Button>
                 </form>
@@ -486,125 +483,69 @@ export default function Profile() {
           </div>
 
           <Card className="bg-[#1a1a1a] border-white/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <FileText className="w-6 h-6" />
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-white text-base">
+                <FileText className="w-5 h-5" />
                 Documenti Richiesti
               </CardTitle>
-              <p className="text-sm text-gray-400 mt-2">
+              <p className="text-xs text-gray-400 mt-1">
                 Carica i documenti necessari per attivare il tuo abbonamento
               </p>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="border-2 border-dashed rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
+            <CardContent className="space-y-4">
+              {/* Documento identità */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-lg">Documento d'Identità</h3>
-                    <p className="text-sm text-gray-600">Carta d'identità o patente</p>
+                    <h3 className="font-semibold text-white text-sm">Documento d'Identità</h3>
+                    <p className="text-xs text-gray-500">Carta d'identità o patente</p>
                   </div>
                   {user?.id_document_url && (
-                    <Badge className="bg-green-100 text-green-800">
-                      <CheckCircle className="w-3 h-3 mr-1" />
-                      Caricato
-                    </Badge>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs shrink-0">✓ OK</Badge>
                   )}
                 </div>
-                
-                {user?.id_document_url ? (
-                  <div className="space-y-3">
-                    <a
-                      href={user.id_document_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-600 hover:text-purple-700 text-sm flex items-center gap-2"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Visualizza documento
-                    </a>
-                    <Input
-                      type="file"
-                      accept="image/*,.pdf"
-                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "id")}
-                      disabled={uploading.id}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <Input
-                      type="file"
-                      accept="image/*,.pdf"
-                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "id")}
-                      disabled={uploading.id}
-                      className="cursor-pointer"
-                    />
-                    {uploading.id && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-                        Caricamento in corso...
-                      </div>
-                    )}
-                  </div>
+                {user?.id_document_url && (
+                  <a href={user.id_document_url} target="_blank" rel="noopener noreferrer"
+                    className="text-[#E8FF00] text-xs flex items-center gap-1 mb-3 hover:underline">
+                    <FileText className="w-3 h-3" /> Visualizza documento
+                  </a>
                 )}
+                <Input type="file" accept="image/*,.pdf"
+                  onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "id")}
+                  disabled={uploading.id}
+                  className="cursor-pointer bg-white/5 border-white/10 text-white text-sm h-10" />
+                {uploading.id && <p className="text-xs text-gray-400 mt-2">⏳ Caricamento...</p>}
               </div>
 
-              <div className="border-2 border-dashed rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
+              {/* Certificato medico */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-lg">Certificato Medico</h3>
-                    <p className="text-sm text-gray-600">Certificato per attività sportiva non agonistica</p>
+                    <h3 className="font-semibold text-white text-sm">Certificato Medico</h3>
+                    <p className="text-xs text-gray-500">Per attività sportiva non agonistica</p>
                   </div>
                   {user?.medical_certificate_url && (
-                    <Badge className="bg-green-100 text-green-800">
-                      <CheckCircle className="w-3 h-3 mr-1" />
-                      Caricato
-                    </Badge>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs shrink-0">✓ OK</Badge>
                   )}
                 </div>
-                
-                {user?.medical_certificate_url ? (
-                  <div className="space-y-3">
-                    <a
-                      href={user.medical_certificate_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-600 hover:text-purple-700 text-sm flex items-center gap-2"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Visualizza certificato
-                    </a>
-                    <Input
-                      type="file"
-                      accept="image/*,.pdf"
-                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "medical")}
-                      disabled={uploading.medical}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <Input
-                      type="file"
-                      accept="image/*,.pdf"
-                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "medical")}
-                      disabled={uploading.medical}
-                      className="cursor-pointer"
-                    />
-                    {uploading.medical && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-                        Caricamento in corso...
-                      </div>
-                    )}
-                  </div>
+                {user?.medical_certificate_url && (
+                  <a href={user.medical_certificate_url} target="_blank" rel="noopener noreferrer"
+                    className="text-[#E8FF00] text-xs flex items-center gap-1 mb-3 hover:underline">
+                    <FileText className="w-3 h-3" /> Visualizza certificato
+                  </a>
                 )}
+                <Input type="file" accept="image/*,.pdf"
+                  onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "medical")}
+                  disabled={uploading.medical}
+                  className="cursor-pointer bg-white/5 border-white/10 text-white text-sm h-10" />
+                {uploading.medical && <p className="text-xs text-gray-400 mt-2">⏳ Caricamento...</p>}
               </div>
 
               {user?.documents_verified && (
-                <Alert className="bg-green-50 border-green-200">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">
-                    I tuoi documenti sono stati verificati e approvati!
+                <Alert className="bg-green-500/10 border-green-500/30">
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                  <AlertDescription className="text-green-300 text-sm">
+                    Documenti verificati e approvati!
                   </AlertDescription>
                 </Alert>
               )}

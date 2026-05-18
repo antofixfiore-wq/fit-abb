@@ -144,7 +144,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+      <section className="relative min-h-[90vh] md:min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden pt-safe">
         {/* Background image */}
         <div
           className="absolute inset-0"
@@ -184,7 +184,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-4"
+            className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-4"
           >
             <span style={{ color: "#E8FF00" }}>DOVE VUOI,</span>
             <br />
@@ -281,8 +281,9 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* 4 card: laterali normali, centrali highlight */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
+          {/* 4 card: scroll orizzontale su mobile, griglia su desktop */}
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory -mx-6 px-6 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 items-center">
+
             {subscriptionPlans.map((plan, i) => {
               const Icon = plan.icon;
               const isGoldAnnuale = plan.id === "annuale_gold";
@@ -294,7 +295,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className={plan.highlight ? "lg:-mt-6 z-10" : ""}
+                  className={`snap-start shrink-0 w-72 sm:w-auto ${plan.highlight ? "lg:-mt-6 z-10" : ""}`}
                 >
                   <Card
                     className={`relative overflow-hidden border-0 transition-all duration-300 hover:scale-[1.02] ${
