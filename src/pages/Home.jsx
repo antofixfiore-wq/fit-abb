@@ -49,7 +49,7 @@ const subscriptionPlans = [
   {
     id: "gold",
     name: "Gold",
-    price: 39.99,
+    price: 40,
     period: "mese",
     highlight: false,
     tag: null,
