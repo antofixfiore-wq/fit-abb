@@ -144,7 +144,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-[90vh] md:min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden pt-safe">
+      <section className="relative min-h-[85vh] md:min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden pt-safe pb-safe">
         {/* Background image */}
         <div
           className="absolute inset-0"
@@ -158,24 +158,24 @@ export default function Home() {
         {/* Yellow glow */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-[#0a0a0a]" />
         <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full"
           style={{
             background: "radial-gradient(circle, rgba(232,255,0,0.12) 0%, transparent 70%)",
           }}
         />
 
-        <div className="relative z-10 max-w-4xl mx-auto">
+        <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center justify-center flex-1">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="mb-8 flex justify-center"
+            className="mb-6 md:mb-8 flex justify-center"
           >
             <img
               src="https://media.base44.com/images/public/6900e246d71384c10b97f155/49b0b5056_6cb7a69af_generated_image.png"
               alt="FitAbb"
-              className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-2xl rounded-2xl"
+              className="w-20 h-20 md:w-32 md:h-32 object-contain drop-shadow-2xl rounded-2xl"
             />
           </motion.div>
 
@@ -184,7 +184,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-4"
+            className="text-3xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight mb-3 md:mb-4"
           >
             <span style={{ color: "#E8FF00" }}>DOVE VUOI,</span>
             <br />
@@ -198,7 +198,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-xl md:text-2xl text-gray-300 mt-6 mb-10 font-light"
+            className="text-base md:text-2xl text-gray-300 mt-4 md:mt-6 mb-6 md:mb-10 font-light px-2"
           >
             1 solo abbonamento,{" "}
             <span className="text-white font-semibold">tantissime palestre</span>
@@ -209,24 +209,24 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full max-w-md"
           >
             <Button
               size="lg"
-              className="text-black text-lg font-bold px-10 py-7 rounded-full shadow-2xl hover:opacity-90 transition-opacity"
+              className="text-black text-sm md:text-lg font-bold px-6 md:px-10 py-5 md:py-7 rounded-full shadow-2xl hover:opacity-90 transition-opacity w-full"
               style={{ background: "#E8FF00" }}
               onClick={handleCTAClick}
             >
-              Esplora i piani di abbonamento
-              <ArrowRight className="w-5 h-5 ml-2" />
+              Esplora i piani
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 text-lg px-10 py-7 rounded-full"
+              className="border-white/30 text-white hover:bg-white/10 text-sm md:text-lg px-6 md:px-10 py-5 md:py-7 rounded-full w-full"
               onClick={() => navigate(createPageUrl("Gyms"))}
             >
-              Esplora palestre convenzionate
+              Esplora palestre
             </Button>
           </motion.div>
 
@@ -235,7 +235,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="grid grid-cols-3 gap-6 mt-20 max-w-lg mx-auto"
+            className="grid grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-20 max-w-sm md:max-w-lg mx-auto"
           >
             {[
               { val: "500+", label: "Palestre" },
@@ -243,8 +243,8 @@ export default function Home() {
               { val: "10K+", label: "Membri" },
             ].map((s) => (
               <div key={s.label} className="text-center">
-                <div className="text-4xl font-black" style={{ color: "#E8FF00" }}>{s.val}</div>
-                <div className="text-gray-500 text-sm mt-1">{s.label}</div>
+                <div className="text-2xl md:text-4xl font-black" style={{ color: "#E8FF00" }}>{s.val}</div>
+                <div className="text-gray-500 text-xs md:text-sm mt-1">{s.label}</div>
               </div>
             ))}
           </motion.div>
