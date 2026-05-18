@@ -23,6 +23,7 @@ export default function Pricing() {
         { text: "Supporto email", included: true },
         { text: "AI Workout Planner", included: true },
         { text: "Eventi esclusivi", included: true },
+        { text: "+ €2,99 costo di servizio per accesso", included: true },
         { text: "Palestre Platinum", included: false },
         { text: "Coaching personalizzato", included: false }
       ]
@@ -42,6 +43,7 @@ export default function Pricing() {
         { text: "Supporto email", included: true },
         { text: "AI Workout Planner", included: true },
         { text: "Eventi esclusivi", included: true },
+        { text: "+ €3,99 costo di servizio per accesso", included: true },
         { text: "Coaching personalizzato", included: false }
       ]
     },

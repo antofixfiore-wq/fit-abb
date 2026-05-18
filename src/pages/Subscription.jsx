@@ -20,7 +20,8 @@ const subscriptionDetails = {
       "Tracking allenamenti e progressi",
       "AI Workout Planner",
       "Community e badge",
-      "Eventi esclusivi"
+      "Eventi esclusivi",
+      "+ €2,99 costo di servizio per accesso"
     ]
   },
   annuale_gold: {
@@ -34,7 +35,8 @@ const subscriptionDetails = {
       "Ingressi illimitati H24",
       "AI Workout Planner",
       "Tracking allenamenti e progressi",
-      "Community e badge"
+      "Community e badge",
+      "+ €2,99 costo di servizio per accesso"
     ]
   },
   annuale_plus: {
@@ -48,7 +50,8 @@ const subscriptionDetails = {
       "Accesso a tutte le palestre convenzionate",
       "Palestre Gold + Platinum",
       "AI Workout Planner",
-      "Community e badge"
+      "Community e badge",
+      "+ €3,99 costo di servizio per accesso"
     ]
   },
   plus: {
@@ -61,7 +64,8 @@ const subscriptionDetails = {
       "Tracking allenamenti e progressi",
       "AI Workout Planner",
       "Community e badge",
-      "Eventi esclusivi"
+      "Eventi esclusivi",
+      "+ €3,99 costo di servizio per accesso"
     ]
   },
   premium: {
