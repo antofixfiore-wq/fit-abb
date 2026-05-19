@@ -8,9 +8,9 @@ const navItems = [
   { title: "Home", url: createPageUrl("Home"), icon: Home },
   { title: "Palestre", url: createPageUrl("Gyms"), icon: Building2 },
   { title: "Community", url: "/Community", icon: Users },
-  { title: "Check-in", url: "/CheckIn", icon: QrCode, highlight: true },
   { title: "Dashboard", url: createPageUrl("ClientDashboard"), icon: LayoutDashboard },
   { title: "Profilo", url: createPageUrl("Profile"), icon: User },
+  { title: "Check-in", url: "/CheckIn", icon: QrCode, highlight: true },
 ];
 
 export default function MobileBottomNav() {
@@ -54,10 +54,10 @@ export default function MobileBottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10 safe-bottom"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10"
       style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 8px)" }}
     >
-      <div className="flex items-center justify-around px-1 py-2">
+      <div className="flex items-center justify-around px-1 pt-2 pb-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.url || 
@@ -69,14 +69,14 @@ export default function MobileBottomNav() {
                 key={item.title} 
                 to={item.url} 
                 onClick={(e) => handleNavClick(item.url, e)}
-                className="flex flex-col items-center -mt-6 touch-manipulation"
+                className="flex flex-col items-center gap-0.5 touch-manipulation"
               >
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all border-2 border-white/20 ${
-                  isActive ? "scale-110" : ""
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all ${
+                  isActive ? "scale-105" : ""
                 }`} style={{ background: "#E8FF00" }}>
-                  <Icon className="w-7 h-7 text-black" />
+                  <Icon className="w-6 h-6 text-black" />
                 </div>
-                <span className="text-[11px] mt-1.5 font-semibold" style={{ color: "#E8FF00" }}>
+                <span className="text-[10px] font-semibold" style={{ color: "#E8FF00" }}>
                   {item.title}
                 </span>
               </Link>
@@ -88,8 +88,8 @@ export default function MobileBottomNav() {
               key={item.title}
               to={item.url}
               onClick={(e) => handleNavClick(item.url, e)}
-              className={`flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl transition-all min-w-[64px] touch-manipulation ${
-                isActive ? "opacity-100" : "opacity-60 hover:opacity-80"
+              className={`flex flex-col items-center gap-0.5 px-1 py-1 rounded-xl transition-all touch-manipulation ${
+                isActive ? "opacity-100" : "opacity-50 hover:opacity-75"
               }`}
             >
               <Icon className={`w-6 h-6 ${isActive ? "text-[#E8FF00]" : "text-gray-400"}`} />
