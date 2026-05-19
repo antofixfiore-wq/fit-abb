@@ -153,7 +153,7 @@ export default function Community() {
 
           // Save cache (10 min)
           const expiresAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString();
-          if (validCache === undefined && cacheRecords.length > 0) {
+          if (!validCache && cacheRecords.length > 0) {
             await base44.entities.FeedCache.update(cacheRecords[0].id, { post_ids: rankedIds, expires_at: expiresAt });
           } else {
             await base44.entities.FeedCache.create({ user_email: userData.email, feed_type: "discover", post_ids: rankedIds, expires_at: expiresAt });
@@ -316,9 +316,9 @@ export default function Community() {
         reporter_email: user.email,
         reported_user_email: post.user_email,
         reported_post_id: post.id,
+        target_type: "post",
         reason,
-        description: "",
-        status: "pending",
+        status: "open",
         created_date: new Date().toISOString()
       });
       await loadData();

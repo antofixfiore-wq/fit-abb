@@ -9,18 +9,21 @@ const LIMITS = {
 
 Deno.serve(async (req) => {
   try {
+    // Read body FIRST before any other async call that might consume the stream
+    const body = await req.json();
+    const { action } = body;
+
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { action } = await req.json();
     if (!LIMITS[action]) return Response.json({ error: 'Invalid action' }, { status: 400 });
 
     const limit = LIMITS[action];
     const windowStart = new Date(Date.now() - limit.windowHours * 3600 * 1000).toISOString();
 
-    // Find existing rate limit record in current window
-    const records = await base44.entities.RateLimit.filter({
+    // Use service role to reliably read/write rate limit records
+    const records = await base44.asServiceRole.entities.RateLimit.filter({
       user_email: user.email,
       action,
     });
@@ -36,12 +39,10 @@ Deno.serve(async (req) => {
           message: `Limite raggiunto: max ${limit.max} ${action} ogni ${limit.windowHours}h`
         });
       }
-      // Increment count
-      await base44.entities.RateLimit.update(current.id, { count: current.count + 1 });
+      await base44.asServiceRole.entities.RateLimit.update(current.id, { count: current.count + 1 });
       return Response.json({ allowed: true, count: current.count + 1, limit: limit.max });
     } else {
-      // Create new window
-      await base44.entities.RateLimit.create({
+      await base44.asServiceRole.entities.RateLimit.create({
         user_email: user.email,
         action,
         window_start: new Date().toISOString(),
