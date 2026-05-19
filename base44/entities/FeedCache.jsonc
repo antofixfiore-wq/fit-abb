@@ -1,0 +1,36 @@
+{
+  "name": "FeedCache",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "feed_type": {
+      "type": "string",
+      "enum": [
+        "friends",
+        "discover"
+      ],
+      "description": "Tipo di feed"
+    },
+    "post_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista ordinata di ID post"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scadenza cache"
+    }
+  },
+  "required": [
+    "user_email",
+    "feed_type",
+    "post_ids",
+    "expires_at"
+  ]
+}

@@ -59,6 +59,29 @@ export default function Community() {
     loadData();
   }, [activeTab]);
 
+  // Ranking score for Discover feed
+  const computeDiscoverScore = (post, acceptedFriendsSet, friendsOfFriends, userCity) => {
+    // relationship
+    let relationship = 0;
+    if (acceptedFriendsSet.has(post.user_email)) relationship = 1;
+    else if (friendsOfFriends.has(post.user_email)) relationship = 0.5;
+
+    // freshness: exp-decay half-life 24h
+    const ageHours = (Date.now() - new Date(post.created_date).getTime()) / 3600000;
+    const freshness = Math.exp(-ageHours * Math.LN2 / 24);
+
+    // engagement
+    const engagement = Math.log1p(post.boost_count || 0) + 0.5 * Math.log1p(post.comment_count || 0);
+
+    // geoApprox (approx via city match if user gave consent — city stored on user)
+    const geoApprox = userCity && post.gym_name && post.show_gym_name ? 0.3 : 0;
+
+    // safetyPenalty
+    const safetyPenalty = post.safety_score < 0 ? 2 : Math.max(0, (5 - (post.safety_score || 5)) * 0.4);
+
+    return 1.5 * relationship + 1.2 * freshness + 0.8 * engagement + 0.4 * geoApprox - safetyPenalty;
+  };
+
   const loadData = async () => {
     try {
       const userData = await base44.auth.me();
@@ -67,10 +90,11 @@ export default function Community() {
       const allFriends = await base44.entities.GymFriend.filter({ 
         $or: [{ user_email: userData.email }, { friend_email: userData.email }] 
       });
-      const acceptedFriends = allFriends
+      const acceptedFriendEmails = allFriends
         .filter(f => f.status === "accepted")
         .map(f => f.user_email === userData.email ? f.friend_email : f.user_email);
-      setFriends(acceptedFriends);
+      setFriends(acceptedFriendEmails);
+      const acceptedFriendsSet = new Set(acceptedFriendEmails);
 
       const requests = await base44.entities.GymFriend.filter({ 
         friend_email: userData.email,
@@ -78,20 +102,66 @@ export default function Community() {
       });
       setFriendRequests(requests);
 
+      const allPosts = await base44.entities.CommunityPost.list("-created_date", 200);
+      const blockedSet = new Set(userData.blocked_users || []);
+
+      // Filter out auto-hidden (safety_score < 0) and blocked users
+      const visiblePosts = allPosts.filter(p => 
+        !blockedSet.has(p.user_email) && (p.safety_score === undefined || p.safety_score >= 0)
+      );
+
       let loadedPosts;
       if (activeTab === "gymfriends") {
-        const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
-        loadedPosts = allPosts.filter(post => 
-          (acceptedFriends.includes(post.user_email) || post.user_email === userData.email) &&
-          post.visibility !== "only_me" &&
-          !userData.blocked_users?.includes(post.user_email)
+        // Friends posts first, then own
+        const friendsPosts = visiblePosts.filter(post => 
+          (acceptedFriendsSet.has(post.user_email) || post.user_email === userData.email) &&
+          post.visibility !== "only_me"
         );
+        // Own posts at top
+        loadedPosts = [
+          ...friendsPosts.filter(p => p.user_email === userData.email),
+          ...friendsPosts.filter(p => p.user_email !== userData.email)
+        ];
       } else {
-        const allPosts = await base44.entities.CommunityPost.list("-created_date", 100);
-        loadedPosts = allPosts.filter(post => 
-          (post.visibility === "public" || post.user_email === userData.email) &&
-          !userData.blocked_users?.includes(post.user_email)
-        );
+        // Discover: rank by score, try cache first
+        const now = new Date();
+        const cacheRecords = await base44.entities.FeedCache.filter({ user_email: userData.email, feed_type: "discover" });
+        const validCache = cacheRecords.find(c => new Date(c.expires_at) > now);
+
+        let rankedIds;
+        if (validCache) {
+          rankedIds = validCache.post_ids;
+        } else {
+          const publicPosts = visiblePosts.filter(post => 
+            post.visibility === "community" || post.visibility === "public" || post.user_email === userData.email
+          );
+          // 1-hop friends of friends
+          const allFriendsOfFriends = await base44.entities.GymFriend.filter({ status: "accepted" });
+          const friendsOfFriendsSet = new Set();
+          allFriendsOfFriends.forEach(f => {
+            if (acceptedFriendsSet.has(f.user_email)) friendsOfFriendsSet.add(f.friend_email);
+            if (acceptedFriendsSet.has(f.friend_email)) friendsOfFriendsSet.add(f.user_email);
+          });
+          acceptedFriendsSet.forEach(e => friendsOfFriendsSet.delete(e));
+
+          const scored = publicPosts.map(post => ({
+            post,
+            score: computeDiscoverScore(post, acceptedFriendsSet, friendsOfFriendsSet, userData.city)
+          }));
+          scored.sort((a, b) => b.score - a.score);
+          rankedIds = scored.map(s => s.post.id);
+
+          // Save cache (10 min)
+          const expiresAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString();
+          if (validCache === undefined && cacheRecords.length > 0) {
+            await base44.entities.FeedCache.update(cacheRecords[0].id, { post_ids: rankedIds, expires_at: expiresAt });
+          } else {
+            await base44.entities.FeedCache.create({ user_email: userData.email, feed_type: "discover", post_ids: rankedIds, expires_at: expiresAt });
+          }
+        }
+
+        const postMap = Object.fromEntries(visiblePosts.map(p => [p.id, p]));
+        loadedPosts = rankedIds.map(id => postMap[id]).filter(Boolean);
       }
 
       setPosts(loadedPosts || []);
@@ -99,9 +169,7 @@ export default function Community() {
       const allComments = await base44.entities.CommunityComment.list("-created_date");
       const commentsByPost = {};
       allComments.forEach(comment => {
-        if (!commentsByPost[comment.post_id]) {
-          commentsByPost[comment.post_id] = [];
-        }
+        if (!commentsByPost[comment.post_id]) commentsByPost[comment.post_id] = [];
         commentsByPost[comment.post_id].push(comment);
       });
       setComments(commentsByPost);
@@ -127,6 +195,13 @@ export default function Community() {
   const handleCreatePost = async (e) => {
     e.preventDefault();
     if (!newPost.caption && !newPost.photo_url) return;
+
+    // Rate limit check
+    const rl = await base44.functions.invoke('checkRateLimit', { action: 'post' });
+    if (!rl.data?.allowed) {
+      alert(rl.data?.message || "Limite post raggiunto per oggi.");
+      return;
+    }
 
     try {
       await base44.entities.CommunityPost.create({
@@ -174,6 +249,13 @@ export default function Community() {
   const handleAddComment = async (postId, text) => {
     if (!text.trim()) return;
 
+    // Rate limit check
+    const rl = await base44.functions.invoke('checkRateLimit', { action: 'comment' });
+    if (!rl.data?.allowed) {
+      alert(rl.data?.message || "Limite commenti raggiunto.");
+      return;
+    }
+
     try {
       await base44.entities.CommunityComment.create({
         post_id: postId,
@@ -207,6 +289,13 @@ export default function Community() {
   };
 
   const sendFriendRequest = async (targetEmail, targetName) => {
+    // Rate limit check
+    const rl = await base44.functions.invoke('checkRateLimit', { action: 'friend_request' });
+    if (!rl.data?.allowed) {
+      alert(rl.data?.message || "Limite richieste amicizia raggiunto.");
+      return;
+    }
+
     try {
       await base44.entities.GymFriend.create({
         user_email: user.email,

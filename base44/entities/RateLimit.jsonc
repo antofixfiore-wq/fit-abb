@@ -1,0 +1,34 @@
+{
+  "name": "RateLimit",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "post",
+        "comment",
+        "friend_request"
+      ],
+      "description": "Tipo di azione"
+    },
+    "window_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Inizio della finestra temporale"
+    },
+    "count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di azioni nella finestra"
+    }
+  },
+  "required": [
+    "user_email",
+    "action",
+    "window_start"
+  ]
+}
