@@ -1,0 +1,13 @@
+{
+  "appId": "com.fitabb.app",
+  "appName": "Fit ABB",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "scrollEnabled": false
+  }
+}
