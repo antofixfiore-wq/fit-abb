@@ -8,6 +8,6 @@
   },
   "ios": {
     "contentInset": "automatic",
-    "scrollEnabled": false
+    "scrollEnabled": true
   }
 }
