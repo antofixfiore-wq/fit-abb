@@ -113,6 +113,26 @@ export default function AppStoreLanding() {
           <p className="text-gray-400">Scopri quanto è semplice accedere a tutte le palestre d'Italia</p>
         </div>
         <VideoSlideshow />
+        <div className="flex flex-wrap justify-center gap-3 mt-6">
+          {[
+            { label: "Clip 1 – Intro", url: "https://media.base44.com/videos/public/6900e246d71384c10b97f155/fe81c592a_generated_video.mp4" },
+            { label: "Clip 2 – Check-in", url: "https://media.base44.com/videos/public/6900e246d71384c10b97f155/f0976576c_generated_video.mp4" },
+            { label: "Clip 3 – Palestre", url: "https://media.base44.com/videos/public/6900e246d71384c10b97f155/7bcb395cc_generated_video.mp4" },
+            { label: "Clip 4 – Tracking", url: "https://media.base44.com/videos/public/6900e246d71384c10b97f155/27c151efe_generated_video.mp4" },
+            { label: "Clip 5 – Piani", url: "https://media.base44.com/videos/public/6900e246d71384c10b97f155/ccc9242c4_generated_video.mp4" },
+          ].map((clip, i) => (
+            <a
+              key={i}
+              href={clip.url}
+              download={`fitabb-${clip.label}.mp4`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-[#E8FF00]/50 hover:bg-[#E8FF00]/5 text-gray-300 hover:text-[#E8FF00] text-sm px-4 py-2 rounded-lg transition-colors"
+            >
+              ⬇ {clip.label}
+            </a>
+          ))}
+        </div>
       </section>
 
       {/* Features */}
