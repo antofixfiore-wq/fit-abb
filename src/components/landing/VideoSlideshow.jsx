@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { Download } from "lucide-react";
 
 const CLIPS = [
   {
@@ -62,6 +63,18 @@ export default function VideoSlideshow() {
           {CLIPS[current].label}
         </span>
       </div>
+
+      {/* Download button */}
+      <a
+        href={CLIPS[current].src}
+        download={`fitabb-clip-${current + 1}.mp4`}
+        target="_blank"
+        rel="noreferrer"
+        className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white p-2 rounded-lg border border-white/20 transition-colors"
+        title="Scarica video"
+      >
+        <Download className="w-4 h-4" />
+      </a>
 
       {/* Dot indicators */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
