@@ -105,6 +105,27 @@ export default function AppStoreLanding() {
         </div>
       </section>
 
+      {/* Video Section */}
+      <section className="px-6 py-12 max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-3">Come funziona Fit ABB</h2>
+          <p className="text-gray-400">Scopri quanto è semplice accedere a tutte le palestre d'Italia</p>
+        </div>
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#E8FF00]/5">
+          <video
+            src="https://media.base44.com/videos/public/6900e246d71384c10b97f155/d63128cd0_generated_video.mp4"
+            controls
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full aspect-video object-cover"
+          >
+            Il tuo browser non supporta il video.
+          </video>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="px-6 py-16 max-w-5xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-12">Tutto quello che ti serve</h2>
