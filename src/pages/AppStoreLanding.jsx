@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CheckCircle, Zap, MapPin, BarChart2, Users, Shield, Star } from "lucide-react";
+import VideoSlideshow from "@/components/landing/VideoSlideshow";
 
 const FEATURES = [
   {
@@ -111,19 +112,7 @@ export default function AppStoreLanding() {
           <h2 className="text-3xl font-bold mb-3">Come funziona Fit ABB</h2>
           <p className="text-gray-400">Scopri quanto è semplice accedere a tutte le palestre d'Italia</p>
         </div>
-        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#E8FF00]/5">
-          <video
-            src="https://media.base44.com/videos/public/6900e246d71384c10b97f155/d63128cd0_generated_video.mp4"
-            controls
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full aspect-video object-cover"
-          >
-            Il tuo browser non supporta il video.
-          </video>
-        </div>
+        <VideoSlideshow />
       </section>
 
       {/* Features */}
