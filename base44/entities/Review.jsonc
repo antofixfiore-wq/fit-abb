@@ -1,0 +1,35 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra recensita"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nome dell'utente che ha lasciato la recensione"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Valutazione da 1 a 5"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Commento della recensione"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "google",
+        "app"
+      ],
+      "default": "app",
+      "description": "Fonte della recensione"
+    }
+  },
+  "required": [
+    "gym_id",
+    "rating"
+  ]
+}

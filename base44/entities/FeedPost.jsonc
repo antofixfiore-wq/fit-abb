@@ -1,0 +1,59 @@
+{
+  "name": "FeedPost",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente che ha creato il post"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nome dell'utente"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "photo",
+        "achievement",
+        "checkin",
+        "workout"
+      ],
+      "description": "Tipo di post"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titolo del post"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione del post"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "URL della foto caricata"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra (per check-in)"
+    },
+    "likes": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di like"
+    },
+    "liked_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Email degli utenti che hanno messo like"
+    }
+  },
+  "required": [
+    "user_email",
+    "user_name",
+    "type",
+    "title"
+  ]
+}

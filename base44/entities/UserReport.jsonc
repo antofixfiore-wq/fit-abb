@@ -14,31 +14,41 @@
       "type": "string",
       "description": "ID del post segnalato (opzionale)"
     },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "post",
+        "user"
+      ],
+      "description": "Tipo di target segnalato"
+    },
     "reason": {
       "type": "string",
       "enum": [
+        "nudity",
+        "hate",
         "spam",
-        "harassment",
-        "inappropriate_content",
-        "fake_profile",
         "other"
       ],
       "description": "Motivo della segnalazione"
     },
-    "description": {
+    "notes": {
       "type": "string",
-      "description": "Descrizione dettagliata"
+      "description": "Note aggiuntive"
     },
     "status": {
       "type": "string",
       "enum": [
-        "pending",
-        "reviewed",
-        "resolved",
+        "open",
+        "actioned",
         "dismissed"
       ],
-      "default": "pending",
+      "default": "open",
       "description": "Stato della segnalazione"
+    },
+    "admin_notes": {
+      "type": "string",
+      "description": "Note dell'admin"
     },
     "created_date": {
       "type": "string",
@@ -48,7 +58,7 @@
   },
   "required": [
     "reporter_email",
-    "reported_user_email",
+    "target_type",
     "reason"
   ]
 }

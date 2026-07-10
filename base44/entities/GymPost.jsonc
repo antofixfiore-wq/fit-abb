@@ -1,0 +1,61 @@
+{
+  "name": "GymPost",
+  "type": "object",
+  "properties": {
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "update",
+        "promotion",
+        "schedule",
+        "announcement"
+      ],
+      "description": "Tipo di post"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titolo del post"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenuto del post"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Immagine del post"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Validit\u00e0 (per promozioni)"
+    },
+    "likes": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di like"
+    },
+    "liked_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Email degli utenti che hanno messo like"
+    }
+  },
+  "required": [
+    "gym_id",
+    "gym_name",
+    "type",
+    "title",
+    "content"
+  ]
+}

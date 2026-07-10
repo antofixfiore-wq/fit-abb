@@ -82,13 +82,14 @@ const subscriptionPlans = [
   },
 ];
 
-// Rileva se l'app gira dentro una WebView iOS nativa (App Store)
+// Rileva se l'app gira dentro una WebView iOS nativa (TestFlight/App Store)
+// Su TestFlight/WKWebView non c'è "Safari" nello UA ma c'è "AppleWebKit"
 const isIOSNative = () => {
   const ua = navigator.userAgent || "";
   const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
   const isStandalone = window.navigator.standalone === true;
-  const isWebView = !ua.includes("Safari") || isStandalone;
-  return isIOS && isWebView;
+  const isWKWebView = isIOS && !ua.includes("Safari") && ua.includes("AppleWebKit");
+  return isWKWebView || isStandalone;
 };
 
 export default function Home() {
@@ -258,7 +259,7 @@ export default function Home() {
             className="flex flex-col sm:flex-row gap-3 mt-6 md:mt-10 justify-center w-full max-w-md"
           >
             <a
-              href="https://apps.apple.com/it/app/fit-abb/id123456789"
+              href="https://apps.apple.com/it/app/fit-abb/id6746898605"
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl hover:bg-gray-900 transition-colors min-h-[48px]"

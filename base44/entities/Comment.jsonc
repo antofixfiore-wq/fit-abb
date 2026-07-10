@@ -1,0 +1,28 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID del post"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente che ha commentato"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nome dell'utente"
+    },
+    "text": {
+      "type": "string",
+      "description": "Testo del commento"
+    }
+  },
+  "required": [
+    "post_id",
+    "user_email",
+    "user_name",
+    "text"
+  ]
+}

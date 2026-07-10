@@ -14,13 +14,13 @@
       "type": "string",
       "description": "Foto profilo dell'autore"
     },
+    "media_url": {
+      "type": "string",
+      "description": "URL del media caricato"
+    },
     "caption": {
       "type": "string",
       "description": "Didascalia del post"
-    },
-    "photo_url": {
-      "type": "string",
-      "description": "URL della foto caricata"
     },
     "gym_id": {
       "type": "string",
@@ -34,11 +34,11 @@
       "type": "string",
       "enum": [
         "only_me",
-        "gym_friends",
-        "gym_friends_nearby",
-        "public"
+        "friends",
+        "friends_nearby",
+        "community"
       ],
-      "default": "gym_friends",
+      "default": "friends",
       "description": "Visibilit\u00e0 del post"
     },
     "show_gym_name": {
@@ -46,23 +46,20 @@
       "default": false,
       "description": "Mostra nome palestra nel post"
     },
-    "boosts": {
+    "safety_score": {
       "type": "number",
       "default": 0,
-      "description": "Numero di boost (like)"
+      "description": "Punteggio sicurezza (0-10)"
     },
-    "boosted_by": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [],
-      "description": "Email degli utenti che hanno boostato"
-    },
-    "comments_count": {
+    "boost_count": {
       "type": "number",
       "default": 0,
-      "description": "Numero di commenti"
+      "description": "Numero di boost (denormalizzato)"
+    },
+    "comment_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di commenti (denormalizzato)"
     },
     "created_date": {
       "type": "string",
@@ -73,6 +70,6 @@
   "required": [
     "user_email",
     "user_name",
-    "caption"
+    "media_url"
   ]
 }

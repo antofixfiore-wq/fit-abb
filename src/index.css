@@ -239,7 +239,4 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Prevent zoom on double-tap for iOS */
-* {
-  touch-action: pan-x pan-y;
-}
+/* Prevent zoom on double-tap for iOS — non override global touch-action */

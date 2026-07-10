@@ -1,0 +1,70 @@
+{
+  "name": "PTService",
+  "type": "object",
+  "properties": {
+    "pt_email": {
+      "type": "string",
+      "description": "Email del PT"
+    },
+    "pt_name": {
+      "type": "string",
+      "description": "Nome del PT"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titolo del servizio"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione dettagliata"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "scheda_allenamento",
+        "programma_mensile",
+        "consulenza_online",
+        "piano_nutrizionale",
+        "coaching_personalizzato"
+      ],
+      "description": "Categoria servizio"
+    },
+    "price": {
+      "type": "number",
+      "description": "Prezzo in euro"
+    },
+    "duration_days": {
+      "type": "number",
+      "description": "Durata in giorni (se applicabile)"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Immagine del servizio"
+    },
+    "includes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Cosa include il servizio"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Servizio attivo"
+    },
+    "total_sales": {
+      "type": "number",
+      "default": 0,
+      "description": "Vendite totali"
+    }
+  },
+  "required": [
+    "pt_email",
+    "pt_name",
+    "title",
+    "description",
+    "category",
+    "price"
+  ]
+}

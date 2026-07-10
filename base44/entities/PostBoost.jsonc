@@ -1,0 +1,23 @@
+{
+  "name": "PostBoost",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID del post"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente che ha boostato"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato dato il boost"
+    }
+  },
+  "required": [
+    "post_id",
+    "user_email"
+  ]
+}

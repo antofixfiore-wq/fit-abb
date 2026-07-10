@@ -57,20 +57,11 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      // Login tramite base44
-      await base44.auth.login(formData.email, formData.password);
-      
-      // Redirect in base al tipo
-      if (type === "gym") {
-        const gyms = await base44.entities.Gym.list();
-        const hasGym = gyms.some(g => g.manager_email === formData.email);
-        navigate(hasGym ? "/GymDashboard" : "/GymOnboarding");
-      } else {
-        navigate(createPageUrl("ClientDashboard"));
-      }
+      // Login tramite base44 — redirectToLogin gestisce il flusso auth
+      const redirectAfter = type === "gym" ? "/GymDashboard" : createPageUrl("ClientDashboard");
+      base44.auth.redirectToLogin(redirectAfter);
     } catch (err) {
-      setError("Email o password non validi");
-    } finally {
+      setError("Errore durante il login. Riprova.");
       setLoading(false);
     }
   };
@@ -90,22 +81,10 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      // Registrazione utente
-      await base44.auth.register(formData.email, formData.password, formData.full_name);
-      
-      // Aggiorna dati aggiuntivi se presenti
-      if (formData.phone || formData.address) {
-        await base44.auth.updateMe({
-          phone: formData.phone,
-          address: formData.address,
-        });
-      }
-
-      // Redirect a CompleteProfile per completare i dati
-      navigate(createPageUrl("CompleteProfile"));
+      // Registrazione tramite Base44 — redirectToLogin gestisce il flusso
+      base44.auth.redirectToLogin(createPageUrl("CompleteProfile"));
     } catch (err) {
       setError(err.message || "Errore nella registrazione");
-    } finally {
       setLoading(false);
     }
   };

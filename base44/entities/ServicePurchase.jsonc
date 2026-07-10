@@ -1,0 +1,59 @@
+{
+  "name": "ServicePurchase",
+  "type": "object",
+  "properties": {
+    "service_id": {
+      "type": "string",
+      "description": "ID del servizio acquistato"
+    },
+    "pt_email": {
+      "type": "string",
+      "description": "Email del PT"
+    },
+    "customer_email": {
+      "type": "string",
+      "description": "Email del cliente"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Nome del cliente"
+    },
+    "service_title": {
+      "type": "string",
+      "description": "Titolo del servizio"
+    },
+    "price_paid": {
+      "type": "number",
+      "description": "Prezzo pagato"
+    },
+    "commission": {
+      "type": "number",
+      "description": "Commissione 5%"
+    },
+    "pt_earning": {
+      "type": "number",
+      "description": "Guadagno netto PT"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "pending",
+        "cancelled"
+      ],
+      "default": "completed",
+      "description": "Stato acquisto"
+    },
+    "service_data": {
+      "type": "string",
+      "description": "Dati/file del servizio"
+    }
+  },
+  "required": [
+    "service_id",
+    "pt_email",
+    "customer_email",
+    "service_title",
+    "price_paid"
+  ]
+}

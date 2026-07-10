@@ -1,0 +1,51 @@
+{
+  "name": "FitnessMetric",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data della misurazione"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Peso in kg"
+    },
+    "calories_burned": {
+      "type": "number",
+      "description": "Calorie bruciate"
+    },
+    "steps": {
+      "type": "number",
+      "description": "Passi giornalieri"
+    },
+    "heart_rate_avg": {
+      "type": "number",
+      "description": "Frequenza cardiaca media"
+    },
+    "workout_duration": {
+      "type": "number",
+      "description": "Minuti di allenamento"
+    },
+    "water_intake": {
+      "type": "number",
+      "description": "Litri d'acqua bevuti"
+    },
+    "sleep_hours": {
+      "type": "number",
+      "description": "Ore di sonno"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Note giornaliere"
+    }
+  },
+  "required": [
+    "user_email",
+    "date"
+  ]
+}

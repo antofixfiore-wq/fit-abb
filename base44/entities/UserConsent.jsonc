@@ -1,0 +1,38 @@
+{
+  "name": "UserConsent",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "geolocation_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consenso geolocalizzazione"
+    },
+    "nearby_discovery_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consenso scoperta nearby"
+    },
+    "public_profile_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consento profilo pubblico"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0",
+      "description": "Versione informativa"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Quando \u00e8 stato dato il consenso"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "name": "UserAchievement",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "badge_type": {
+      "type": "string",
+      "enum": [
+        "first_workout",
+        "workout_master",
+        "streak_3",
+        "streak_7",
+        "streak_30",
+        "event_participant",
+        "social_butterfly",
+        "ai_explorer",
+        "gym_enthusiast"
+      ],
+      "description": "Tipo di badge"
+    },
+    "badge_name": {
+      "type": "string",
+      "description": "Nome del badge"
+    },
+    "badge_description": {
+      "type": "string",
+      "description": "Descrizione del badge"
+    },
+    "points_earned": {
+      "type": "number",
+      "description": "Punti guadagnati"
+    },
+    "unlocked_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data di sblocco"
+    }
+  },
+  "required": [
+    "user_email",
+    "badge_type",
+    "badge_name",
+    "points_earned"
+  ]
+}

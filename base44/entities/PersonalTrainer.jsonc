@@ -1,0 +1,73 @@
+{
+  "name": "PersonalTrainer",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente/PT"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Nome completo"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Biografia e presentazione"
+    },
+    "specializations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specializzazioni (es. bodybuilding, crossfit, yoga)"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Certificazioni"
+    },
+    "city": {
+      "type": "string",
+      "description": "Citt\u00e0"
+    },
+    "region": {
+      "type": "string",
+      "description": "Regione"
+    },
+    "profile_image_url": {
+      "type": "string",
+      "description": "Foto profilo"
+    },
+    "cover_image_url": {
+      "type": "string",
+      "description": "Immagine copertina"
+    },
+    "rating": {
+      "type": "number",
+      "default": 0,
+      "description": "Valutazione media"
+    },
+    "total_reviews": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero recensioni"
+    },
+    "total_sales": {
+      "type": "number",
+      "default": 0,
+      "description": "Vendite totali"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Account verificato"
+    }
+  },
+  "required": [
+    "user_email",
+    "full_name",
+    "city"
+  ]
+}

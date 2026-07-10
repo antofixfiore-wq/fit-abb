@@ -1,0 +1,38 @@
+{
+  "name": "WorkoutNote",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titolo della nota"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenuto della nota"
+    },
+    "workout_plan_id": {
+      "type": "string",
+      "description": "ID del piano di allenamento associato"
+    },
+    "exercise_name": {
+      "type": "string",
+      "description": "Nome dell'esercizio"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tag per categorizzare"
+    }
+  },
+  "required": [
+    "user_email",
+    "title",
+    "content"
+  ]
+}

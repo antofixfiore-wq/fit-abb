@@ -1,0 +1,44 @@
+{
+  "name": "GymMembership",
+  "type": "object",
+  "properties": {
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nome dell'abbonamento (es. Mensile, Trimestrale)"
+    },
+    "duration_days": {
+      "type": "number",
+      "description": "Durata in giorni"
+    },
+    "price": {
+      "type": "number",
+      "description": "Prezzo dell'abbonamento"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione dell'abbonamento"
+    },
+    "benefits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Benefici inclusi"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Abbonamento attivo/disponibile"
+    }
+  },
+  "required": [
+    "gym_id",
+    "name",
+    "duration_days",
+    "price"
+  ]
+}

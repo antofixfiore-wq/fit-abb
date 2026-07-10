@@ -1,0 +1,58 @@
+{
+  "name": "GymEvent",
+  "type": "object",
+  "properties": {
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titolo dell'evento"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione dell'evento"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e ora dell'evento"
+    },
+    "location": {
+      "type": "string",
+      "description": "Luogo dell'evento"
+    },
+    "max_participants": {
+      "type": "number",
+      "description": "Numero massimo di partecipanti"
+    },
+    "registered_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Email degli utenti registrati"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Immagine dell'evento"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Evento attivo"
+    }
+  },
+  "required": [
+    "gym_id",
+    "gym_name",
+    "title",
+    "event_date"
+  ]
+}

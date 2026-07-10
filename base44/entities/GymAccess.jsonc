@@ -1,0 +1,37 @@
+{
+  "name": "GymAccess",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "gym_id": {
+      "type": "string",
+      "description": "ID della palestra"
+    },
+    "gym_name": {
+      "type": "string",
+      "description": "Nome della palestra"
+    },
+    "access_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e ora dell'accesso"
+    },
+    "subscription_type": {
+      "type": "string",
+      "description": "Tipo di abbonamento al momento dell'accesso"
+    },
+    "access_granted": {
+      "type": "boolean",
+      "description": "Accesso concesso o negato"
+    }
+  },
+  "required": [
+    "user_email",
+    "gym_id",
+    "gym_name",
+    "access_granted"
+  ]
+}

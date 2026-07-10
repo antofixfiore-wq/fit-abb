@@ -1,0 +1,72 @@
+{
+  "name": "WorkoutPlan",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email dell'utente"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nome del piano di allenamento"
+    },
+    "goal": {
+      "type": "string",
+      "description": "Obiettivo (es. perdita peso, massa muscolare)"
+    },
+    "fitness_level": {
+      "type": "string",
+      "enum": [
+        "principiante",
+        "intermedio",
+        "avanzato"
+      ],
+      "description": "Livello di fitness"
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Attrezzatura disponibile"
+    },
+    "exercises": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sets": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "string"
+          },
+          "rest_seconds": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Lista degli esercizi"
+    },
+    "duration_weeks": {
+      "type": "number",
+      "description": "Durata del programma in settimane"
+    },
+    "days_per_week": {
+      "type": "number",
+      "description": "Giorni di allenamento a settimana"
+    }
+  },
+  "required": [
+    "user_email",
+    "name",
+    "goal",
+    "fitness_level"
+  ]
+}

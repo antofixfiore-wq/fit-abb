@@ -202,7 +202,7 @@ export default function PaymentPage() {
                 <div className="flex items-center justify-between mb-2">
                   <CardTitle className="text-white text-xl">{plan.name}</CardTitle>
                   <span className={`text-xs text-white px-2 py-1 rounded-full ${plan.badge}`}>
-                    {planType.includes('annuale') ? 'ANNUALE' : 'MONTHLY'}
+                    {planType.includes('annuale') ? 'ANNUALE' : 'MENSILE'}
                   </span>
                 </div>
                 <CardDescription className="text-3xl font-bold text-white">

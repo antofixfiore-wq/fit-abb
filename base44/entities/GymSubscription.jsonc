@@ -1,0 +1,50 @@
+{
+  "name": "GymSubscription",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID utente"
+    },
+    "gym_id": {
+      "type": "string",
+      "description": "ID palestra"
+    },
+    "membership_id": {
+      "type": "string",
+      "description": "ID abbonamento acquistato"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data inizio"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data fine"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "Stato abbonamento"
+    },
+    "price_paid": {
+      "type": "number",
+      "description": "Prezzo pagato"
+    }
+  },
+  "required": [
+    "user_id",
+    "gym_id",
+    "membership_id",
+    "start_date",
+    "end_date",
+    "price_paid"
+  ]
+}
